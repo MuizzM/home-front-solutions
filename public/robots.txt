@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Keep thin conversion pages out of search indexes while allowing discovery of primary content.
+Disallow: /careers/*/apply
+Disallow: /careers/*/apply/thank-you
+
+# Sitemap
+Sitemap: https://homefrontsolutionsllc.com/sitemap.xml
+
+# AI and retrieval-friendly note:
+# Public marketing, careers, and market pages may be crawled and summarized.
