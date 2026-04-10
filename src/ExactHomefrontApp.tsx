@@ -1291,7 +1291,7 @@ function HomePage(props) {
                   <button
                     key={market.slug}
                     onClick={function() { props.go("market", market.slug); }}
-                    className="p-4 text-left lift-card"
+                    className="p-4 text-left lift-card interactive-panel"
                     style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 100%)", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
                   >
                     <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{market.region}</div>
@@ -1312,12 +1312,12 @@ function HomePage(props) {
               A smoother path for people who want to understand D2D, sales psychology, 1099 work, and the home-services field.
             </h2>
             <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              This section is designed for curious applicants, students, and operators who want to understand how the field actually works before they apply or partner.
+              Smart people usually want to understand the game before they step into it. These guides make the opportunity feel clearer, more practical, and easier to trust.
             </p>
           </div>
-          <button onClick={function() { props.go("insights"); }} className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold" style={{ background: SURF, color: INK, border: "1px solid " + RULE, cursor: "pointer" }}>
+          <button onClick={function() { props.go("insights"); }} className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold interactive-pill" style={{ background: SURF, color: INK, border: "1px solid " + RULE, cursor: "pointer" }}>
             View all insights
-            <span style={{ color: SIGNAL }}>→</span>
+            <span className="interactive-arrow" style={{ color: SIGNAL }}>→</span>
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -1328,7 +1328,7 @@ function HomePage(props) {
               <div
                 key={track.slug}
                 onClick={function() { props.go("article", article.slug); }}
-                className="group p-6 cursor-pointer lift-card"
+                className="group p-6 cursor-pointer lift-card interactive-panel"
                 style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 74%, #F4F8FC 100%)", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 20, boxShadow: "0 10px 26px rgba(14,14,12,0.05)" }}
                 role="link"
                 tabIndex={0}
@@ -1344,7 +1344,7 @@ function HomePage(props) {
                 <p className="text-sm leading-[1.8]" style={{ color: MUTED }}>{track.blurb}</p>
                 <div className="inline-flex items-center gap-2 mt-5 text-sm font-semibold" style={{ color: INK }}>
                   Learn more
-                  <span style={{ color: SIGNAL }}>→</span>
+                  <span className="interactive-arrow" style={{ color: SIGNAL }}>→</span>
                 </div>
               </div>
             );
@@ -1360,9 +1360,9 @@ function HomePage(props) {
               <h2 style={{ ...serif, fontSize: "clamp(1.7rem, 3.1vw, 2.3rem)", lineHeight: 1.06 }}>
                 Content for college students, recent grads, and 18 to 25 year olds looking for a real sales path.
               </h2>
-              <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-                This keeps student and internship search traffic inside the site while still keeping the front page clean and direct.
-              </p>
+            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
+              For people who want more than a generic internship, this is where the path starts to feel practical, ambitious, and real.
+            </p>
             </div>
             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4">
               {ARTICLE_PAGES.filter(function(article) {
@@ -1372,7 +1372,7 @@ function HomePage(props) {
                   <button
                     key={article.slug}
                     onClick={function() { props.go("article", article.slug); }}
-                    className="p-5 text-left lift-card"
+                    className="p-5 text-left lift-card interactive-panel"
                     style={{ background: "rgba(255,255,255,0.82)", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
                   >
                     <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
@@ -3579,17 +3579,59 @@ export default function App() {
         input:focus, select:focus, textarea:focus { border-color: ${INK} !important; }
         button:focus-visible { outline: 2px solid ${SIGNAL}; outline-offset: 2px; }
         .lift-card {
-          transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+          transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 260ms ease, background-position 320ms ease;
+          transform-origin: center;
         }
         .lift-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 18px 40px rgba(14,14,12,0.08);
-          border-color: #d6d1c1 !important;
+          transform: translateY(-6px) scale(1.01);
+          box-shadow: 0 22px 46px rgba(14,14,12,0.1);
+          border-color: rgba(59,93,124,0.26) !important;
+        }
+        .interactive-panel {
+          position: relative;
+          overflow: hidden;
+        }
+        .interactive-panel::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(120deg, rgba(255,255,255,0) 10%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 90%);
+          transform: translateX(-120%);
+          transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+          pointer-events: none;
+        }
+        .interactive-panel:hover::after {
+          transform: translateX(120%);
+        }
+        .interactive-arrow {
+          display: inline-block;
+          transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .interactive-panel:hover .interactive-arrow,
+        .interactive-pill:hover .interactive-arrow {
+          transform: translateX(4px);
+        }
+        .interactive-pill {
+          transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease;
+        }
+        .interactive-pill:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 24px rgba(14,14,12,0.08);
+          border-color: rgba(59,93,124,0.22) !important;
         }
         @media (max-width: 767px) {
           .lift-card:hover {
             transform: none;
             box-shadow: 0 10px 24px rgba(14,14,12,0.05);
+          }
+          .interactive-panel::after,
+          .interactive-panel:hover::after {
+            transform: none;
+          }
+          .interactive-panel:hover .interactive-arrow,
+          .interactive-pill:hover .interactive-arrow,
+          .interactive-pill:hover {
+            transform: none;
           }
         }
         @keyframes pulse {
