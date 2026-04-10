@@ -935,8 +935,8 @@ function HomePage(props) {
     },
     {
       slug: "telecom-industry-basics-for-fiber-sales-reps",
-      kicker: "Telecom Industry",
-      blurb: "Get the simple version of how providers, networks, and field sales teams fit together."
+      kicker: "Industry Basics",
+      blurb: "Get the simple version of how providers, field teams, homeowners, and service categories fit together."
     }
   ];
   return (
@@ -1001,12 +1001,12 @@ function HomePage(props) {
           </aside>
         </div>
 
-      {/* Authorized dealer strip */}
+      {/* Category strip */}
       <div className="mt-10 pt-6" style={{ borderTop: "1px solid " + RULE }}>
           <div className="flex items-baseline gap-4 mb-6">
-            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Authorized Dealer</div>
+            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Service Categories</div>
             <div className="flex-1" style={{ height: 1, background: RULE }} />
-            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Core Categories</div>
+            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Field Coverage</div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-4 items-center">
             {PARTNERS.map(function(p, i) {
@@ -1022,12 +1022,12 @@ function HomePage(props) {
       <div className="mt-8 p-6 md:p-8" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, " + SURF + " 100%)", border: "1px solid rgba(30,64,175,0.08)", borderRadius: 24, boxShadow: "0 18px 40px rgba(14,14,12,0.05)" }}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-5">
-            <Eyebrow>North Carolina Job Markets</Eyebrow>
+            <Eyebrow>Local Recruiting Pages</Eyebrow>
             <h2 style={{ ...serif, fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", lineHeight: 1.05 }}>
               Explore local recruiting pages by city and region.
             </h2>
             <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              If you are searching for Greensboro sales jobs, High Point fiber jobs, Winston-Salem telecom roles, Lexington entry points, or broader Charlotte and Raleigh recruiting pages, start with the market links below.
+              If you are searching for Greensboro sales jobs, High Point field opportunities, Winston-Salem recruiting pages, Lexington entry points, or broader Charlotte and Raleigh hiring pages, start with the market links below.
             </p>
           </div>
           <div className="lg:col-span-7">
@@ -1053,9 +1053,9 @@ function HomePage(props) {
       <section className="mt-10">
         <div className="flex items-end justify-between gap-6 mb-8">
           <div>
-            <Eyebrow>Learn The Business</Eyebrow>
+            <Eyebrow>Learn Before You Apply</Eyebrow>
             <h2 className="max-w-3xl" style={{ ...serif, fontSize: "clamp(1.85rem, 3.5vw, 2.7rem)", lineHeight: 1.05 }}>
-              A smoother path for people who want to understand D2D, sales psychology, 1099 work, and telecom.
+              A smoother path for people who want to understand D2D, sales psychology, 1099 work, and the home-services field.
             </h2>
             <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
               This section is designed for curious applicants, students, and operators who want to understand how the field actually works before they apply or partner.
@@ -1183,7 +1183,7 @@ function HomePage(props) {
               <div className="text-[10px] uppercase mb-4" style={{ color: SIGNAL, letterSpacing: "0.18em", fontWeight: 700 }}>What Reps Learn</div>
               <ul className="space-y-4">
                 {[
-                  ["The Product", "Fiber internet specs, pricing, install process for every partner brand"],
+                  ["The Product", "Offer basics, customer fit, pricing structure, and install flow across active service categories"],
                   ["The Pitch", "Opening lines, value framing, qualifying questions that work at the door"],
                   ["Objection Handling", "How to respond to the 12 most common homeowner objections"],
                   ["Compliance", "What you can and cannot say. Brand standards. Customer privacy."],
@@ -1210,13 +1210,13 @@ function HomePage(props) {
         <div className="p-6 md:p-8" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, " + PAPER + " 48%, " + SIGNAL_SOFT + " 100%)", border: "1px solid " + RULE, borderRadius: 24, boxShadow: "0 20px 48px rgba(14,14,12,0.06)" }}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-4">
-              <Eyebrow>Knowledge Hub</Eyebrow>
-              <h2 style={{ ...serif, fontSize: "clamp(1.8rem, 3.3vw, 2.4rem)", lineHeight: 1.06 }}>
-                Learn the business before you step into the field.
-              </h2>
-              <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-                If someone wants to understand how the money works, how the industry works, and how strong reps think, this section should make the site feel useful instead of salesy.
-              </p>
+          <Eyebrow>Knowledge Hub</Eyebrow>
+          <h2 style={{ ...serif, fontSize: "clamp(1.8rem, 3.3vw, 2.4rem)", lineHeight: 1.06 }}>
+            Learn the business before you step into the field.
+          </h2>
+          <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
+            If someone wants to understand how the money works, how the industry works, and how strong reps think, this section should make the site feel useful instead of noisy.
+          </p>
             </div>
             <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
@@ -1253,7 +1253,7 @@ function HomePage(props) {
             A locally owned company built on professionalism and trust.
           </h2>
           <p className="max-w-2xl mb-14 text-base md:text-lg leading-relaxed" style={{ color: MUTED }}>
-            Home Front Solutions is an independently owned door-to-door marketing company. We are proud to represent the nation's leading fiber networks and to bring better internet to families wherever they live.
+            Home Front Solutions is an independently owned door-to-door marketing company built for clear offers, disciplined field execution, and respectful homeowner conversations across essential home-service categories.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
@@ -1264,8 +1264,8 @@ function HomePage(props) {
                 accent: SIGNAL,
               },
               {
-                t: "Authorized dealer for premier networks",
-                d: "We partner with the country's most trusted fiber providers. including AT&T Fiber, T-Mobile Fiber, Astound, Brightspeed, and Frontier. so we can match each customer with the right service, speed, and price for their household.",
+                t: "Built for strong home-service offers",
+                d: "We focus on categories that make sense at the doorstep: fiber internet, home security, solar, water filtration, roofing, and other homeowner offers where clarity and trust matter.",
                 accent: BLUE,
               },
               {
@@ -1294,7 +1294,7 @@ function HomePage(props) {
       <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-10 md:p-14" style={{ background: BLUE_SOFT, borderTop: "4px solid " + BLUE }}>
-            <div className="text-[11px] mb-5" style={{ color: BLUE, fontFamily: "'JetBrains Mono', ui-monospace, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR FIBER OPERATORS</div>
+            <div className="text-[11px] mb-5" style={{ color: BLUE, fontFamily: "'JetBrains Mono', ui-monospace, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR BRANDS THAT NEED FIELD GROWTH</div>
             <h3 className="mb-4" style={{ ...serif, fontSize: "clamp(1.5rem, 2.5vw, 1.875rem)", lineHeight: 1.1, color: INK }}>
               Add a door-to-door channel to your customer acquisition.
             </h3>
@@ -1368,7 +1368,7 @@ function WhyUsPage(props) {
     <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-20">
       <Eyebrow>Why Home Front</Eyebrow>
       <h1 className="max-w-4xl" style={{ ...serif, fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1 }}>
-        Premium fiber, delivered with professionalism and care.
+        Premium field execution, delivered with professionalism and care.
       </h1>
       <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
         Home Front Solutions is a door-to-door marketing company built for high-demand home-service offers. Here is what sets us apart and why direct field execution still works when the offer is clear, the process is disciplined, and the rep is professional.
@@ -1403,7 +1403,7 @@ function PartnersPage(props) {
     <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-20">
       <Eyebrow>Partners</Eyebrow>
       <h1 className="max-w-4xl" style={{ ...serif, fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1 }}>
-        Authorized dealer for the nation's leading fiber providers.
+        Built for home-service categories that win with trust.
       </h1>
       <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
         We are selective about the categories and campaigns we support. Every offer has to be clear, defensible, and strong enough for a professional field team to stand behind.
@@ -2566,10 +2566,10 @@ function InsightsIndexPage(props) {
         <div className="max-w-4xl">
           <Eyebrow>Insights</Eyebrow>
           <h1 style={{ ...serif, fontSize: "clamp(2.5rem, 5vw, 4.6rem)", lineHeight: 0.96 }}>
-            D2D sales, fiber growth, recruiting psychology, and field success.
+            D2D sales, field psychology, 1099 education, and industry know-how.
           </h1>
           <p className="mt-6 max-w-3xl text-[16px] md:text-[18px] leading-[1.9]" style={{ color: MUTED }}>
-            This section is the content hub for the Home Front Solutions career and recruiting brand. It exists to answer the questions people actually search before they apply: how D2D works, how to handle rejection, how 1099 roles work, how the telecom industry fits together, why fiber is such a strong product, and why field sales can be a real career move.
+            This section is the content hub for the Home Front Solutions career and recruiting brand. It exists to answer the questions people actually search before they apply: how D2D works, how to handle rejection, how 1099 roles work, how home-service selling fits together, and why field sales can be a real career move.
           </p>
         </div>
       </section>
@@ -2579,7 +2579,7 @@ function InsightsIndexPage(props) {
           {[
             "sales internship jobs for college students",
             "summer sales jobs for 18 to 25 year olds",
-            "fiber sales jobs in Charlotte, Raleigh, Greensboro, and High Point"
+            "field sales jobs in Charlotte, Raleigh, Greensboro, and High Point"
           ].map(function(intent) {
             return (
               <div key={intent} className="p-5" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 18 }}>
@@ -2691,7 +2691,7 @@ function ContactPage(props) {
           Tell us about your market.
         </h1>
         <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-          For ISPs and fiber operators looking to add a door-to-door channel. We respond within 24 hours.
+          For home-service brands looking to add a disciplined door-to-door channel. We respond within 24 hours.
         </p>
       </section>
 
@@ -2782,7 +2782,7 @@ function PrivacyPage(props) {
       <div className="mt-12 space-y-8 text-[15px] leading-[1.85]" style={{ color: INK }}>
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>Who We Are</h2>
-          <p style={{ color: MUTED }}>Home Front Solutions, LLC ("Home Front Solutions," "we," "us," or "our") is a door-to-door marketing company headquartered in High Point, North Carolina. We are an authorized dealer for residential fiber internet providers including AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, and Frontier. This Privacy Policy explains how we collect, use, and protect information you provide to us through our website and in person.</p>
+          <p style={{ color: MUTED }}>Home Front Solutions, LLC ("Home Front Solutions," "we," "us," or "our") is a door-to-door marketing company headquartered in High Point, North Carolina. We support residential customer acquisition across categories including fiber internet, home security, solar, water filtration, roofing, and related home-service campaigns. This Privacy Policy explains how we collect, use, and protect information you provide to us through our website and in person.</p>
         </div>
 
         <div>
@@ -2792,12 +2792,12 @@ function PrivacyPage(props) {
 
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>How We Use Your Information</h2>
-          <p style={{ color: MUTED }}>We use the information you provide to evaluate job applications, respond to inquiries, schedule installations with our partner networks, communicate with you about job opportunities or fiber internet services, and improve our website and operations. We do not sell your personal information to third parties.</p>
+          <p style={{ color: MUTED }}>We use the information you provide to evaluate job applications, respond to inquiries, coordinate appointments or installations with service partners when applicable, communicate with you about job opportunities or homeowner service offers, and improve our website and operations. We do not sell your personal information to third parties.</p>
         </div>
 
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>How We Share Your Information</h2>
-          <p style={{ color: MUTED }}>We may share your information with our authorized fiber network partners (such as AT&amp;T, T-Mobile, Brightspeed, etc.) only when necessary to fulfill an installation order you have agreed to. We may also share information with service providers who help us operate our website and business. We will never sell your personal information for marketing purposes.</p>
+          <p style={{ color: MUTED }}>We may share your information with authorized service partners only when necessary to fulfill an appointment, estimate, or installation you have agreed to. We may also share information with service providers who help us operate our website and business. We will never sell your personal information for marketing purposes.</p>
         </div>
 
         <div>
@@ -2834,7 +2834,7 @@ function TermsPage(props) {
 
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>About Our Services</h2>
-          <p style={{ color: MUTED }}>Home Front Solutions, LLC is an independent door-to-door marketing company and authorized dealer for residential fiber internet providers including AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, and Frontier. We do not provide internet service directly. All fiber internet services are provided by the respective network partners under their own terms and conditions.</p>
+          <p style={{ color: MUTED }}>Home Front Solutions, LLC is an independent door-to-door marketing company supporting residential customer acquisition across categories including fiber internet, security, solar, water filtration, and roofing. We do not manufacture, install, or provide the underlying service directly unless stated otherwise. Any third-party service or installation is provided under the respective partner's own terms and conditions.</p>
         </div>
 
         <div>
@@ -2849,7 +2849,7 @@ function TermsPage(props) {
 
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>Intellectual Property</h2>
-          <p style={{ color: MUTED }}>All content on this website, including text, graphics, logos, and design, is the property of Home Front Solutions, LLC or its licensors and is protected by United States and international copyright laws. The brand names AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, and Ziply Fiber are trademarks of their respective owners.</p>
+          <p style={{ color: MUTED }}>All content on this website, including text, graphics, logos, and design, is the property of Home Front Solutions, LLC or its licensors and is protected by United States and international copyright laws. Any third-party brand names referenced on this website are trademarks of their respective owners.</p>
         </div>
 
         <div>
@@ -2914,13 +2914,13 @@ export default function App() {
   useEffect(function() {
     var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
     var titles = {
-      home: "Home Front Solutions | Fiber Internet Sales, Careers, Sales Internships, and D2D Learning",
-      "what-we-do": "Fiber Internet Sales Outsourcing | Home Front Solutions",
-      "why-us": "Why Home Front Solutions | In-Person Fiber Growth Team",
-      partners: "Fiber Provider Partners | Home Front Solutions",
-      careers: "Fiber Sales Jobs in North Carolina | Home Front Solutions Careers",
-      market: currentJob ? currentJob.title : "Local Fiber Sales Markets | Home Front Solutions Careers",
-      insights: "D2D Sales Insights, 1099 Tax Guides, Telecom Basics, and Recruiting Articles | Home Front Solutions",
+      home: "Home Front Solutions | Home Services Sales, Careers, Internships, and D2D Learning",
+      "what-we-do": "Home Services Customer Acquisition | Home Front Solutions",
+      "why-us": "Why Home Front Solutions | In-Person Field Growth Team",
+      partners: "Home Service Categories | Home Front Solutions",
+      careers: "Field Sales Jobs in North Carolina | Home Front Solutions Careers",
+      market: currentJob ? currentJob.title : "Local Field Sales Markets | Home Front Solutions Careers",
+      insights: "D2D Sales Insights, 1099 Tax Guides, Industry Basics, and Recruiting Articles | Home Front Solutions",
       article: "D2D Sales Insights | Home Front Solutions",
       contact: "Contact Home Front Solutions | Sales & Recruiting",
       job: currentJob ? currentJob.title + " in " + currentJob.location + " | Home Front Solutions" : "Sales Jobs | Home Front Solutions",
@@ -2932,7 +2932,7 @@ export default function App() {
       home: "Home Front Solutions helps home-service brands win more neighborhoods through disciplined, in-person customer acquisition, recruiting, D2D education, and city-specific market development.",
       careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
       market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
-      insights: "Explore articles on D2D sales psychology, field success, 1099 taxes, telecom industry basics, recruiting, and why door-to-door can be a strong career path.",
+      insights: "Explore articles on D2D sales psychology, field success, 1099 taxes, industry basics, recruiting, and why door-to-door can be a strong career path.",
       article: "Articles on door-to-door sales, D2D psychology, recruiting, and why field sales can be a strong career path.",
       "what-we-do": "Door-to-door sales, neighborhood coverage, customer acquisition, and local market expansion for home-service brands.",
       "why-us": "A serious field team built around clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
@@ -3001,7 +3001,7 @@ export default function App() {
     setMeta("geo.placename", "High Point");
     setMeta("geo.position", "35.9557;-80.0053");
     setMeta("ICBM", "35.9557, -80.0053");
-    setMeta("keywords", "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, telecom sales, Charlotte sales jobs, Raleigh sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, 1099 taxes for sales reps, d2d sales psychology, customer acquisition, Home Front Solutions");
+    setMeta("keywords", "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, field marketing company, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, 1099 taxes for sales reps, d2d sales psychology, customer acquisition, Home Front Solutions");
 
     // Apple touch icon
     var atiEl = document.querySelector("link[rel='apple-touch-icon']");
@@ -3056,8 +3056,30 @@ export default function App() {
         "https://www.instagram.com/homefrontsolutionsllc",
       ],
       makesOffer: PARTNERS.map(function(p) {
-        return { "@type": "Offer", itemOffered: { "@type": "Service", name: p + " Residential Fiber Internet Installation", areaServed: "United States" } };
+        return { "@type": "Offer", itemOffered: { "@type": "Service", name: p + " customer acquisition and field sales support", areaServed: "United States" } };
       }),
+    };
+
+    var serviceSchema = {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "@id": "https://homefrontsolutionsllc.com/#services",
+      serviceType: "Door-to-door customer acquisition and field sales support",
+      provider: { "@id": "https://homefrontsolutionsllc.com/#business" },
+      areaServed: "United States",
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Home Front Solutions service categories",
+        itemListElement: PARTNERS.map(function(p) {
+          return {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: p + " field sales support"
+            }
+          };
+        })
+      }
     };
 
     // Website schema (sitelinks search box eligible)
@@ -3088,7 +3110,7 @@ export default function App() {
       });
     }
 
-    var schemas = [localBizSchema, websiteSchema, breadcrumbSchema];
+    var schemas = [localBizSchema, websiteSchema, breadcrumbSchema, serviceSchema];
 
     if (route.name === "careers") {
       schemas.push({
@@ -3148,7 +3170,7 @@ export default function App() {
         description: currentMarket.intro,
         about: {
           "@type": "Thing",
-          name: currentMarket.city + " fiber and telecom sales recruiting"
+          name: currentMarket.city + " field sales recruiting and home services hiring"
         }
       });
     }
