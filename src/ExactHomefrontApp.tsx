@@ -646,6 +646,42 @@ var MARKET_TESTIMONIALS = {
       role: "1099 Field Rep"
     }
   ],
+  "winston-salem-nc": [
+    {
+      quote: "Winston-Salem feels like a market where consistency matters more than noise. The reps who stay steady usually separate themselves fast.",
+      name: "Winston-Salem Recruiting Angle",
+      role: "Field Growth"
+    },
+    {
+      quote: "Early-stage territory work can be a real advantage when you want reps to grow with the market instead of stepping into a dead-end role.",
+      name: "Winston-Salem Team View",
+      role: "Market Development"
+    }
+  ],
+  "piedmont-triad-nc": [
+    {
+      quote: "The Triad works because it gives the company both city-level relevance and regional reach. That matters for recruiting and for brand trust.",
+      name: "Triad Recruiting Note",
+      role: "Regional Hiring"
+    },
+    {
+      quote: "A regional page helps the right applicant self-select faster, especially when they are searching broadly before narrowing into a city.",
+      name: "Triad Search Angle",
+      role: "Local SEO Structure"
+    }
+  ],
+  "lexington-nc": [
+    {
+      quote: "Lexington is the kind of page that helps nearby candidates realize the opportunity is close enough to matter, even if the main market is next door.",
+      name: "Lexington Recruiting View",
+      role: "Nearby Market Coverage"
+    },
+    {
+      quote: "Local bridge pages reduce drop-off because they match how real applicants search before they know the exact territory.",
+      name: "Lexington Search Intent",
+      role: "Field Recruiting"
+    }
+  ],
   "charlotte-nc": [
     {
       quote: "Charlotte is competitive, which means clarity matters. Strong reps stand out faster when they stay direct and professional.",
@@ -671,6 +707,158 @@ var MARKET_TESTIMONIALS = {
     }
   ]
 };
+
+var MARKET_PROOF = {
+  "greensboro-nc": [
+    { label: "Market type", value: "Established Triad recruiting page" },
+    { label: "Best fit", value: "Coachable reps who want structure and daily pace" },
+    { label: "Local signal", value: "Strong Greensboro-specific job and recruiting intent" }
+  ],
+  "high-point-nc": [
+    { label: "Market type", value: "Headquarters market with local trust advantage" },
+    { label: "Best fit", value: "Reps who want direct leadership access and clear standards" },
+    { label: "Local signal", value: "High Point relevance supports brand credibility sitewide" }
+  ],
+  "winston-salem-nc": [
+    { label: "Market type", value: "Growth market with room for early momentum" },
+    { label: "Best fit", value: "Consistent reps who want to grow with the territory" },
+    { label: "Local signal", value: "City-specific page strengthens Winston-Salem search intent" }
+  ],
+  "piedmont-triad-nc": [
+    { label: "Market type", value: "Regional hub page across three active cities" },
+    { label: "Best fit", value: "Applicants searching broader regional opportunities" },
+    { label: "Local signal", value: "Useful bridge between city pages and statewide recruiting" }
+  ],
+  "lexington-nc": [
+    { label: "Market type", value: "Nearby-market recruiting bridge" },
+    { label: "Best fit", value: "Applicants near the Triad who want in-person work" },
+    { label: "Local signal", value: "Captures broad local search before applicants narrow down" }
+  ],
+  "charlotte-nc": [
+    { label: "Market type", value: "Competitive metro page built for discovery" },
+    { label: "Best fit", value: "Sharp communicators who want bigger-market upside" },
+    { label: "Local signal", value: "Charlotte page increases local trust before application" }
+  ],
+  "raleigh-nc": [
+    { label: "Market type", value: "Triangle recruiting page with higher intent users" },
+    { label: "Best fit", value: "Applicants who want specifics, pace, and upside" },
+    { label: "Local signal", value: "Raleigh-specific copy improves local search relevance" }
+  ]
+};
+
+var MARKET_FAQS = {
+  "greensboro-nc": [
+    {
+      q: "What kind of sales jobs is Home Front Solutions hiring for in Greensboro?",
+      a: "Greensboro hiring is centered on in-person field sales roles with a 1099 structure, direct coaching, neighborhood territory work, and a path into team leadership for strong performers."
+    },
+    {
+      q: "Do I need sales experience for Greensboro roles?",
+      a: "Not always. Coachable applicants with strong communication skills, reliable transportation, and the ability to work face to face with homeowners can be trained from day one."
+    },
+    {
+      q: "Why have a dedicated Greensboro jobs page?",
+      a: "Applicants search by city. A Greensboro-specific page gives both search engines and candidates a more relevant local destination than a generic statewide careers page."
+    }
+  ],
+  "high-point-nc": [
+    {
+      q: "Why is High Point an important market for Home Front Solutions?",
+      a: "High Point is the company's home base in North Carolina, which makes it an important trust signal for recruiting, operations, and local brand relevance."
+    },
+    {
+      q: "Are High Point roles employee jobs or 1099 contractor roles?",
+      a: "Current field roles listed on the site are 1099 independent-contractor opportunities with performance-based pay and weekly commission."
+    },
+    {
+      q: "What kind of applicant usually fits High Point field sales best?",
+      a: "Applicants who want structure, pace, territory ownership, and direct feedback usually fit well, especially if they are comfortable with in-person conversations and outdoor work."
+    }
+  ],
+  "winston-salem-nc": [
+    {
+      q: "What makes Winston-Salem a strong market page?",
+      a: "Winston-Salem deserves its own recruiting page because applicants often search by city first and want to see a direct explanation of the role before they apply."
+    },
+    {
+      q: "What does success look like in Winston-Salem field sales?",
+      a: "Success usually comes from consistent route work, clean talk tracks, resilience in the field, and the ability to convert strong conversations into installs."
+    },
+    {
+      q: "Is training available for Winston-Salem applicants?",
+      a: "Yes. Home Front Solutions trains new reps with structured onboarding, AI-supported coaching, and live field support before expecting independent production."
+    }
+  ],
+  "piedmont-triad-nc": [
+    {
+      q: "Why does Home Front Solutions have a Piedmont Triad page?",
+      a: "Not every applicant searches by city first. Some search for broader Triad jobs, so the regional page helps capture that intent and connect people to the right local roles."
+    },
+    {
+      q: "Which cities does the Piedmont Triad page support?",
+      a: "It supports recruiting visibility across Greensboro, High Point, Winston-Salem, and nearby communities tied to the broader Triad market."
+    },
+    {
+      q: "Can Triad applicants still apply to city-specific jobs?",
+      a: "Yes. The regional page is meant to guide applicants into the exact job page that best fits their location and experience."
+    }
+  ],
+  "lexington-nc": [
+    {
+      q: "Does Home Front Solutions hire directly in Lexington?",
+      a: "The Lexington page is designed for nearby recruiting visibility and may connect applicants into surrounding Triad territories rather than a separate standalone Lexington office."
+    },
+    {
+      q: "Why target Lexington search traffic?",
+      a: "Many applicants start with broad searches like sales jobs near Lexington or entry-level field sales near me, so the page helps bridge that local intent into a relevant role."
+    },
+    {
+      q: "What kind of work should Lexington-area applicants expect?",
+      a: "Applicants should expect in-person territory work, a 1099 structure, performance expectations, and the kind of direct communication that comes with face-to-face field sales."
+    }
+  ],
+  "charlotte-nc": [
+    {
+      q: "Why does Charlotte need its own recruiting page?",
+      a: "Charlotte is a larger, more competitive market, so a city-specific page improves local trust, search relevance, and conversion compared with generic statewide copy."
+    },
+    {
+      q: "What kind of candidate fits Charlotte field sales?",
+      a: "Charlotte tends to reward clear communication, professionalism, and reps who can explain value simply in a bigger, faster-moving market."
+    },
+    {
+      q: "What should applicants expect from Charlotte opportunities?",
+      a: "Applicants should expect a 1099 field-sales structure, local recruiting relevance, and a direct path into the main careers flow if the role fits."
+    }
+  ],
+  "raleigh-nc": [
+    {
+      q: "Why is Raleigh an important SEO and recruiting market?",
+      a: "Raleigh is a competitive search market where location-specific pages matter. Candidates often want clear city references and straightforward role details before they trust a site."
+    },
+    {
+      q: "What do Raleigh applicants usually want to know first?",
+      a: "Most Raleigh applicants want to know what the job actually is, how compensation works, whether the opportunity feels legitimate, and how quickly the recruiting process moves."
+    },
+    {
+      q: "Are Raleigh roles still connected to the broader North Carolina recruiting structure?",
+      a: "Yes. The Raleigh page supports local discovery while still routing candidates into the shared careers funnel and related job pages."
+    }
+  ]
+};
+
+function getMarketArticleSlugs(marketSlug) {
+  var map = {
+    "greensboro-nc": ["d2d-success-stories", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"],
+    "high-point-nc": ["how-to-win-your-first-30-days-in-d2d", "1099-taxes-for-door-to-door-sales-reps", "d2d-psychology", "telecom-industry-basics-for-fiber-sales-reps"],
+    "winston-salem-nc": ["d2d-success-stories", "how-to-win-your-first-30-days-in-d2d", "d2d-psychology", "best-summer-sales-job-for-18-to-25"],
+    "piedmont-triad-nc": ["d2d-success-stories", "why-d2d-after-high-school-or-college", "1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps"],
+    "lexington-nc": ["why-d2d-after-high-school-or-college", "sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "d2d-psychology"],
+    "charlotte-nc": ["d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "why-fiber-is-easier-to-sell-than-weak-products", "sales-internship-for-college-students"],
+    "raleigh-nc": ["1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps", "d2d-success-stories", "why-d2d-after-high-school-or-college"]
+  };
+  return map[marketSlug] || ["d2d-success-stories", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"];
+}
 
 function formatPhoneInput(value) {
   var digits = (value || "").replace(/\D/g, "").slice(0, 10);
@@ -2408,6 +2596,12 @@ function MarketPage(props) {
     relatedJobs = JOBS.slice(0, 3);
   }
 
+  var marketProof = MARKET_PROOF[market.slug] || [];
+  var marketFaqs = MARKET_FAQS[market.slug] || [];
+  var relatedArticles = getMarketArticleSlugs(market.slug).map(function(slug) {
+    return ARTICLE_PAGES.find(function(article) { return article.slug === slug; });
+  }).filter(Boolean);
+
   return (
     <>
       <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-14 md:pt-18 pb-10">
@@ -2464,6 +2658,22 @@ function MarketPage(props) {
               })}
             </div>
 
+            {marketProof.length > 0 && (
+              <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
+                <h2 className="mb-5" style={{ ...serif, fontSize: 28 }}>Market snapshot</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {marketProof.map(function(item) {
+                    return (
+                      <div key={item.label} className="p-5" style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16 }}>
+                        <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{item.label}</div>
+                        <div className="text-sm leading-[1.8]" style={{ color: INK, fontWeight: 600 }}>{item.value}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {MARKET_TESTIMONIALS[market.slug] && (
               <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
                 <h2 className="mb-5" style={{ ...serif, fontSize: 28 }}>Local proof and recruiter angles</h2>
@@ -2476,6 +2686,22 @@ function MarketPage(props) {
                           <div style={{ color: INK, fontWeight: 700 }}>{item.name}</div>
                           <div>{item.role}</div>
                         </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {marketFaqs.length > 0 && (
+              <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
+                <h2 className="mb-5" style={{ ...serif, fontSize: 28 }}>Questions applicants usually have</h2>
+                <div className="space-y-4">
+                  {marketFaqs.map(function(item) {
+                    return (
+                      <div key={item.q} className="p-5" style={{ background: PAPER, border: "1px solid " + RULE, borderRadius: 16 }}>
+                        <div className="text-base font-semibold leading-[1.5]" style={{ color: INK }}>{item.q}</div>
+                        <p className="mt-2 text-sm leading-[1.85]" style={{ color: MUTED }}>{item.a}</p>
                       </div>
                     );
                   })}
@@ -2513,7 +2739,7 @@ function MarketPage(props) {
             <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
               <h2 className="mb-5" style={{ ...serif, fontSize: 28 }}>Related reading</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {ARTICLE_PAGES.slice(0, 4).map(function(article) {
+                {relatedArticles.map(function(article) {
                   return (
                     <button
                       key={article.slug}
@@ -2542,6 +2768,21 @@ function MarketPage(props) {
                   <div>{market.city} fiber sales jobs</div>
                 </div>
               </div>
+              {marketProof.length > 0 && (
+                <div className="p-6" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
+                  <div className="text-xs uppercase mb-3" style={{ color: SIGNAL, letterSpacing: "0.15em", fontWeight: 700 }}>Proof points</div>
+                  <div className="space-y-3">
+                    {marketProof.map(function(item) {
+                      return (
+                        <div key={item.label}>
+                          <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.12em", fontWeight: 700 }}>{item.label}</div>
+                          <div className="text-sm leading-[1.8]" style={{ color: INK }}>{item.value}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <div className="p-6" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
                 <div className="text-xs uppercase mb-3" style={{ color: SIGNAL, letterSpacing: "0.15em", fontWeight: 700 }}>Next step</div>
                 <p className="text-sm leading-[1.8] mb-5" style={{ color: MUTED }}>
@@ -3173,6 +3414,23 @@ export default function App() {
           name: currentMarket.city + " field sales recruiting and home services hiring"
         }
       });
+
+      if (MARKET_FAQS[currentMarket.slug] && MARKET_FAQS[currentMarket.slug].length) {
+        schemas.push({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: MARKET_FAQS[currentMarket.slug].map(function(item) {
+            return {
+              "@type": "Question",
+              name: item.q,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: item.a
+              }
+            };
+          })
+        });
+      }
     }
 
     if (route.name === "insights") {
