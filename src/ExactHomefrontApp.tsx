@@ -1457,45 +1457,6 @@ function HomePage(props) {
         </div>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pb-6 md:pb-10">
-        <div className="p-6 md:p-8" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, " + PAPER + " 48%, " + SIGNAL_SOFT + " 100%)", border: "1px solid " + RULE, borderRadius: 24, boxShadow: "0 20px 48px rgba(14,14,12,0.06)" }}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-4">
-          <Eyebrow>Knowledge Hub</Eyebrow>
-          <h2 style={{ ...serif, fontSize: "clamp(1.8rem, 3.3vw, 2.4rem)", lineHeight: 1.06 }}>
-            Learn the business before you step into the field.
-          </h2>
-          <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-            If someone wants to understand how the money works, how the industry works, and how strong reps think, this section should make the site feel useful instead of noisy.
-          </p>
-            </div>
-            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                "d2d-success-stories",
-                "how-to-win-your-first-30-days-in-d2d",
-                "1099-taxes-for-door-to-door-sales-reps",
-                "telecom-industry-basics-for-fiber-sales-reps"
-              ].map(function(slug) {
-                var article = ARTICLE_PAGES.find(function(item) { return item.slug === slug; });
-                if (!article) return null;
-                return (
-                  <button
-                    key={slug}
-                    onClick={function() { props.go("article", article.slug); }}
-                    className="p-5 text-left lift-card"
-                    style={{ background: "#FFFFFF", border: "1px solid " + RULE, borderRadius: 18, cursor: "pointer" }}
-                  >
-                    <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
-                    <div style={{ ...serif, fontSize: 24, lineHeight: 1.08, color: INK }}>{article.title}</div>
-                    <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* WHY HOME FRONT */}
       <section style={{ background: SURF2, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
         <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
