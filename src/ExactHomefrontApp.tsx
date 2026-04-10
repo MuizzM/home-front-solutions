@@ -19,7 +19,7 @@ var GOLD_SOFT = "#FEF3C7";
 
 var serif = { fontFamily: "'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
 
-var PARTNERS = ["AT&T Fiber", "T-Mobile Fiber", "Astound", "Brightspeed", "Frontier", "Ziply"];
+var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
 
 var JOBS = [
   {
@@ -768,7 +768,6 @@ function Header(props) {
             style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(250,250,247,0.9)", cursor: "pointer", fontWeight: 600 }}
             aria-label="View open careers and sales roles"
           >
-            <span style={{ width: 7, height: 7, background: FOREST, borderRadius: "50%", display: "inline-block", boxShadow: "0 0 0 5px rgba(21,128,61,0.14)" }} />
             <span>Now hiring across North Carolina</span>
             <span style={{ color: "rgba(250,250,247,0.35)" }}>·</span>
             <span style={{ color: "#FFFFFF" }}>Earn $100K+ in your first year</span>
@@ -779,7 +778,6 @@ function Header(props) {
             style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "#FFFFFF", cursor: "pointer", fontWeight: 600 }}
             aria-label="View open careers and sales roles"
           >
-            <span style={{ width: 7, height: 7, background: FOREST, borderRadius: "50%", display: "inline-block" }} />
             <span>Hiring in NC. Earn $100K+ first year</span>
           </button>
           <button
@@ -795,7 +793,6 @@ function Header(props) {
       <div style={{ borderBottom: "1px solid " + RULE }}>
         <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[72px] flex items-center justify-between">
           <button onClick={function() { props.go("home"); }} className="flex items-center gap-2.5" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <span style={{ width: 8, height: 8, background: SIGNAL, borderRadius: "50%", display: "inline-block" }} />
             <span style={{ ...serif, fontSize: 19, color: INK, lineHeight: 1, fontWeight: 600 }}>Home Front Solutions</span>
           </button>
           <nav className="hidden md:flex items-center gap-9">
@@ -845,11 +842,10 @@ function Footer(props) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-10">
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 mb-5">
-              <span style={{ width: 8, height: 8, background: SIGNAL, borderRadius: "50%", display: "inline-block" }} />
               <span style={{ ...serif, fontSize: 19, fontWeight: 600 }}>Home Front Solutions</span>
             </div>
             <p className="text-sm leading-relaxed max-w-sm" style={{ color: MUTED }}>
-              A door-to-door marketing company partnering with the nation's leading fiber internet providers. Hiring in markets across the country.
+              A door-to-door marketing company helping homeowners buy better essential services, from fiber and security to solar, water filtration, and roofing.
             </p>
           </div>
 
@@ -953,13 +949,13 @@ function HomePage(props) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-16">
           <div className="lg:col-span-8">
             <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
-              Bringing premium fiber internet to homes across America.
+              Helping homeowners buy better services with clarity at the door.
             </h1>
             <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              Home Front Solutions is a national door-to-door marketing company and authorized dealer for AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, and Frontier. We help residents from coast to coast upgrade to faster, more reliable internet through honest, in-person service from a team they can trust.
+              Home Front Solutions is a national door-to-door marketing company representing high-demand home service categories including fiber internet, home security, solar, water filtration, and roofing. We help homeowners make confident buying decisions through direct, professional, in-person conversations.
             </p>
             <div className="mt-5 md:mt-6 flex flex-wrap gap-2">
-              {["Fiber internet sales", "1099 field roles", "Sales internships"].map(function(tag) {
+              {["Home services sales", "1099 field roles", "Sales internships"].map(function(tag) {
                 return (
                   <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] md:text-xs font-semibold" style={{ background: "rgba(255,255,255,0.8)", border: "1px solid " + RULE, color: INK }}>
                     {tag}
@@ -980,7 +976,6 @@ function HomePage(props) {
           <aside className="lg:col-span-4">
             <div className="p-5 md:p-7 h-full" style={{ background: "linear-gradient(160deg, #F5F9FD 0%, #FFFFFF 42%, " + SURF + " 100%)", border: "1px solid rgba(59,93,124,0.12)", borderRadius: 24, boxShadow: "0 24px 52px rgba(14,14,12,0.08)" }}>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: "#FFFFFF", border: "1px solid rgba(59,93,124,0.12)" }}>
-                <span style={{ width: 7, height: 7, background: SIGNAL, borderRadius: "50%", display: "inline-block" }} />
                 <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>From Our Founder</span>
               </div>
               <p className="leading-[1.65] mb-5" style={{ ...serif, fontSize: 20, color: INK }}>
@@ -989,19 +984,18 @@ function HomePage(props) {
               <div style={{ width: 40, height: 2, background: "linear-gradient(90deg, " + SIGNAL + " 0%, rgba(59,93,124,0.14) 100%)", borderRadius: 999, marginBottom: 16 }} />
               <div className="space-y-2.5 mb-4">
                 {[
-                  ["Authorized dealer across six fiber partner networks", SIGNAL_SOFT, SIGNAL],
+                  ["Campaigns across fiber, security, solar, water filtration, and roofing", SIGNAL_SOFT, SIGNAL],
                   ["1099 field roles, internships, and leadership-track opportunities", BLUE_SOFT, BLUE]
                 ].map(function(item) {
                   return (
                     <div key={item[0]} className="flex items-center gap-3 p-3.5 rounded-2xl" style={{ background: item[1], border: "1px solid rgba(14,14,12,0.06)" }}>
-                      <span style={{ width: 10, height: 10, background: item[2], borderRadius: "50%", display: "inline-block", flexShrink: 0 }} />
                       <span className="text-sm leading-relaxed" style={{ color: INK, fontWeight: 600 }}>{item[0]}</span>
                     </div>
                   );
                 })}
               </div>
               <div className="text-xs leading-relaxed" style={{ color: MUTED }}>
-                Authorized dealer for six premier fiber networks. Trusted by homeowners nationwide.
+                Built for category expansion, disciplined field execution, and trusted homeowner conversations.
               </div>
             </div>
           </aside>
@@ -1012,14 +1006,12 @@ function HomePage(props) {
           <div className="flex items-baseline gap-4 mb-6">
             <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Authorized Dealer</div>
             <div className="flex-1" style={{ height: 1, background: RULE }} />
-            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Six Networks</div>
+            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Core Categories</div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-4 items-center">
             {PARTNERS.map(function(p, i) {
-              var partnerColors = ["#00A8E0", "#E20074", "#0066B3", "#1A4E8A", "#C8102E", "#0066CC"];
               return (
                 <div key={p} className="flex items-center gap-2.5 p-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid rgba(14,14,12,0.06)" }}>
-                  <span style={{ width: 8, height: 8, background: partnerColors[i], borderRadius: "50%", display: "inline-block", boxShadow: "0 0 0 5px rgba(255,255,255,0.9)" }} />
                   <span style={{ ...serif, fontSize: 17, color: INK, fontWeight: 600 }}>{p}</span>
                 </div>
               );
@@ -1339,12 +1331,12 @@ function WhatWeDoPage(props) {
         Last-mile customer acquisition.
       </h1>
       <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-        You laid the fiber. You got the permits. You built the brand. None of it generates revenue until somebody knocks the door and signs the customer up. That is the work we do, in your markets, every day.
+        Whether the category is fiber internet, home security, solar, water filtration, or roofing, none of it grows without disciplined customer acquisition. That is the work we do, in the field, market by market.
       </p>
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
         {[
-          { n: "01", t: "Territory mapping", d: "We pull serviceable address lists from our ISP partners and build a coverage plan by neighborhood, day, and rep. Nothing gets walked twice." },
+          { n: "01", t: "Territory mapping", d: "We build coverage plans by neighborhood, route, day, and rep so field activity is disciplined and measurable." },
           { n: "02", t: "Rep deployment", d: "Trained, badged, branded reps in your colors. Every rep finishes a six-module AI-powered certification before touching a door." },
           { n: "03", t: "Daily reporting", d: "Knocks, conversations, sits, closes, installs scheduled, installs activated. You see it every day. No black box." },
           { n: "04", t: "Install accountability", d: "Anyone can sell a deal. We are paid when the install happens. That keeps us focused on real customers, not signature counts." },
@@ -1365,7 +1357,7 @@ function WhatWeDoPage(props) {
 function WhyUsPage(props) {
   var reasons = [
     { n: "01", t: "Independently owned and operated", d: "We are an independently owned company with field teams serving customers in markets across the country. Our leadership is accessible, our standards are consistent, and our reputation matters because we plan to be here for the long run." },
-    { n: "02", t: "Authorized dealer for premier networks", d: "We represent the country's most trusted fiber providers. AT&T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, and Ziply. so we can match every customer with the right service for their household." },
+    { n: "02", t: "Built for multiple home-service categories", d: "We support campaigns across fiber internet, home security, solar, water filtration, roofing, and other homeowner-focused categories where face-to-face selling still wins." },
     { n: "03", t: "Trained, certified representatives", d: "Every member of our field team completes a six-module certification program before they ever knock a door, covering product knowledge, customer service, and clear, honest communication." },
     { n: "04", t: "Honest, in-person service", d: "Every conversation happens face-to-face on your doorstep with a professional representative wearing branded company attire and a photo ID. No high-pressure tactics, no surprise charges." },
     { n: "05", t: "We take customer experience personally", d: "We schedule the installation, follow up to confirm everything is working, and stand behind every recommendation we make. If something is not right, we make it right." },
@@ -1379,7 +1371,7 @@ function WhyUsPage(props) {
         Premium fiber, delivered with professionalism and care.
       </h1>
       <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-        Home Front Solutions is a door-to-door marketing company representing the leading fiber internet providers in America. Here is what sets us apart and why thousands of homeowners across the country have trusted us with their internet upgrade.
+        Home Front Solutions is a door-to-door marketing company built for high-demand home-service offers. Here is what sets us apart and why direct field execution still works when the offer is clear, the process is disciplined, and the rep is professional.
       </p>
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
@@ -1399,12 +1391,12 @@ function WhyUsPage(props) {
 
 function PartnersPage(props) {
   var partnerData = [
-    { name: "AT&T Fiber", desc: "America's largest fiber ISP, with multi-gig speeds and industry-leading customer satisfaction." },
-    { name: "T-Mobile Fiber", desc: "T-Mobile's residential fiber service expanding rapidly across the Southeast." },
-    { name: "Astound Broadband", desc: "Premier regional fiber provider with strong coverage in target Carolina markets." },
-    { name: "Brightspeed", desc: "Fiber overbuilder investing billions in residential broadband across the Southeast." },
-    { name: "Frontier", desc: "Major fiber provider with one of the largest fiber footprints in the United States." },
-    { name: "Ziply Fiber", desc: "Award-winning fiber operator known for premium customer experience." },
+    { name: "Fiber Internet", desc: "Neighborhood-based customer acquisition for broadband and telecom providers that need disciplined field growth." },
+    { name: "Home Security", desc: "Direct-to-homeowner campaigns for monitored security, smart-home bundles, and protection offers." },
+    { name: "Solar", desc: "Field sales support for solar teams that need face-to-face education, qualification, and appointment generation." },
+    { name: "Water Filtration", desc: "In-home lead generation and direct sales conversations for water treatment and filtration solutions." },
+    { name: "Roofing", desc: "Storm, replacement, and home-exterior campaigns where trust, clarity, and neighborhood presence matter." },
+    { name: "Home Services", desc: "Additional residential categories where strong field operators can create demand and close business in person." },
   ];
 
   return (
@@ -1414,7 +1406,7 @@ function PartnersPage(props) {
         Authorized dealer for the nation's leading fiber providers.
       </h1>
       <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-        We are selective about who we partner with. Every brand on this list represents a fiber product we are proud to sell.
+        We are selective about the categories and campaigns we support. Every offer has to be clear, defensible, and strong enough for a professional field team to stand behind.
       </p>
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-2" style={{ border: "1px solid " + RULE }}>
@@ -2899,6 +2891,25 @@ export default function App() {
     };
   }, []);
 
+  useEffect(function() {
+    // Mobile browsers can keep focus on the tapped control during SPA navigation,
+    // which sometimes causes the viewport to jump to the bottom. Clear it and
+    // force the new route to settle at the top after layout has updated.
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
+    var rafId = window.requestAnimationFrame(function() {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+    var timeoutId = window.setTimeout(function() {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, 60);
+    return function() {
+      window.cancelAnimationFrame(rafId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [route.name, route.slug]);
+
   // SEO: Update document title and meta tags per route
   useEffect(function() {
     var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
@@ -2918,15 +2929,15 @@ export default function App() {
     };
 
     var descriptions = {
-      home: "Home Front Solutions helps telecom and fiber providers win more neighborhoods through disciplined, in-person customer acquisition, recruiting, D2D education, and city-specific market development.",
-      careers: "Explore fiber sales and field leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
+      home: "Home Front Solutions helps home-service brands win more neighborhoods through disciplined, in-person customer acquisition, recruiting, D2D education, and city-specific market development.",
+      careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
       market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
-      insights: "Explore articles on D2D sales psychology, field success, 1099 taxes, telecom industry basics, fiber internet growth, recruiting, and why door-to-door can be a strong career path.",
-      article: "Articles on door-to-door sales, D2D psychology, fiber internet recruiting, and why field sales can be a strong career path.",
-      "what-we-do": "Door-to-door telecom sales, neighborhood coverage, customer acquisition, and local market expansion for fiber internet providers.",
+      insights: "Explore articles on D2D sales psychology, field success, 1099 taxes, telecom industry basics, recruiting, and why door-to-door can be a strong career path.",
+      article: "Articles on door-to-door sales, D2D psychology, recruiting, and why field sales can be a strong career path.",
+      "what-we-do": "Door-to-door sales, neighborhood coverage, customer acquisition, and local market expansion for home-service brands.",
       "why-us": "A serious field team built around clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
-      partners: "See the fiber and telecom brands Home Front Solutions represents across active residential markets.",
-      contact: "Talk with Home Front Solutions about fiber sales coverage, recruiting, partnerships, or open career opportunities.",
+      partners: "See the home-service categories Home Front Solutions supports across active residential markets.",
+      contact: "Talk with Home Front Solutions about field sales coverage, recruiting, partnerships, or open career opportunities.",
       job: currentJob ? currentJob.pitch + " View compensation, responsibilities, qualifications, and next steps." : "Explore open sales roles at Home Front Solutions.",
       apply: currentJob ? "Apply for the " + currentJob.title + " role in " + currentJob.location + ". The application takes about five minutes." : "Apply to Home Front Solutions.",
       "thank-you": currentJob ? "Your application for " + currentJob.title + " has been received by Home Front Solutions." : "Your application has been received.",
@@ -2968,12 +2979,12 @@ export default function App() {
     setMeta("og:image", "https://homefrontsolutionsllc.com/og-image.jpg", true);
     setMeta("og:image:width", "1200", true);
     setMeta("og:image:height", "630", true);
-    setMeta("og:image:alt", "Home Front Solutions. National Fiber Internet Dealer", true);
+    setMeta("og:image:alt", "Home Front Solutions. National field sales and home services company", true);
     setMeta("twitter:card", "summary_large_image");
     setMeta("twitter:title", titles[route.name] || titles.home);
     setMeta("twitter:description", desc);
     setMeta("twitter:image", "https://homefrontsolutionsllc.com/og-image.jpg");
-    setMeta("twitter:image:alt", "Home Front Solutions. National Fiber Internet Dealer");
+    setMeta("twitter:image:alt", "Home Front Solutions. National field sales and home services company");
     setMeta("twitter:site", "@homefrontllc");
     var robotsValue = (route.name === "thank-you" || route.name === "apply")
       ? "noindex, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
@@ -2990,7 +3001,7 @@ export default function App() {
     setMeta("geo.placename", "High Point");
     setMeta("geo.position", "35.9557;-80.0053");
     setMeta("ICBM", "35.9557, -80.0053");
-    setMeta("keywords", "fiber internet sales, telecom sales outsourcing, fiber sales jobs, field sales careers, Greensboro fiber sales jobs, Winston-Salem sales jobs, High Point sales jobs, Charlotte sales jobs, Raleigh sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, 1099 taxes for sales reps, telecom industry basics, d2d sales psychology, telecom customer acquisition, Home Front Solutions");
+    setMeta("keywords", "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, telecom sales, Charlotte sales jobs, Raleigh sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, 1099 taxes for sales reps, d2d sales psychology, customer acquisition, Home Front Solutions");
 
     // Apple touch icon
     var atiEl = document.querySelector("link[rel='apple-touch-icon']");
@@ -3011,7 +3022,7 @@ export default function App() {
       url: "https://homefrontsolutionsllc.com",
       logo: "https://homefrontsolutionsllc.com/logo.png",
       image: "https://homefrontsolutionsllc.com/og-image.jpg",
-      description: "National door-to-door marketing company and authorized dealer for AT&T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, and Ziply. Headquartered in High Point, NC. Serving customers in markets across the United States.",
+      description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
       telephone: "+13364209379",
       email: "info@homefrontsolutionsllc.com",
       priceRange: "$$",
@@ -3237,11 +3248,13 @@ export default function App() {
   function go(name, slug) {
     var nextRoute = { name: name, slug: slug || null };
     var nextPath = getPathForRoute(nextRoute.name, nextRoute.slug);
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
     if (window.location.pathname !== nextPath) {
       window.history.pushState(nextRoute, "", nextPath);
     }
     setRoute(nextRoute);
-    window.scrollTo(0, 0);
   }
 
   return (
