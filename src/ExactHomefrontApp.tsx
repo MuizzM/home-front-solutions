@@ -618,6 +618,69 @@ var ARTICLE_PAGES = [
         body: "Telecom knowledge matters most when it helps a customer make a better decision. Reps do not need to sound technical for the sake of sounding technical. They need to explain speed, reliability, installation timing, and price in a way that makes sense to a real household."
       }
     ]
+  },
+  {
+    slug: "best-sales-jobs-in-charlotte-nc",
+    title: "Best Sales Jobs in Charlotte, NC for People Who Want Upside",
+    eyebrow: "Charlotte Jobs",
+    description: "A Charlotte-focused guide for applicants comparing sales jobs, field roles, and performance-based opportunities with real upside.",
+    intro: "Charlotte is a bigger market, which means applicants have more choices and more noise to sort through. The best sales jobs in Charlotte are usually the ones that give you a real skill curve, real accountability, and income tied to production instead of only showing up.",
+    sections: [
+      {
+        heading: "Charlotte rewards clear communicators",
+        body: "In a larger market, competition exposes weak communication quickly. Roles that teach you how to explain value clearly, build trust fast, and stay composed under pressure tend to separate themselves from vague sales titles that sound better than they are."
+      },
+      {
+        heading: "Field sales creates faster feedback than desk-heavy roles",
+        body: "A lot of sales roles hide performance behind long cycles, internal meetings, and slow feedback loops. Field sales in Charlotte gives you immediate reps, cleaner accountability, and a faster understanding of whether your communication is actually improving."
+      },
+      {
+        heading: "Upside matters when comparing Charlotte opportunities",
+        body: "Many applicants in Charlotte are not only looking for a title. They are looking for momentum. That is why performance-based sales roles remain attractive for people who want stronger upside, a live market, and a clearer path into leadership."
+      }
+    ]
+  },
+  {
+    slug: "best-entry-level-sales-jobs-in-raleigh-nc",
+    title: "Best Entry-Level Sales Jobs in Raleigh, NC for Coachable Applicants",
+    eyebrow: "Raleigh Jobs",
+    description: "A Raleigh-focused article for applicants looking for entry-level sales jobs that teach real communication, confidence, and field discipline.",
+    intro: "Raleigh applicants often want clarity first. They want to know what the role is, how quickly they can improve, and whether the opportunity feels legitimate. The best entry-level sales jobs in Raleigh usually make those answers clear instead of hiding behind polished but vague job language.",
+    sections: [
+      {
+        heading: "The best entry-level jobs teach real communication",
+        body: "An entry-level sales role should do more than give you a paycheck. It should improve how you speak, how you handle objections, how you ask questions, and how you hold your energy under pressure. Those are the skills that carry forward into stronger careers."
+      },
+      {
+        heading: "Raleigh candidates respond well to straightforward role framing",
+        body: "One reason local recruiting pages matter in Raleigh is that people want specifics. They want to know if the job is 1099, what kind of selling it involves, and whether the company sounds serious. Straight answers convert better than fluffy recruiting language."
+      },
+      {
+        heading: "Coachable applicants can move faster than experienced but rigid ones",
+        body: "In many field environments, a coachable applicant with the right attitude can improve faster than someone with bad habits. Entry-level does not have to mean low potential. In the right structure, it can mean fast growth."
+      }
+    ]
+  },
+  {
+    slug: "greensboro-1099-sales-jobs-explained",
+    title: "Greensboro 1099 Sales Jobs Explained for New Applicants",
+    eyebrow: "Greensboro Jobs",
+    description: "A Greensboro-focused guide to what 1099 sales work actually means, how it differs from hourly work, and what applicants should expect.",
+    intro: "A lot of Greensboro applicants see the term 1099 and immediately have questions. That is normal. The important thing is understanding what the structure means in practice: more personal responsibility, more production-based upside, and a work style that rewards discipline.",
+    sections: [
+      {
+        heading: "1099 means ownership, not vagueness",
+        body: "The best 1099 sales roles are not vague. They are direct. You know the pay structure, the expectations, the market, and the standards. That clarity matters because independent-contractor work only feels attractive when the opportunity itself feels real."
+      },
+      {
+        heading: "Greensboro applicants often compare 1099 against hourly work",
+        body: "That comparison matters because hourly work usually offers more predictability but less upside. A Greensboro 1099 sales role can make sense for applicants who want faster income growth, more accountability, and a direct relationship between effort and results."
+      },
+      {
+        heading: "Professionalism matters more in contractor roles",
+        body: "A 1099 structure rewards people who can stay organized, manage their schedule, and handle their own performance honestly. For the right applicant, that builds maturity and career leverage much faster than passive, low-accountability work."
+      }
+    ]
   }
 ];
 
@@ -854,8 +917,8 @@ function getMarketArticleSlugs(marketSlug) {
     "winston-salem-nc": ["d2d-success-stories", "how-to-win-your-first-30-days-in-d2d", "d2d-psychology", "best-summer-sales-job-for-18-to-25"],
     "piedmont-triad-nc": ["d2d-success-stories", "why-d2d-after-high-school-or-college", "1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps"],
     "lexington-nc": ["why-d2d-after-high-school-or-college", "sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "d2d-psychology"],
-    "charlotte-nc": ["d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "why-fiber-is-easier-to-sell-than-weak-products", "sales-internship-for-college-students"],
-    "raleigh-nc": ["1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps", "d2d-success-stories", "why-d2d-after-high-school-or-college"]
+    "charlotte-nc": ["best-sales-jobs-in-charlotte-nc", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"],
+    "raleigh-nc": ["best-entry-level-sales-jobs-in-raleigh-nc", "1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps", "why-d2d-after-high-school-or-college"]
   };
   return map[marketSlug] || ["d2d-success-stories", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"];
 }
