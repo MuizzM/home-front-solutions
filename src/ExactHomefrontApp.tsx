@@ -1233,6 +1233,9 @@ function HomePage(props) {
                 "Great service starts with a face-to-face conversation. Every customer deserves to understand exactly what they are buying, and every rep we send to a door is trained to make that conversation clear."
               </p>
               <div style={{ width: 40, height: 2, background: "linear-gradient(90deg, " + SIGNAL + " 0%, rgba(59,93,124,0.14) 100%)", borderRadius: 999, marginBottom: 16 }} />
+              <p className="text-sm leading-[1.85] mb-4" style={{ color: MUTED }}>
+                Founded by <span style={{ color: INK, fontWeight: 700 }}>Muizz Muhammad</span>, Home Front Solutions is built around disciplined field execution, modern recruiting infrastructure, and a belief that homeowner conversations should feel professional, honest, and easy to trust.
+              </p>
               <div className="space-y-2.5 mb-4">
                 {[
                   ["Campaigns across fiber, security, solar, water filtration, and roofing", SIGNAL_SOFT, SIGNAL],
@@ -1676,8 +1679,11 @@ function CareersIndexPage(props) {
             <p className="leading-[1.7] mb-6" style={{ ...serif, fontSize: 18, color: INK }}>
               "We hire for character first and experience second. If you are willing to learn, show up consistently, and treat people with respect, we will give you everything you need to succeed here. including the training, the territory, and the support."
             </p>
+            <p className="text-sm leading-[1.85] mb-6" style={{ color: MUTED }}>
+              Muizz Muhammad built Home Front Solutions to combine old-school field discipline with a cleaner, more modern operating style for recruiting, coaching, and market growth.
+            </p>
             <div style={{ width: 32, height: 1, background: RULE, marginBottom: 16 }} />
-            <div className="text-xs" style={{ color: MUTED }}>Founder, Home Front Solutions</div>
+            <div className="text-xs" style={{ color: MUTED }}>Muizz Muhammad · Founder, Home Front Solutions</div>
           </aside>
         </div>
       </section>
