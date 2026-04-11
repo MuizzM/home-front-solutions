@@ -3260,7 +3260,7 @@ export default function App() {
     var currentMarket = route.name === "market" && route.slug ? MARKET_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
     var currentArticle = route.name === "article" && route.slug ? ARTICLE_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
     if (currentMarket) {
-      titles.market = currentMarket.title + " | Home Front Solutions";
+      titles.market = "D2D Sales Jobs in " + currentMarket.city + " | Home Front Solutions 1099 Contractors";
       descriptions.market = currentMarket.intro;
     }
     if (currentArticle) {
@@ -3374,6 +3374,25 @@ export default function App() {
       }),
     };
 
+    var organizationSchema = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://homefrontsolutionsllc.com/#organization",
+      name: "Home Front Solutions, LLC",
+      url: "https://homefrontsolutionsllc.com",
+      logo: "https://homefrontsolutionsllc.com/logo.png",
+      foundingLocation: {
+        "@type": "Place",
+        name: "High Point, North Carolina"
+      },
+      founder: { "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad" },
+      sameAs: [
+        "https://www.facebook.com/homefrontsolutionsllc",
+        "https://www.linkedin.com/company/home-front-solutions-llc",
+        "https://www.instagram.com/homefrontsolutionsllc"
+      ]
+    };
+
     var founderSchema = {
       "@context": "https://schema.org",
       "@type": "Person",
@@ -3433,7 +3452,7 @@ export default function App() {
       });
     }
 
-    var schemas = [localBizSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
+    var schemas = [localBizSchema, organizationSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
 
     if (route.name === "home") {
       schemas.push({
@@ -3502,6 +3521,17 @@ export default function App() {
     }
 
     if (route.name === "market" && currentMarket) {
+      var marketJobs = JOBS.filter(function(job) {
+        var city = currentMarket.city.toLowerCase();
+        var location = job.location.toLowerCase();
+        return city.indexOf(location.replace(", nc", "")) !== -1
+          || location.indexOf(currentMarket.region.toLowerCase()) !== -1
+          || currentMarket.region === "Piedmont Triad";
+      });
+      if (!marketJobs.length) {
+        marketJobs = JOBS.slice(0, 3);
+      }
+
       schemas.push({
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -3512,6 +3542,58 @@ export default function App() {
           "@type": "Thing",
           name: currentMarket.city + " field sales recruiting and home services hiring"
         }
+      });
+
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: currentMarket.city + " open field sales roles",
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+        numberOfItems: marketJobs.length,
+        itemListElement: marketJobs.map(function(job, index) {
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+            name: job.title + " - " + job.location
+          };
+        })
+      });
+
+      marketJobs.forEach(function(job) {
+        var salary = getSalaryRange(job.earningRange);
+        schemas.push({
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          title: job.title,
+          description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
+          identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug + "-market" },
+          datePosted: "2026-04-10",
+          validThrough: "2026-12-31T23:59",
+          employmentType: "CONTRACTOR",
+          hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+          jobLocation: {
+            "@type": "Place",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: job.location.split(",")[0].trim(),
+              addressRegion: "NC",
+              addressCountry: "US"
+            }
+          },
+          baseSalary: {
+            "@type": "MonetaryAmount",
+            currency: "USD",
+            value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" }
+          },
+          experienceRequirements: "No prior sales experience required for select roles. Training provided.",
+          applicantLocationRequirements: {
+            "@type": "Country",
+            name: "United States"
+          },
+          directApply: true,
+          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug)
+        });
       });
 
       if (MARKET_FAQS[currentMarket.slug] && MARKET_FAQS[currentMarket.slug].length) {
@@ -3566,6 +3648,17 @@ export default function App() {
       });
     }
 
+    if (route.name === "why-us") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        name: "About Home Front Solutions",
+        url: "https://homefrontsolutionsllc.com" + pagePath,
+        about: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        description: "About Home Front Solutions, including founder, company focus, field-sales recruiting, and home-services growth model."
+      });
+    }
+
     // JobPosting schema for job detail pages (Google Jobs widget)
     if (route.name === "job" && route.slug) {
       var job = JOBS.find(function(j) { return j.slug === route.slug; });
@@ -3580,7 +3673,7 @@ export default function App() {
           datePosted: "2026-04-10",
           validThrough: "2026-12-31T23:59",
           employmentType: "CONTRACTOR",
-          hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#business" },
+          hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
           jobLocation: {
             "@type": "Place",
             address: {
@@ -3595,6 +3688,7 @@ export default function App() {
             currency: "USD",
             value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" },
           },
+          experienceRequirements: "No prior sales experience required for select roles. Training provided.",
           directApply: true,
           url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
           applicantLocationRequirements: {
