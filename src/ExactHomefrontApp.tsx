@@ -1327,22 +1327,22 @@ function Header(props) {
   return (
     <header style={{ background: PAPER, position: "sticky", top: 0, zIndex: 50 }}>
       <div style={{ borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[72px] flex items-center justify-between">
+        <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[74px] flex items-center justify-between">
           <button onClick={function() { props.go("home"); }} className="flex items-center gap-3" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <span style={{ width: 44, height: 44, borderRadius: 12, background: "linear-gradient(180deg, #FFFFFF 0%, " + SIGNAL_SOFT + " 100%)", border: "1px solid rgba(31,91,99,0.14)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 22px rgba(21,63,70,0.08)" }}>
+            <span style={{ width: 44, height: 44, borderRadius: 14, background: "#FFFFFF", border: "1px solid rgba(31,91,99,0.12)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 18px rgba(21,63,70,0.06)" }}>
               <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 34, height: 34, borderRadius: 8, objectFit: "cover" }} />
             </span>
             <span style={{ ...serif, fontSize: 19, color: INK, lineHeight: 1, fontWeight: 600 }}>Home Front Solutions</span>
           </button>
-          <nav className="hidden md:flex items-center gap-9">
+          <nav className="hidden md:flex items-center gap-8">
             {nav.map(function(item) {
               return (
-                <button key={item.route} onClick={function() { props.go(item.route); }} className="text-sm hover:opacity-70 transition-opacity" style={{ color: INK, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 500 }}>
+                <button key={item.route} onClick={function() { props.go(item.route); }} className="text-sm hover:opacity-70 transition-opacity" style={{ color: INK, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 550 }}>
                   {item.label}
                 </button>
               );
             })}
-            <button onClick={function() { props.go("contact"); }} className="text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90 transition-opacity" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
+            <button onClick={function() { props.go("contact"); }} className="text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer", boxShadow: "0 10px 22px rgba(14,14,12,0.12)" }}>
               Contact Sales
             </button>
           </nav>
@@ -1522,7 +1522,7 @@ function HomePage(props) {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="p-5 md:p-7 h-full" style={{ background: "linear-gradient(160deg, " + SIGNAL_SOFT + " 0%, #FFFFFF 42%, " + SURF + " 100%)", border: "1px solid rgba(31,91,99,0.12)", borderRadius: 24, boxShadow: "0 24px 52px rgba(14,14,12,0.08)" }}>
+            <div className="p-6 md:p-7 h-full" style={{ background: "linear-gradient(165deg, #FFFFFF 0%, " + SIGNAL_SOFT + " 100%)", border: "1px solid rgba(31,91,99,0.1)", borderRadius: 28, boxShadow: "0 18px 42px rgba(14,14,12,0.06)" }}>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: "#FFFFFF", border: "1px solid rgba(59,93,124,0.12)" }}>
                 <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>From Our Founder</span>
               </div>
@@ -1533,13 +1533,14 @@ function HomePage(props) {
               <p className="text-sm leading-[1.85] mb-4" style={{ color: MUTED }}>
                 Founded by <span style={{ color: INK, fontWeight: 700 }}>Muizz Muhammad</span>, Home Front Solutions is built around disciplined field execution, modern recruiting infrastructure, and a belief that homeowner conversations should feel professional, honest, and easy to trust.
               </p>
-              <div className="space-y-2.5 mb-4">
+              <div className="space-y-2 mb-4">
                 {[
                   ["Campaigns across fiber, security, solar, water filtration, and roofing", SIGNAL_SOFT, SIGNAL],
                   ["Field roles, internships, and leadership-track opportunities", BLUE_SOFT, BLUE]
                 ].map(function(item) {
                   return (
-                    <div key={item[0]} className="flex items-center gap-3 p-3.5 rounded-2xl" style={{ background: item[1], border: "1px solid rgba(14,14,12,0.06)" }}>
+                    <div key={item[0]} className="flex items-center gap-3 p-3 rounded-2xl" style={{ background: "#FFFFFF", border: "1px solid rgba(14,14,12,0.06)" }}>
+                      <span style={{ width: 8, height: 8, borderRadius: 999, background: item[2], flexShrink: 0 }} />
                       <span className="text-sm leading-relaxed" style={{ color: INK, fontWeight: 600 }}>{item[0]}</span>
                     </div>
                   );
@@ -1570,7 +1571,7 @@ function HomePage(props) {
         </div>
       </div>
 
-      <div className="mt-8 p-6 md:p-8" style={{ background: "linear-gradient(135deg, #FFFFFF 0%, " + SURF + " 100%)", border: "1px solid rgba(30,64,175,0.08)", borderRadius: 24, boxShadow: "0 18px 40px rgba(14,14,12,0.05)" }}>
+      <div className="mt-8 p-6 md:p-8" style={{ background: "#FFFFFF", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 24, boxShadow: "0 14px 32px rgba(14,14,12,0.04)" }}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-5">
             <Eyebrow>Local Recruiting Pages</Eyebrow>
@@ -1589,7 +1590,7 @@ function HomePage(props) {
                     key={market.slug}
                     onClick={function() { props.go("market", market.slug); }}
                     className="p-4 text-left lift-card interactive-panel"
-                    style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 100%)", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
+                    style={{ background: "#FCFCFA", border: "1px solid rgba(14,14,12,0.07)", borderRadius: 20, cursor: "pointer", boxShadow: "0 6px 18px rgba(14,14,12,0.035)" }}
                   >
                     <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{market.region}</div>
                     <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{market.title}</div>
@@ -1601,7 +1602,7 @@ function HomePage(props) {
         </div>
       </div>
 
-      <div className="mt-8 p-6 md:p-8" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 100%)", border: "1px solid " + RULE, borderRadius: 24, boxShadow: "0 16px 36px rgba(14,14,12,0.04)" }}>
+      <div className="mt-8 p-6 md:p-8" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F8FBFB 100%)", border: "1px solid rgba(31,91,99,0.1)", borderRadius: 28, boxShadow: "0 16px 34px rgba(14,14,12,0.045)" }}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-4">
             <Eyebrow>Main Fiber Providers</Eyebrow>
@@ -1635,7 +1636,7 @@ function HomePage(props) {
                   <div
                     key={provider}
                     className="p-4 lift-card interactive-panel"
-                    style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
+                    style={{ background: "rgba(255,255,255,0.92)", border: "1px solid rgba(14,14,12,0.07)", borderRadius: 20, boxShadow: "0 8px 22px rgba(14,14,12,0.035)" }}
                   >
                     <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>Provider Search</div>
                     <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{provider}</div>
@@ -4143,9 +4144,9 @@ export default function App() {
           transform-origin: center;
         }
         .lift-card:hover {
-          transform: translateY(-6px) scale(1.01);
-          box-shadow: 0 22px 46px rgba(14,14,12,0.1);
-          border-color: rgba(59,93,124,0.26) !important;
+          transform: translateY(-4px) scale(1.008);
+          box-shadow: 0 18px 36px rgba(14,14,12,0.085);
+          border-color: rgba(59,93,124,0.22) !important;
         }
         .interactive-panel {
           position: relative;
