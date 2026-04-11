@@ -16,9 +16,9 @@ var FOREST = "#2E6E69";
 var FOREST_SOFT = "#E8F4F0";
 var GOLD = "#C48A47";
 var GOLD_SOFT = "#F6E8D5";
-var LOGO = "/logo.jpg";
+var LOGO = "/logo.png";
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
-var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions-llc";
+var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 
 var serif = { fontFamily: "'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
@@ -1249,14 +1249,14 @@ function HomePage(props) {
               </span>
               <div>
                 <div className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>Home Front Solutions</div>
-                <div className="text-xs" style={{ color: MUTED }}>Recruit. Train. Scale.</div>
+                <div className="text-xs" style={{ color: MUTED }}>Direct to your door</div>
               </div>
             </div>
             <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
-              Helping homeowners buy better services with clarity at the door.
+              Home services growth, built face to face and scaled market by market.
             </h1>
             <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              Home Front Solutions is a national door-to-door marketing company representing high-demand home service categories including fiber internet, home security, solar, water filtration, and roofing. We help homeowners make confident buying decisions through direct, professional, in-person conversations.
+              Home Front Solutions helps leading home-service brands win trust at the door and helps ambitious reps build real income in the field. We recruit, train, and deploy 1099 sales teams across fiber, security, solar, water filtration, roofing, and other essential homeowner services.
             </p>
             <div className="mt-5 md:mt-6 flex flex-wrap gap-2">
               {["Home services sales", "1099 field roles", "Sales internships"].map(function(tag) {
@@ -3368,7 +3368,7 @@ export default function App() {
       name: "Home Front Solutions",
       legalName: "Home Front Solutions, LLC",
       url: "https://homefrontsolutionsllc.com",
-      logo: "https://homefrontsolutionsllc.com/logo.jpg",
+      logo: "https://homefrontsolutionsllc.com/logo.png",
       image: "https://homefrontsolutionsllc.com/og-image.jpg",
       description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
       telephone: "+13364209379",
@@ -3414,7 +3414,7 @@ export default function App() {
       "@id": "https://homefrontsolutionsllc.com/#organization",
       name: "Home Front Solutions, LLC",
       url: "https://homefrontsolutionsllc.com",
-      logo: "https://homefrontsolutionsllc.com/logo.jpg",
+      logo: "https://homefrontsolutionsllc.com/logo.png",
       foundingLocation: {
         "@type": "Place",
         name: "High Point, North Carolina"
