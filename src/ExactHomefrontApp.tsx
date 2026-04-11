@@ -1210,31 +1210,14 @@ function HomePage(props) {
         className="max-w-[1240px] mx-auto px-5 md:px-10 pt-10 md:pt-18 pb-14 md:pb-22"
         style={{ background: "radial-gradient(circle at top left, rgba(31,91,99,0.14), transparent 30%), radial-gradient(circle at top right, rgba(196,138,71,0.1), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(250,250,247,0.5) 58%, rgba(250,250,247,0) 100%)" }}
       >
-        <div className="hero-hook mb-8 md:mb-10">
-          <div className="hero-hook__line" />
-          <div className="hero-hook__content">
-            <span className="hero-hook__label">Built for trust at the door</span>
-            <span className="hero-hook__divider" />
-            <span className="hero-hook__text">Growth for home-service brands. Career upside for people who can sell.</span>
-          </div>
-        </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-16">
           <div className="lg:col-span-8">
             <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
               Home services growth, built face to face and scaled market by market.
             </h1>
             <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              Home Front Solutions helps leading home-service brands win trust at the door and helps ambitious reps build real income in the field. We recruit, train, and deploy performance-driven sales teams across fiber, security, solar, water filtration, roofing, and other essential homeowner services.
+              Home Front Solutions helps brands grow through disciplined field execution and gives ambitious reps a real path to earn, improve, and lead.
             </p>
-            <div className="mt-5 md:mt-6 flex flex-wrap gap-2">
-              {["Home services sales", "Performance-based roles", "Sales internships"].map(function(tag) {
-                return (
-                  <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] md:text-xs font-semibold" style={{ background: "rgba(255,255,255,0.8)", border: "1px solid " + RULE, color: INK }}>
-                    {tag}
-                  </span>
-                );
-              })}
-            </div>
             <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3">
               <button onClick={function() { props.go("contact"); }} className="inline-flex items-center justify-center px-7 py-4 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: "linear-gradient(135deg, #11120F 0%, #233447 100%)", color: PAPER, border: "none", cursor: "pointer", minHeight: 54, boxShadow: "0 16px 34px rgba(14,14,12,0.18)" }} aria-label="Schedule a discovery call with our sales team">
                 Schedule a Discovery Call
@@ -3743,62 +3726,6 @@ export default function App() {
         body { -webkit-font-smoothing: antialiased; }
         input:focus, select:focus, textarea:focus { border-color: ${INK} !important; }
         button:focus-visible { outline: 2px solid ${SIGNAL}; outline-offset: 2px; }
-        .hero-hook {
-          position: relative;
-          overflow: hidden;
-          border: 1px solid rgba(31,91,99,0.14);
-          border-radius: 20px;
-          background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(232,243,242,0.88) 48%, rgba(255,255,255,0.94) 100%);
-          box-shadow: 0 18px 40px rgba(21,63,70,0.08);
-        }
-        .hero-hook__line {
-          position: absolute;
-          inset: 0 auto 0 0;
-          width: 4px;
-          background: linear-gradient(180deg, ${SIGNAL} 0%, ${GOLD} 100%);
-        }
-        .hero-hook__content {
-          position: relative;
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          padding: 15px 18px 15px 24px;
-        }
-        .hero-hook__content::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(120deg, rgba(255,255,255,0) 15%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 85%);
-          transform: translateX(-130%);
-          animation: hookSweep 5.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-          pointer-events: none;
-        }
-        .hero-hook__label {
-          position: relative;
-          z-index: 1;
-          font-size: 10px;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          font-weight: 800;
-          color: ${SIGNAL};
-          white-space: nowrap;
-        }
-        .hero-hook__divider {
-          position: relative;
-          z-index: 1;
-          width: 26px;
-          height: 1px;
-          background: rgba(31,91,99,0.26);
-          flex-shrink: 0;
-        }
-        .hero-hook__text {
-          position: relative;
-          z-index: 1;
-          font-size: 14px;
-          line-height: 1.6;
-          font-weight: 600;
-          color: ${INK};
-        }
         .lift-card {
           transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 260ms ease, background-position 320ms ease;
           transform-origin: center;
@@ -3841,20 +3768,6 @@ export default function App() {
           border-color: rgba(59,93,124,0.22) !important;
         }
         @media (max-width: 767px) {
-          .hero-hook {
-            border-radius: 18px;
-          }
-          .hero-hook__content {
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 14px 16px 14px 22px;
-          }
-          .hero-hook__divider {
-            display: none;
-          }
-          .hero-hook__text {
-            font-size: 13px;
-          }
           .lift-card:hover {
             transform: none;
             box-shadow: 0 10px 24px rgba(14,14,12,0.05);
@@ -3868,12 +3781,6 @@ export default function App() {
           .interactive-pill:hover {
             transform: none;
           }
-        }
-        @keyframes hookSweep {
-          0% { transform: translateX(-130%); }
-          44% { transform: translateX(-130%); }
-          72% { transform: translateX(130%); }
-          100% { transform: translateX(130%); }
         }
         @keyframes pulse {
           0%, 100% { opacity: 0.4; transform: scale(1); }
