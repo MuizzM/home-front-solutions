@@ -1066,8 +1066,10 @@ function Header(props) {
 
       <div style={{ borderBottom: "1px solid " + RULE }}>
         <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[72px] flex items-center justify-between">
-          <button onClick={function() { props.go("home"); }} className="flex items-center gap-2.5" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 46, height: 46, borderRadius: 10, objectFit: "cover", boxShadow: "0 10px 24px rgba(21,63,70,0.12)" }} />
+          <button onClick={function() { props.go("home"); }} className="flex items-center gap-3" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <span style={{ width: 44, height: 44, borderRadius: 12, background: "linear-gradient(180deg, #FFFFFF 0%, " + SIGNAL_SOFT + " 100%)", border: "1px solid rgba(31,91,99,0.14)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 22px rgba(21,63,70,0.08)" }}>
+              <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 34, height: 34, borderRadius: 8, objectFit: "cover" }} />
+            </span>
             <span style={{ ...serif, fontSize: 19, color: INK, lineHeight: 1, fontWeight: 600 }}>Home Front Solutions</span>
           </button>
           <nav className="hidden md:flex items-center gap-9">
@@ -1081,9 +1083,6 @@ function Header(props) {
             <button onClick={function() { props.go("contact"); }} className="text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90 transition-opacity" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
               Contact Sales
             </button>
-            <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="text-sm font-semibold" style={{ color: SIGNAL }}>
-              Instagram
-            </a>
           </nav>
           <button onClick={function() { setOpen(!open); }} className="md:hidden p-1" style={{ background: "none", border: "none" }} aria-label={open ? "Close navigation menu" : "Open navigation menu"} aria-expanded={open}>
             {open
@@ -1240,10 +1239,19 @@ function HomePage(props) {
       {/* HERO */}
       <section
         className="max-w-[1240px] mx-auto px-5 md:px-10 pt-10 md:pt-18 pb-14 md:pb-22"
-        style={{ background: "radial-gradient(circle at top left, rgba(59,93,124,0.12), transparent 30%), radial-gradient(circle at top right, rgba(30,64,175,0.07), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.94) 0%, rgba(250,250,247,0.42) 58%, rgba(250,250,247,0) 100%)" }}
+        style={{ background: "radial-gradient(circle at top left, rgba(31,91,99,0.14), transparent 30%), radial-gradient(circle at top right, rgba(196,138,71,0.1), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(250,250,247,0.5) 58%, rgba(250,250,247,0) 100%)" }}
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-16">
           <div className="lg:col-span-8">
+            <div className="inline-flex items-center gap-3 px-3.5 py-2 rounded-full mb-6" style={{ background: "rgba(255,255,255,0.82)", border: "1px solid rgba(31,91,99,0.12)", boxShadow: "0 14px 28px rgba(21,63,70,0.06)" }}>
+              <span style={{ width: 42, height: 42, borderRadius: 12, background: "linear-gradient(180deg, #FFFFFF 0%, " + SIGNAL_SOFT + " 100%)", border: "1px solid rgba(31,91,99,0.16)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                <img src={LOGO} alt="Home Front Solutions brand mark" style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover" }} />
+              </span>
+              <div>
+                <div className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>Home Front Solutions</div>
+                <div className="text-xs" style={{ color: MUTED }}>Recruit. Train. Scale.</div>
+              </div>
+            </div>
             <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
               Helping homeowners buy better services with clarity at the door.
             </h1>
@@ -1270,7 +1278,7 @@ function HomePage(props) {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="p-5 md:p-7 h-full" style={{ background: "linear-gradient(160deg, #F5F9FD 0%, #FFFFFF 42%, " + SURF + " 100%)", border: "1px solid rgba(59,93,124,0.12)", borderRadius: 24, boxShadow: "0 24px 52px rgba(14,14,12,0.08)" }}>
+            <div className="p-5 md:p-7 h-full" style={{ background: "linear-gradient(160deg, " + SIGNAL_SOFT + " 0%, #FFFFFF 42%, " + SURF + " 100%)", border: "1px solid rgba(31,91,99,0.12)", borderRadius: 24, boxShadow: "0 24px 52px rgba(14,14,12,0.08)" }}>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: "#FFFFFF", border: "1px solid rgba(59,93,124,0.12)" }}>
                 <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>From Our Founder</span>
               </div>
