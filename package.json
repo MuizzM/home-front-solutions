@@ -7,10 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "cf:deploy": "npx wrangler pages deploy dist --project-name home-front-solutions-site"
+    "cf:deploy": "npx wrangler pages deploy dist --project-name home-front-solutions-site",
+    "seo:index-jobs": "node scripts/google-indexing-api.mjs updated",
+    "seo:index-status": "node scripts/google-indexing-api.mjs status"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",
+    "google-auth-library": "^9.15.1",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
