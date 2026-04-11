@@ -685,6 +685,153 @@ var ARTICLE_PAGES = [
         body: "A self-directed structure rewards people who can stay organized, manage their schedule, and handle their own performance honestly. For the right applicant, that builds maturity and career leverage much faster than passive, low-accountability work."
       }
     ]
+  },
+  {
+    slug: "best-sales-jobs-in-greensboro-nc",
+    title: "Best Sales Jobs in Greensboro, NC for Applicants Who Want Real Upside",
+    eyebrow: "Greensboro Jobs",
+    description: "A Greensboro-focused guide for applicants comparing sales jobs, field roles, and income paths that reward skill instead of just attendance.",
+    intro: "Greensboro has plenty of job listings, but not all sales jobs are equal. The strongest roles usually combine a real product, direct accountability, local market relevance, and an earning path that improves when the rep improves.",
+    sections: [
+      {
+        heading: "The best Greensboro sales jobs have a real skill curve",
+        body: "A real sales job should improve your communication, objection handling, confidence, and pace. If the role does not make you sharper, it is probably not building much long-term leverage."
+      },
+      {
+        heading: "Field roles create faster feedback",
+        body: "In-person field selling in Greensboro gives you immediate information about what is working and what is not. That makes growth faster than roles where performance hides behind internal meetings or slow sales cycles."
+      },
+      {
+        heading: "Applicants who want upside should compare structure, not just title",
+        body: "A polished title can still hide a low-ceiling role. The better comparison is whether the job offers coaching, production-based upside, local territory relevance, and a clean path into stronger responsibility."
+      }
+    ]
+  },
+  {
+    slug: "best-entry-level-sales-jobs-in-high-point-nc",
+    title: "Best Entry-Level Sales Jobs in High Point, NC for Coachable New Reps",
+    eyebrow: "High Point Jobs",
+    description: "A High Point-focused article for candidates who want an entry-level sales job that actually builds confidence, communication, and field discipline.",
+    intro: "High Point candidates looking for entry-level work usually want a role that feels legitimate, local, and worth the effort. The best entry-level sales jobs in High Point make the expectations clear and give new reps a faster path to real skill.",
+    sections: [
+      {
+        heading: "A good entry-level role should teach more than a script",
+        body: "The best starting roles build communication under pressure, not just rote repetition. New reps should learn how to listen, explain value, respond to objections, and stay composed face to face."
+      },
+      {
+        heading: "Local trust matters in High Point",
+        body: "Candidates in High Point respond better when the role feels rooted in a real market instead of sounding like vague online recruiting language. Local relevance usually improves both confidence and conversion."
+      },
+      {
+        heading: "Coachable candidates often outrun experienced but rigid ones",
+        body: "In field sales, pace and openness to feedback matter. A new rep with the right attitude can often improve faster than someone who brings habits that do not hold up in live conversations."
+      }
+    ]
+  },
+  {
+    slug: "best-summer-sales-internship-in-charlotte",
+    title: "Best Summer Sales Internship in Charlotte for Students Who Want Real Growth",
+    eyebrow: "Charlotte Internships",
+    description: "A Charlotte-focused guide for students comparing summer internships and looking for one that builds communication skill, income potential, and confidence.",
+    intro: "A summer internship in Charlotte should do more than fill a few months. The strongest internships give students live reps on communication, a real scorecard, and work that actually changes how they perform under pressure.",
+    sections: [
+      {
+        heading: "The best internships in Charlotte teach live communication",
+        body: "A serious sales internship gives students more than tasks and meetings. It puts them in situations where they have to explain value, ask better questions, and recover quickly when a conversation gets tough."
+      },
+      {
+        heading: "Charlotte is a strong test market for ambitious students",
+        body: "Charlotte has enough pace and competition to reward students who want faster growth. A stronger market makes weak habits more visible and good coaching more valuable."
+      },
+      {
+        heading: "A summer role should create early-career momentum",
+        body: "The best internship is the one that leaves the student more capable, more confident, and more employable than before. Roles with a live market and clear accountability usually do that better than generic resume-padding internships."
+      }
+    ]
+  },
+  {
+    slug: "how-much-do-door-to-door-reps-make-in-north-carolina",
+    title: "How Much Do Door-to-Door Reps Make in North Carolina?",
+    eyebrow: "Income Guide",
+    description: "A North Carolina-focused breakdown of what drives earnings in door-to-door sales, what applicants should compare, and why production matters more than hype.",
+    intro: "One of the first questions applicants ask is how much a door-to-door rep can actually make in North Carolina. The honest answer is that earnings depend on product strength, market quality, coaching, pace, and how consistently the rep can turn conversations into installs.",
+    sections: [
+      {
+        heading: "The product and market matter first",
+        body: "A better market and a better product create cleaner conversations. That matters because reps sell more when homeowners already understand the category and the offer feels legitimate."
+      },
+      {
+        heading: "Skill changes the income ceiling",
+        body: "Two reps can work the same city and produce very different numbers. The difference usually comes down to consistency, talk-track quality, objection handling, and whether the rep can keep energy steady over time."
+      },
+      {
+        heading: "Applicants should compare structure honestly",
+        body: "The right comparison is not just a big number on a job listing. It is whether the role provides real coaching, realistic expectations, clean compensation framing, and enough market opportunity to make the upside believable."
+      }
+    ]
+  },
+  {
+    slug: "fiber-vs-solar-sales-which-is-easier-to-sell",
+    title: "Fiber vs Solar Sales: Which Is Easier to Sell?",
+    eyebrow: "Category Comparison",
+    description: "A practical comparison of fiber and solar sales for applicants who want to understand product difficulty, trust, sales cycle length, and learning curve.",
+    intro: "Applicants comparing fiber and solar sales are usually asking a smart question: which category gives a newer rep a cleaner path to confidence and production? The answer depends on market, offer quality, and training, but fiber is often easier to learn because the value proposition is simpler and the sales cycle is shorter.",
+    sections: [
+      {
+        heading: "Fiber is usually simpler to explain quickly",
+        body: "Most homeowners already understand internet service and know whether theirs feels weak. That makes the problem easier to surface and the conversation easier for a new rep to handle."
+      },
+      {
+        heading: "Solar can be powerful, but usually takes a longer explanation",
+        body: "Solar often involves more variables, more skepticism, and more explanation around cost, savings, qualification, and installation. That can still be attractive, but it is usually a steeper communication challenge."
+      },
+      {
+        heading: "The easier product is the one the rep can trust and explain cleanly",
+        body: "The real advantage comes when the rep believes in the offer and can explain it simply. Strong products shorten the path to confidence, which is why category quality matters so much when comparing sales roles."
+      }
+    ]
+  },
+  {
+    slug: "what-makes-a-good-door-to-door-rep",
+    title: "What Makes a Good Door-to-Door Rep?",
+    eyebrow: "Rep Development",
+    description: "A direct guide to the traits, habits, and communication patterns that separate strong door-to-door reps from people who only like the idea of sales.",
+    intro: "A good door-to-door rep is not just loud or outgoing. The best reps are usually calmer, more disciplined, and more coachable than people expect. They handle repetition well, recover quickly, and keep showing up with the same standard whether the last conversation went well or not.",
+    sections: [
+      {
+        heading: "Coachability matters more than raw confidence",
+        body: "A rep who listens, adjusts, and keeps improving usually outperforms someone who relies only on personality. Good coaching compounds quickly in the field."
+      },
+      {
+        heading: "Resilience is a real operating skill",
+        body: "Door-to-door work creates rejection every day. Strong reps do not pretend that rejection feels good. They simply recover faster and protect their energy better than weak reps do."
+      },
+      {
+        heading: "Consistency beats occasional intensity",
+        body: "The best reps are usually reliable before they are flashy. They hold a route, keep their standards, and let disciplined execution stack over time."
+      }
+    ]
+  },
+  {
+    slug: "how-to-start-in-field-sales-with-no-experience",
+    title: "How to Start in Field Sales With No Experience",
+    eyebrow: "Getting Started",
+    description: "A plain-English guide for people who have never worked in sales but want to break into field sales and improve fast.",
+    intro: "Starting in field sales with no experience can feel intimidating until the work becomes concrete. At the beginning, the goal is not perfection. It is getting in a live environment, learning the talk track, accepting feedback, and improving faster than your fear does.",
+    sections: [
+      {
+        heading: "Start with a product you can actually stand behind",
+        body: "New reps learn faster when the product is clear and useful. A stronger offer reduces mental friction and lets the rep focus on communication instead of defending a weak category."
+      },
+      {
+        heading: "Expect the first reps to feel uncomfortable",
+        body: "No-experience candidates often think discomfort means they are bad at sales. Usually it just means they are new. The first stage is simply building enough repetitions for the work to become familiar."
+      },
+      {
+        heading: "Look for coaching, not just hype",
+        body: "The right field sales environment gives a new rep structure, feedback, and a clear path to improvement. If a role sells only hype and does not explain how people get better, that is usually a warning sign."
+      }
+    ]
   }
 ];
 
@@ -935,15 +1082,41 @@ var HOME_FAQS = [
 
 function getMarketArticleSlugs(marketSlug) {
   var map = {
-    "greensboro-nc": ["d2d-success-stories", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"],
-    "high-point-nc": ["how-to-win-your-first-30-days-in-d2d", "1099-taxes-for-door-to-door-sales-reps", "d2d-psychology", "telecom-industry-basics-for-fiber-sales-reps"],
+    "greensboro-nc": ["best-sales-jobs-in-greensboro-nc", "greensboro-1099-sales-jobs-explained", "d2d-psychology", "sales-internship-for-college-students"],
+    "high-point-nc": ["best-entry-level-sales-jobs-in-high-point-nc", "how-to-win-your-first-30-days-in-d2d", "d2d-psychology", "how-to-start-in-field-sales-with-no-experience"],
     "winston-salem-nc": ["d2d-success-stories", "how-to-win-your-first-30-days-in-d2d", "d2d-psychology", "best-summer-sales-job-for-18-to-25"],
-    "piedmont-triad-nc": ["d2d-success-stories", "why-d2d-after-high-school-or-college", "1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps"],
+    "piedmont-triad-nc": ["how-much-do-door-to-door-reps-make-in-north-carolina", "why-d2d-after-high-school-or-college", "what-makes-a-good-door-to-door-rep", "telecom-industry-basics-for-fiber-sales-reps"],
     "lexington-nc": ["why-d2d-after-high-school-or-college", "sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "d2d-psychology"],
-    "charlotte-nc": ["best-sales-jobs-in-charlotte-nc", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"],
-    "raleigh-nc": ["best-entry-level-sales-jobs-in-raleigh-nc", "1099-taxes-for-door-to-door-sales-reps", "telecom-industry-basics-for-fiber-sales-reps", "why-d2d-after-high-school-or-college"]
+    "charlotte-nc": ["best-sales-jobs-in-charlotte-nc", "best-summer-sales-internship-in-charlotte", "d2d-psychology", "fiber-vs-solar-sales-which-is-easier-to-sell"],
+    "raleigh-nc": ["best-entry-level-sales-jobs-in-raleigh-nc", "how-to-start-in-field-sales-with-no-experience", "telecom-industry-basics-for-fiber-sales-reps", "why-d2d-after-high-school-or-college"]
   };
-  return map[marketSlug] || ["d2d-success-stories", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"];
+  return map[marketSlug] || ["d2d-success-stories", "d2d-psychology", "how-to-start-in-field-sales-with-no-experience", "sales-internship-for-college-students"];
+}
+
+function getJobArticleSlugs(job) {
+  var map = {
+    "fiber-sales-rep-high-point": ["best-entry-level-sales-jobs-in-high-point-nc", "how-to-start-in-field-sales-with-no-experience", "telecom-industry-basics-for-fiber-sales-reps"],
+    "fiber-sales-rep-greensboro": ["best-sales-jobs-in-greensboro-nc", "greensboro-1099-sales-jobs-explained", "d2d-psychology"],
+    "fiber-sales-rep-winston-salem": ["d2d-success-stories", "how-to-win-your-first-30-days-in-d2d", "what-makes-a-good-door-to-door-rep"],
+    "team-lead": ["what-makes-a-good-door-to-door-rep", "how-much-do-door-to-door-reps-make-in-north-carolina", "d2d-psychology"],
+    "entry-level-rep": ["how-to-start-in-field-sales-with-no-experience", "how-to-win-your-first-30-days-in-d2d", "why-d2d-after-high-school-or-college"],
+    "sales-internship-college-students": ["sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "best-summer-sales-internship-in-charlotte"]
+  };
+  return map[job.slug] || ["d2d-success-stories", "d2d-psychology", "how-to-start-in-field-sales-with-no-experience"];
+}
+
+function getRelatedArticleSlugs(article) {
+  var map = {
+    "best-sales-jobs-in-greensboro-nc": ["greensboro-1099-sales-jobs-explained", "d2d-psychology", "how-much-do-door-to-door-reps-make-in-north-carolina"],
+    "best-entry-level-sales-jobs-in-high-point-nc": ["how-to-start-in-field-sales-with-no-experience", "how-to-win-your-first-30-days-in-d2d", "what-makes-a-good-door-to-door-rep"],
+    "best-summer-sales-internship-in-charlotte": ["sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "best-sales-jobs-in-charlotte-nc"],
+    "how-much-do-door-to-door-reps-make-in-north-carolina": ["best-sales-jobs-in-greensboro-nc", "best-entry-level-sales-jobs-in-raleigh-nc", "what-makes-a-good-door-to-door-rep"],
+    "fiber-vs-solar-sales-which-is-easier-to-sell": ["why-fiber-is-easier-to-sell-than-weak-products", "telecom-industry-basics-for-fiber-sales-reps", "how-to-start-in-field-sales-with-no-experience"],
+    "what-makes-a-good-door-to-door-rep": ["d2d-psychology", "how-to-handle-rejection-in-door-to-door-sales", "how-to-win-your-first-30-days-in-d2d"],
+    "how-to-start-in-field-sales-with-no-experience": ["why-d2d-after-high-school-or-college", "how-to-win-your-first-30-days-in-d2d", "what-makes-a-good-door-to-door-rep"]
+  };
+  if (map[article.slug]) return map[article.slug];
+  return ARTICLE_PAGES.filter(function(item) { return item.slug !== article.slug; }).slice(0, 3).map(function(item) { return item.slug; });
 }
 
 function formatPhoneInput(value) {
@@ -1990,6 +2163,10 @@ function JobDetailPage(props) {
     );
   }
 
+  var relatedArticles = getJobArticleSlugs(job).map(function(slug) {
+    return ARTICLE_PAGES.find(function(article) { return article.slug === slug; });
+  }).filter(Boolean);
+
   return (
     <>
       <div style={{ background: SURF, borderBottom: "1px solid " + RULE }}>
@@ -2136,6 +2313,29 @@ function JobDetailPage(props) {
                       style={{ background: "#fff", border: "1px solid " + RULE, color: INK, cursor: "pointer" }}
                     >
                       {market.region}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
+              <h2 className="mb-4" style={{ ...serif, fontSize: 26 }}>Related reading</h2>
+              <p className="text-[15px] leading-[1.85] mb-5" style={{ color: MUTED }}>
+                These articles answer the questions applicants usually ask before they commit: how the field works, how the money works, and what separates strong reps from everyone else.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {relatedArticles.map(function(article) {
+                  return (
+                    <button
+                      key={article.slug}
+                      onClick={function() { props.go("article", article.slug); }}
+                      className="p-5 text-left"
+                      style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
+                    >
+                      <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
+                      <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{article.title}</div>
+                      <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
                     </button>
                   );
                 })}
@@ -2878,7 +3078,10 @@ function InsightsIndexPage(props) {
           {[
             "sales internship jobs for college students",
             "summer sales jobs for 18 to 25 year olds",
-            "field sales jobs in Charlotte, Raleigh, Greensboro, and High Point"
+            "field sales jobs in Charlotte, Raleigh, Greensboro, and High Point",
+            "door-to-door rep income in North Carolina",
+            "how to start in field sales with no experience",
+            "fiber vs solar sales comparison"
           ].map(function(intent) {
             return (
               <div key={intent} className="p-5" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 18 }}>
@@ -2935,6 +3138,10 @@ function ArticlePage(props) {
     );
   }
 
+  var relatedArticles = getRelatedArticleSlugs(article).map(function(slug) {
+    return ARTICLE_PAGES.find(function(item) { return item.slug === slug; });
+  }).filter(Boolean);
+
   return (
     <>
       <section className="max-w-[980px] mx-auto px-5 md:px-10 pt-14 md:pt-18 pb-10">
@@ -2959,6 +3166,26 @@ function ArticlePage(props) {
                 </div>
               );
             })}
+
+            <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
+              <h2 className="mb-5" style={{ ...serif, fontSize: 28 }}>Keep reading</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {relatedArticles.map(function(item) {
+                  return (
+                    <button
+                      key={item.slug}
+                      onClick={function() { props.go("article", item.slug); }}
+                      className="p-5 text-left"
+                      style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
+                    >
+                      <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{item.eyebrow}</div>
+                      <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{item.title}</div>
+                      <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{item.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
           <aside className="lg:sticky lg:top-28 h-fit space-y-4">
             <div className="p-6" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
