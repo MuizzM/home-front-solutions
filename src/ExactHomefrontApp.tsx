@@ -910,6 +910,25 @@ var MARKET_FAQS = {
   ]
 };
 
+var HOME_FAQS = [
+  {
+    q: "Is this a 1099 or W-2 job?",
+    a: "Home Front Solutions field roles listed on this site are 1099 independent-contractor positions with uncapped commission and schedule flexibility tied to performance."
+  },
+  {
+    q: "Do I need sales experience?",
+    a: "No. Many strong reps start with zero sales experience. We provide training, coaching, and live field support from day one."
+  },
+  {
+    q: "How much can I earn?",
+    a: "Top reps can earn $100K+ in their first year. Earnings are commission-based, uncapped, and tied to real production in the field."
+  },
+  {
+    q: "What products do I sell?",
+    a: "Current categories include fiber internet, home security, solar, water filtration, roofing, and other homeowner-focused services depending on market and campaign."
+  }
+];
+
 function getMarketArticleSlugs(marketSlug) {
   var map = {
     "greensboro-nc": ["d2d-success-stories", "d2d-psychology", "1099-taxes-for-door-to-door-sales-reps", "sales-internship-for-college-students"],
@@ -1498,6 +1517,30 @@ function HomePage(props) {
                 <div key={item.t} className="pl-6" style={{ borderLeft: "3px solid " + item.accent }}>
                   <h3 className="mb-3" style={{ ...serif, fontSize: 22, color: INK }}>{item.t}</h3>
                   <p className="text-sm leading-[1.85]" style={{ color: MUTED }}>{item.d}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-4">
+            <Eyebrow>Common Questions</Eyebrow>
+            <h2 style={{ ...serif, fontSize: "clamp(1.9rem, 3.5vw, 2.5rem)", lineHeight: 1.06 }}>
+              Straight answers for applicants comparing D2D and 1099 work.
+            </h2>
+            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
+              The strongest recruiting pages answer the real questions up front: structure, pay, training, and what kind of products the role actually covers.
+            </p>
+          </div>
+          <div className="lg:col-span-8 space-y-4">
+            {HOME_FAQS.map(function(item) {
+              return (
+                <div key={item.q} className="p-5 md:p-6 lift-card interactive-panel" style={{ background: "#FFFFFF", border: "1px solid " + RULE, borderRadius: 18, boxShadow: "0 10px 26px rgba(14,14,12,0.04)" }}>
+                  <h3 style={{ ...serif, fontSize: 24, lineHeight: 1.1, color: INK }}>{item.q}</h3>
+                  <p className="mt-3 text-sm md:text-[15px] leading-[1.85]" style={{ color: MUTED }}>{item.a}</p>
                 </div>
               );
             })}
@@ -3185,7 +3228,7 @@ export default function App() {
   useEffect(function() {
     var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
     var titles = {
-      home: "Home Front Solutions | Home Services Sales, Careers, Internships, and D2D Learning",
+      home: "Home Front Solutions | 1099 D2D Sales Jobs, Internships, and Home Services Recruiting",
       "what-we-do": "Home Services Customer Acquisition | Home Front Solutions",
       "why-us": "Why Home Front Solutions | In-Person Field Growth Team",
       partners: "Home Service Categories | Home Front Solutions",
@@ -3200,7 +3243,7 @@ export default function App() {
     };
 
     var descriptions = {
-      home: "Home Front Solutions helps home-service brands win more neighborhoods through disciplined, in-person customer acquisition, recruiting, D2D education, and city-specific market development.",
+      home: "Earn $100K+ in 1099 door-to-door sales. Home Front Solutions recruits for fiber, solar, security, roofing, and home-service sales internships and field roles.",
       careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
       market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
       insights: "Explore articles on D2D sales psychology, field success, 1099 taxes, industry basics, recruiting, and why door-to-door can be a strong career path.",
@@ -3331,6 +3374,15 @@ export default function App() {
       }),
     };
 
+    var founderSchema = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad",
+      name: "Muizz Muhammad",
+      jobTitle: "Founder",
+      worksFor: { "@id": "https://homefrontsolutionsllc.com/#business" }
+    };
+
     var serviceSchema = {
       "@context": "https://schema.org",
       "@type": "Service",
@@ -3381,7 +3433,24 @@ export default function App() {
       });
     }
 
-    var schemas = [localBizSchema, websiteSchema, breadcrumbSchema, serviceSchema];
+    var schemas = [localBizSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
+
+    if (route.name === "home") {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: HOME_FAQS.map(function(item) {
+          return {
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.a
+            }
+          };
+        })
+      });
+    }
 
     if (route.name === "careers") {
       schemas.push({
