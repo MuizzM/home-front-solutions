@@ -24,6 +24,7 @@ var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 var serif = { fontFamily: "'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
+var FIBER_PROVIDERS = ["AT&T Fiber", "T-Mobile Fiber", "Astound", "Brightspeed", "Frontier", "Google Fiber", "Lumos", "MetroNet", "GoNetspeed", "Starlink"];
 
 var JOBS = [
   {
@@ -1512,6 +1513,41 @@ function HomePage(props) {
         </div>
       </div>
 
+      <div className="mt-8 p-6 md:p-8" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 100%)", border: "1px solid " + RULE, borderRadius: 24, boxShadow: "0 16px 36px rgba(14,14,12,0.04)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-4">
+            <Eyebrow>Main Fiber Providers</Eyebrow>
+            <h2 style={{ ...serif, fontSize: "clamp(1.7rem, 3vw, 2.25rem)", lineHeight: 1.06 }}>
+              Fiber-provider searches should still lead people into careers and growth pages.
+            </h2>
+            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
+              People search brand names like Google Fiber, Brightspeed, Lumos, MetroNet, Astound, and Frontier every day. This section helps that intent stay connected to the Home Front recruiting funnel instead of ending on a dead page.
+            </p>
+            <button onClick={function() { props.go("careers"); }} className="mt-6 inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
+              See Open Roles
+            </button>
+          </div>
+          <div className="lg:col-span-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+              {FIBER_PROVIDERS.map(function(provider) {
+                return (
+                  <button
+                    key={provider}
+                    onClick={function() { props.go("careers"); }}
+                    className="text-left p-4 lift-card interactive-panel"
+                    style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
+                  >
+                    <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>Provider Search</div>
+                    <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{provider}</div>
+                    <div className="mt-3 text-xs font-semibold" style={{ color: MUTED }}>View roles →</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <section className="mt-10">
         <div className="flex items-end justify-between gap-6 mb-8">
           <div>
@@ -2124,7 +2160,7 @@ function CareersIndexPage(props) {
           {[
             { t: "Uncapped commission", d: "Paid weekly via direct deposit. No cap. No quota games. You earn what you close." },
             { t: "AI-powered training", d: "Practice the pitch with an AI coach that scores your delivery and gives personalized feedback." },
-            { t: "Premium products", d: "Sell for AT&T Fiber, T-Mobile Fiber, Brightspeed, Frontier, and other top ISPs." },
+            { t: "Premium products", d: "Sell around high-interest categories and major names including AT&T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, Google Fiber, Lumos, MetroNet, GoNetspeed, and Starlink." },
             { t: "Six-module certification", d: "Complete training before you ever knock a real door. Time is paid." },
             { t: "Local territory", d: "Work in your local market. No overnight travel. Sleep in your own bed every night." },
             { t: "Promotion from within", d: "Clear path from Rep to Team Lead to Area Manager. We promote our own." },
@@ -2316,7 +2352,7 @@ function JobDetailPage(props) {
             <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
               <h2 className="mb-4" style={{ ...serif, fontSize: 26 }}>About Home Front Solutions</h2>
               <p className="leading-[1.85] text-[15px] mb-4" style={{ color: MUTED }}>
-                Home Front Solutions is a door-to-door marketing company and authorized dealer for the nation's leading fiber internet providers including AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, and Frontier. We hire and train professional field sales representatives in markets across the country.
+                Home Front Solutions is a door-to-door marketing company built around major fiber and connectivity categories, including AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, Google Fiber, Lumos, MetroNet, GoNetspeed, Starlink, and other high-interest provider searches that homeowners and applicants already recognize. We hire and train professional field sales representatives in markets across the country.
               </p>
               <p className="leading-[1.85] text-[15px]" style={{ color: MUTED }}>
                 We are an Equal Opportunity Employer.
