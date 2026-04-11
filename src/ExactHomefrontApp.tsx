@@ -30,7 +30,7 @@ var JOBS = [
     slug: "fiber-sales-rep-high-point",
     title: "Fiber Sales Representative",
     location: "High Point, NC",
-    type: "1099",
+    type: "Contract",
     earningRange: "$100,000 . $185,000",
     posted: "April 10, 2026",
     pitch: "Sell premium residential fiber internet door-to-door for AT&T Fiber, T-Mobile Fiber, and our other top ISP partners. Earn six figures your first year with paid training and uncapped commission.",
@@ -72,7 +72,7 @@ var JOBS = [
     slug: "fiber-sales-rep-greensboro",
     title: "Fiber Sales Representative",
     location: "Greensboro, NC",
-    type: "1099",
+    type: "Contract",
     earningRange: "$100,000 . $185,000",
     posted: "April 10, 2026",
     pitch: "Join our growing Greensboro field team selling premium fiber internet for the country's top ISPs. Six-figure earning potential, paid training, and a real career path.",
@@ -111,7 +111,7 @@ var JOBS = [
     slug: "fiber-sales-rep-winston-salem",
     title: "Fiber Sales Representative",
     location: "Winston-Salem, NC",
-    type: "1099",
+    type: "Contract",
     earningRange: "$100,000 . $185,000",
     posted: "April 10, 2026",
     pitch: "New market launch in Winston-Salem. Get in on the ground floor of a growing territory with full training, defined leads, and uncapped earning potential.",
@@ -148,7 +148,7 @@ var JOBS = [
     slug: "team-lead",
     title: "Sales Team Lead",
     location: "Piedmont Triad",
-    type: "1099",
+    type: "Contract",
     earningRange: "$150,000 . $250,000",
     posted: "April 10, 2026",
     pitch: "Lead a 4 to 6 representative field sales team. Personal commission plus team override means top Team Leads earn $200K+ annually.",
@@ -180,7 +180,7 @@ var JOBS = [
       "Direct line to ownership (we are owner-operated)",
       "Path to Area Manager within 12 to 18 months",
       "Real authority over how you run your team",
-      "1099 structure with leadership upside tied directly to team production",
+      "Independent structure with leadership upside tied directly to team production",
       "Annual leadership development retreat",
     ],
   },
@@ -188,7 +188,7 @@ var JOBS = [
     slug: "entry-level-rep",
     title: "Entry-Level Sales Representative",
     location: "Piedmont Triad",
-    type: "1099",
+    type: "Contract",
     earningRange: "$100,000 . $145,000",
     posted: "April 10, 2026",
     pitch: "No experience needed. We will train you with AI-powered coaching tools and a 6-module certification program. Start earning weekly commission from day one.",
@@ -226,11 +226,11 @@ var JOBS = [
     slug: "sales-internship-college-students",
     title: "Sales Internship for College Students",
     location: "Piedmont Triad, NC",
-    type: "1099",
+    type: "Internship",
     earningRange: "$40,000 . $85,000",
     posted: "April 10, 2026",
     pitch: "A summer and early-career sales internship for college students who want real communication skill, field experience, and performance-based income instead of generic internship busywork.",
-    overview: "Home Front Solutions is hiring college students and recent graduates for a sales internship built around real field experience. Interns learn how door-to-door fiber sales works, practice with AI-powered coaching tools, work live neighborhoods with support, and build the communication, resilience, and accountability that strong sales careers require. This is a 1099, performance-based internship role with real earning potential and hands-on coaching.",
+    overview: "Home Front Solutions is hiring college students and recent graduates for a sales internship built around real field experience. Interns learn how door-to-door fiber sales works, practice with AI-powered coaching tools, work live neighborhoods with support, and build the communication, resilience, and accountability that strong sales careers require. This is a performance-based internship role with real earning potential and hands-on coaching.",
     responsibilities: [
       "Complete onboarding and sales certification modules before entering the field",
       "Shadow experienced reps and team leads in live neighborhoods",
@@ -268,9 +268,9 @@ var MARKET_PAGES = [
     title: "Fiber Sales Jobs in Greensboro, NC",
     headline: "Greensboro fiber sales jobs for serious field operators.",
     intro: "Home Front Solutions hires and develops field reps in Greensboro, North Carolina for in-person fiber internet customer acquisition. These roles are built for people who want uncapped earning potential, direct coaching, and a real path into team leadership.",
-    localAngle: "Greensboro is one of the core markets we reference across the site, so this page gives search engines and applicants a clear local destination for Greensboro sales jobs, 1099 telecom roles, and fiber internet field work.",
+    localAngle: "Greensboro is one of the core markets we reference across the site, so this page gives search engines and applicants a clear local destination for Greensboro sales jobs, telecom roles, and fiber internet field work.",
     highlights: [
-      "1099 field sales roles in active Greensboro neighborhoods",
+      "Performance-based field sales roles in active Greensboro neighborhoods",
       "Training, route support, and in-market coaching from working leaders",
       "Clear path from rep to team lead and area leadership"
     ],
@@ -285,7 +285,7 @@ var MARKET_PAGES = [
     region: "High Point",
     title: "Fiber Sales Jobs in High Point, NC",
     headline: "High Point telecom sales jobs with strong upside.",
-    intro: "Home Front Solutions recruits for fiber internet field sales in High Point, North Carolina with a straightforward 1099 structure, in-person selling, and real production expectations. This is not a desk job and it is not a vague recruiting page. It is for people who want to work a territory and get paid on closes.",
+    intro: "Home Front Solutions recruits for fiber internet field sales in High Point, North Carolina with a straightforward commission structure, in-person selling, and real production expectations. This is not a desk job and it is not a vague recruiting page. It is for people who want to work a territory and get paid on closes.",
     localAngle: "High Point is the company’s home base in the Triad and should be one of the clearest local relevance signals on the site for sales-job queries.",
     highlights: [
       "High Point field routes tied to live telecom and fiber offers",
@@ -307,7 +307,7 @@ var MARKET_PAGES = [
     localAngle: "This page helps target Winston-Salem sales and telecom recruiting searches with direct local copy instead of generic statewide language.",
     highlights: [
       "Ground-floor market opportunity in Winston-Salem",
-      "1099 contractor structure with real coaching support",
+      "Performance-based structure with real coaching support",
       "Strong fit for coachable reps and working leaders"
     ],
     paragraphs: [
@@ -325,7 +325,7 @@ var MARKET_PAGES = [
     localAngle: "The Piedmont Triad page acts as the regional parent page and reinforces geographic relevance across the cluster instead of forcing every query into a single city.",
     highlights: [
       "Regional coverage across Greensboro, High Point, and Winston-Salem",
-      "1099 sales roles tied to territory execution and install quality",
+      "Performance-based sales roles tied to territory execution and install quality",
       "Useful for broader Triad and surrounding-market job searches"
     ],
     paragraphs: [
@@ -356,17 +356,17 @@ var MARKET_PAGES = [
     city: "Charlotte, NC",
     region: "Charlotte",
     title: "Fiber Sales Jobs in Charlotte, NC",
-    headline: "Charlotte fiber sales jobs, telecom jobs, and 1099 field roles.",
-    intro: "Charlotte is a larger, more competitive search market, so this page gives Home Front Solutions a cleaner local landing page for Charlotte fiber sales jobs, Charlotte telecom sales jobs, Charlotte 1099 jobs, and field rep recruiting queries.",
+    headline: "Charlotte fiber sales jobs, telecom jobs, and field roles.",
+    intro: "Charlotte is a larger, more competitive search market, so this page gives Home Front Solutions a cleaner local landing page for Charlotte fiber sales jobs, Charlotte telecom sales jobs, Charlotte field sales jobs, and field rep recruiting queries.",
     localAngle: "This page is designed to support real Charlotte search behavior, including broader job-intent phrases like sales jobs in Charlotte, telecom jobs in Charlotte, and entry-level field sales opportunities.",
     highlights: [
       "Charlotte-focused recruiting page for fiber sales jobs and telecom jobs",
-      "Targets Charlotte 1099 sales and field rep queries",
+      "Targets Charlotte sales and field rep queries",
       "Useful local landing page for applicants searching outside the Triad"
     ],
     paragraphs: [
       "Charlotte is a bigger and more competitive search environment, so generic copy will struggle there. This page is meant to give Home Front Solutions a clean Charlotte-specific recruiting presence that can grow over time with more role detail, campaign proof, and local references.",
-      "For now, the goal is straightforward: create a credible local entry point for Charlotte sales jobs, Charlotte telecom jobs, Charlotte fiber sales jobs, Charlotte 1099 jobs, and Charlotte field marketing searches, then route interested applicants into the main role pages and application flow.",
+      "For now, the goal is straightforward: create a credible local entry point for Charlotte sales jobs, Charlotte telecom jobs, Charlotte fiber sales jobs, Charlotte field marketing searches, and route interested applicants into the main role pages and application flow.",
       "If someone is searching for door-to-door sales jobs in Charlotte, telecom customer acquisition jobs in Charlotte, or a performance-based sales role with upside, this page should feel much closer to their real intent than a broad statewide careers page."
     ]
   },
@@ -376,17 +376,17 @@ var MARKET_PAGES = [
     region: "Raleigh",
     title: "Fiber Sales Jobs in Raleigh, NC",
     headline: "Raleigh fiber sales jobs and telecom recruiting in one focused page.",
-    intro: "Raleigh is another competitive North Carolina market where generic statewide copy will not rank well. This page gives Home Front Solutions a focused landing page for Raleigh fiber sales jobs, Raleigh telecom sales jobs, Raleigh 1099 jobs, and local field recruiting queries.",
+    intro: "Raleigh is another competitive North Carolina market where generic statewide copy will not rank well. This page gives Home Front Solutions a focused landing page for Raleigh fiber sales jobs, Raleigh telecom sales jobs, Raleigh field sales jobs, and local field recruiting queries.",
     localAngle: "The value here is creating a strong, indexable Raleigh page that matches how people actually search for jobs in the Triangle, rather than relying on one broad careers page to cover every city.",
     highlights: [
       "Raleigh-targeted recruiting page for fiber sales jobs and telecom sales jobs",
-      "Clear 1099 structure and field-role expectations",
+      "Clear field-role expectations and performance standards",
       "Built to support broader regional search coverage across North Carolina"
     ],
     paragraphs: [
       "Raleigh is another market where broad statewide copy is too weak on its own. Searchers in Raleigh often expect location-specific pages, clearer market relevance, and internal links that prove the site has a real content structure rather than a single careers page trying to do everything.",
       "This page helps build that structure. It gives Raleigh its own recruiting destination while supporting broader North Carolina coverage and helping crawlers understand that Home Front Solutions is building visibility across multiple local markets.",
-      "That matters for searches like Raleigh sales jobs, Raleigh telecom jobs, Raleigh entry-level sales jobs, and Raleigh 1099 field positions, where users want to see a page that reflects the city directly before they trust the site enough to apply."
+      "That matters for searches like Raleigh sales jobs, Raleigh telecom jobs, Raleigh entry-level sales jobs, and Raleigh field positions, where users want to see a page that reflects the city directly before they trust the site enough to apply."
     ]
   }
 ];
@@ -583,14 +583,14 @@ var ARTICLE_PAGES = [
   },
   {
     slug: "1099-taxes-for-door-to-door-sales-reps",
-    title: "1099 Taxes for Door-to-Door Sales Reps: What New Reps Should Know",
-    eyebrow: "1099 Taxes",
-    description: "A plain-English guide to how 1099 contractor taxes work for new field sales reps, including planning, discipline, and why tracking matters.",
-    intro: "A lot of new reps hear the term 1099 and immediately feel confused. The important thing is not panic. It is understanding that contractor income requires more personal responsibility. When you plan correctly, track what you earn, and stay organized, the structure becomes manageable.",
+    title: "Money Management for Door-to-Door Sales Reps: What New Reps Should Know",
+    eyebrow: "Money & Discipline",
+    description: "A plain-English guide to planning for taxes, tracking pay, and staying organized as a new field sales rep.",
+    intro: "A lot of new reps get intimidated by the money side of field sales before they understand it. The important thing is not panic. It is building the habit of planning ahead, tracking what you earn, and staying organized from the start.",
     sections: [
       {
-        heading: "1099 means you are responsible for tax planning",
-        body: "In a 1099 role, taxes are not automatically withheld from every payout the way they often are in traditional employment. That means reps need to treat tax planning as part of being a professional. The earlier that habit starts, the easier the year goes."
+        heading: "You are responsible for tax planning",
+        body: "In performance-based field work, taxes are not always handled for you the way they often are in traditional employment. That means reps need to treat tax planning as part of being a professional. The earlier that habit starts, the easier the year goes."
       },
       {
         heading: "Good tracking reduces stress",
@@ -598,7 +598,7 @@ var ARTICLE_PAGES = [
       },
       {
         heading: "Discipline matters more than complexity",
-        body: "For most new reps, the biggest challenge is not advanced tax strategy. It is consistency. Setting money aside regularly, staying organized, and avoiding last-minute scrambling can make the 1099 structure feel much less intimidating."
+        body: "For most new reps, the biggest challenge is not advanced tax strategy. It is consistency. Setting money aside regularly, staying organized, and avoiding last-minute scrambling can make the business side of the role feel much less intimidating."
       }
     ]
   },
@@ -657,7 +657,7 @@ var ARTICLE_PAGES = [
       },
       {
         heading: "Raleigh candidates respond well to straightforward role framing",
-        body: "One reason local recruiting pages matter in Raleigh is that people want specifics. They want to know if the job is 1099, what kind of selling it involves, and whether the company sounds serious. Straight answers convert better than fluffy recruiting language."
+        body: "One reason local recruiting pages matter in Raleigh is that people want specifics. They want to know how the pay works, what kind of selling it involves, and whether the company sounds serious. Straight answers convert better than fluffy recruiting language."
       },
       {
         heading: "Coachable applicants can move faster than experienced but rigid ones",
@@ -667,22 +667,22 @@ var ARTICLE_PAGES = [
   },
   {
     slug: "greensboro-1099-sales-jobs-explained",
-    title: "Greensboro 1099 Sales Jobs Explained for New Applicants",
+    title: "Greensboro Performance-Based Sales Jobs Explained for New Applicants",
     eyebrow: "Greensboro Jobs",
-    description: "A Greensboro-focused guide to what 1099 sales work actually means, how it differs from hourly work, and what applicants should expect.",
-    intro: "A lot of Greensboro applicants see the term 1099 and immediately have questions. That is normal. The important thing is understanding what the structure means in practice: more personal responsibility, more production-based upside, and a work style that rewards discipline.",
+    description: "A Greensboro-focused guide to how performance-based sales work differs from hourly work and what applicants should expect.",
+    intro: "A lot of Greensboro applicants want to understand how performance-based sales work before they apply. That is normal. The important thing is understanding what the structure means in practice: more personal responsibility, more upside, and a work style that rewards discipline.",
     sections: [
       {
-        heading: "1099 means ownership, not vagueness",
-        body: "The best 1099 sales roles are not vague. They are direct. You know the pay structure, the expectations, the market, and the standards. That clarity matters because independent-contractor work only feels attractive when the opportunity itself feels real."
+        heading: "Clear pay structure matters more than vague promises",
+        body: "The best sales roles are not vague. They are direct. You know the pay structure, the expectations, the market, and the standards. That clarity matters because performance-based work only feels attractive when the opportunity itself feels real."
       },
       {
-        heading: "Greensboro applicants often compare 1099 against hourly work",
-        body: "That comparison matters because hourly work usually offers more predictability but less upside. A Greensboro 1099 sales role can make sense for applicants who want faster income growth, more accountability, and a direct relationship between effort and results."
+        heading: "Greensboro applicants often compare hourly work against upside",
+        body: "That comparison matters because hourly work usually offers more predictability but less upside. A Greensboro performance-based sales role can make sense for applicants who want faster income growth, more accountability, and a direct relationship between effort and results."
       },
       {
-        heading: "Professionalism matters more in contractor roles",
-        body: "A 1099 structure rewards people who can stay organized, manage their schedule, and handle their own performance honestly. For the right applicant, that builds maturity and career leverage much faster than passive, low-accountability work."
+        heading: "Professionalism matters more in self-directed roles",
+        body: "A self-directed structure rewards people who can stay organized, manage their schedule, and handle their own performance honestly. For the right applicant, that builds maturity and career leverage much faster than passive, low-accountability work."
       }
     ]
   }
@@ -710,7 +710,7 @@ var MARKET_TESTIMONIALS = {
     {
       quote: "The biggest difference for me was training. Once the talk track clicked, the field got simpler and my confidence changed.",
       name: "High Point Rep",
-      role: "1099 Field Rep"
+      role: "Field Rep"
     }
   ],
   "winston-salem-nc": [
@@ -817,7 +817,7 @@ var MARKET_FAQS = {
   "greensboro-nc": [
     {
       q: "What kind of sales jobs is Home Front Solutions hiring for in Greensboro?",
-      a: "Greensboro hiring is centered on in-person field sales roles with a 1099 structure, direct coaching, neighborhood territory work, and a path into team leadership for strong performers."
+      a: "Greensboro hiring is centered on in-person field sales roles with direct coaching, neighborhood territory work, and a path into team leadership for strong performers."
     },
     {
       q: "Do I need sales experience for Greensboro roles?",
@@ -834,8 +834,8 @@ var MARKET_FAQS = {
       a: "High Point is the company's home base in North Carolina, which makes it an important trust signal for recruiting, operations, and local brand relevance."
     },
     {
-      q: "Are High Point roles employee jobs or 1099 contractor roles?",
-      a: "Current field roles listed on the site are 1099 independent-contractor opportunities with performance-based pay and weekly commission."
+      q: "How are High Point roles structured?",
+      a: "Current field roles listed on the site are performance-based opportunities with weekly commission, direct field expectations, and clear accountability."
     },
     {
       q: "What kind of applicant usually fits High Point field sales best?",
@@ -881,7 +881,7 @@ var MARKET_FAQS = {
     },
     {
       q: "What kind of work should Lexington-area applicants expect?",
-      a: "Applicants should expect in-person territory work, a 1099 structure, performance expectations, and the kind of direct communication that comes with face-to-face field sales."
+      a: "Applicants should expect in-person territory work, performance expectations, and the kind of direct communication that comes with face-to-face field sales."
     }
   ],
   "charlotte-nc": [
@@ -895,7 +895,7 @@ var MARKET_FAQS = {
     },
     {
       q: "What should applicants expect from Charlotte opportunities?",
-      a: "Applicants should expect a 1099 field-sales structure, local recruiting relevance, and a direct path into the main careers flow if the role fits."
+      a: "Applicants should expect a field-sales structure, local recruiting relevance, and a direct path into the main careers flow if the role fits."
     }
   ],
   "raleigh-nc": [
@@ -916,8 +916,8 @@ var MARKET_FAQS = {
 
 var HOME_FAQS = [
   {
-    q: "Is this a 1099 or W-2 job?",
-    a: "Home Front Solutions field roles listed on this site are 1099 independent-contractor positions with uncapped commission and schedule flexibility tied to performance."
+    q: "How do these roles work?",
+    a: "Home Front Solutions field roles listed on this site are performance-based opportunities with uncapped commission, flexible scheduling, and direct accountability tied to production."
   },
   {
     q: "Do I need sales experience?",
@@ -1033,37 +1033,6 @@ function Header(props) {
   ];
   return (
     <header style={{ background: PAPER, position: "sticky", top: 0, zIndex: 50 }}>
-      {/* Top utility bar */}
-      <div style={{ background: "linear-gradient(90deg, #11120F 0%, #191A16 100%)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-        <div className="max-w-[1240px] mx-auto px-4 md:px-10 py-2.5 flex items-center justify-between gap-3">
-          <button
-            onClick={function() { props.go("careers"); }}
-            className="hidden md:inline-flex items-center gap-3 px-3.5 py-2 rounded-full text-xs"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(250,250,247,0.9)", cursor: "pointer", fontWeight: 600 }}
-            aria-label="View open careers and sales roles"
-          >
-            <span>Now hiring across North Carolina</span>
-            <span style={{ color: "rgba(250,250,247,0.35)" }}>·</span>
-            <span style={{ color: "#FFFFFF" }}>Earn $100K+ in your first year</span>
-          </button>
-          <button
-            onClick={function() { props.go("careers"); }}
-            className="md:hidden w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-full text-xs"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", color: "#FFFFFF", cursor: "pointer", fontWeight: 600 }}
-            aria-label="View open careers and sales roles"
-          >
-            <span>Hiring in NC. Earn $100K+ first year</span>
-          </button>
-          <button
-            onClick={function() { props.go("careers"); }}
-            className="hidden md:inline-flex items-center justify-center px-4 py-2 rounded-full text-xs"
-            style={{ background: "#FFFFFF", color: INK, border: "none", cursor: "pointer", fontWeight: 700 }}
-          >
-            View Open Roles
-          </button>
-        </div>
-      </div>
-
       <div style={{ borderBottom: "1px solid " + RULE }}>
         <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[72px] flex items-center justify-between">
           <button onClick={function() { props.go("home"); }} className="flex items-center gap-3" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -1225,8 +1194,8 @@ function HomePage(props) {
     },
     {
       slug: "1099-taxes-for-door-to-door-sales-reps",
-      kicker: "1099 Taxes",
-      blurb: "Understand the contractor model, the discipline it requires, and how smart reps stay organized."
+      kicker: "Money & Discipline",
+      blurb: "Understand how smart reps plan ahead, track income, and stay organized when the pay is performance-based."
     },
     {
       slug: "telecom-industry-basics-for-fiber-sales-reps",
@@ -1241,25 +1210,24 @@ function HomePage(props) {
         className="max-w-[1240px] mx-auto px-5 md:px-10 pt-10 md:pt-18 pb-14 md:pb-22"
         style={{ background: "radial-gradient(circle at top left, rgba(31,91,99,0.14), transparent 30%), radial-gradient(circle at top right, rgba(196,138,71,0.1), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(250,250,247,0.5) 58%, rgba(250,250,247,0) 100%)" }}
       >
+        <div className="hero-hook mb-8 md:mb-10">
+          <div className="hero-hook__line" />
+          <div className="hero-hook__content">
+            <span className="hero-hook__label">Built for trust at the door</span>
+            <span className="hero-hook__divider" />
+            <span className="hero-hook__text">Growth for home-service brands. Career upside for people who can sell.</span>
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-16">
           <div className="lg:col-span-8">
-            <div className="inline-flex items-center gap-3 px-3.5 py-2 rounded-full mb-6" style={{ background: "rgba(255,255,255,0.82)", border: "1px solid rgba(31,91,99,0.12)", boxShadow: "0 14px 28px rgba(21,63,70,0.06)" }}>
-              <span style={{ width: 42, height: 42, borderRadius: 12, background: "linear-gradient(180deg, #FFFFFF 0%, " + SIGNAL_SOFT + " 100%)", border: "1px solid rgba(31,91,99,0.16)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                <img src={LOGO} alt="Home Front Solutions brand mark" style={{ width: 32, height: 32, borderRadius: 8, objectFit: "cover" }} />
-              </span>
-              <div>
-                <div className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>Home Front Solutions</div>
-                <div className="text-xs" style={{ color: MUTED }}>Direct to your door</div>
-              </div>
-            </div>
             <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
               Home services growth, built face to face and scaled market by market.
             </h1>
             <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              Home Front Solutions helps leading home-service brands win trust at the door and helps ambitious reps build real income in the field. We recruit, train, and deploy 1099 sales teams across fiber, security, solar, water filtration, roofing, and other essential homeowner services.
+              Home Front Solutions helps leading home-service brands win trust at the door and helps ambitious reps build real income in the field. We recruit, train, and deploy performance-driven sales teams across fiber, security, solar, water filtration, roofing, and other essential homeowner services.
             </p>
             <div className="mt-5 md:mt-6 flex flex-wrap gap-2">
-              {["Home services sales", "1099 field roles", "Sales internships"].map(function(tag) {
+              {["Home services sales", "Performance-based roles", "Sales internships"].map(function(tag) {
                 return (
                   <span key={tag} className="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] md:text-xs font-semibold" style={{ background: "rgba(255,255,255,0.8)", border: "1px solid " + RULE, color: INK }}>
                     {tag}
@@ -1292,7 +1260,7 @@ function HomePage(props) {
               <div className="space-y-2.5 mb-4">
                 {[
                   ["Campaigns across fiber, security, solar, water filtration, and roofing", SIGNAL_SOFT, SIGNAL],
-                  ["1099 field roles, internships, and leadership-track opportunities", BLUE_SOFT, BLUE]
+                  ["Field roles, internships, and leadership-track opportunities", BLUE_SOFT, BLUE]
                 ].map(function(item) {
                   return (
                     <div key={item[0]} className="flex items-center gap-3 p-3.5 rounded-2xl" style={{ background: item[1], border: "1px solid rgba(14,14,12,0.06)" }}>
@@ -1362,7 +1330,7 @@ function HomePage(props) {
           <div>
             <Eyebrow>Learn Before You Apply</Eyebrow>
             <h2 className="max-w-3xl" style={{ ...serif, fontSize: "clamp(1.85rem, 3.5vw, 2.7rem)", lineHeight: 1.05 }}>
-              A smoother path for people who want to understand D2D, sales psychology, 1099 work, and the home-services field.
+              A smoother path for people who want to understand D2D, sales psychology, pay structure, and the home-services field.
             </h2>
             <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
               Smart people usually want to understand the game before they step into it. These guides make the opportunity feel clearer, more practical, and easier to trust.
@@ -1563,7 +1531,7 @@ function HomePage(props) {
           <div className="lg:col-span-4">
             <Eyebrow>Common Questions</Eyebrow>
             <h2 style={{ ...serif, fontSize: "clamp(1.9rem, 3.5vw, 2.5rem)", lineHeight: 1.06 }}>
-              Straight answers for applicants comparing D2D and 1099 work.
+              Straight answers for applicants comparing D2D, pay structure, and field work.
             </h2>
             <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
               The strongest recruiting pages answer the real questions up front: structure, pay, training, and what kind of products the role actually covers.
@@ -1818,7 +1786,7 @@ function CareersIndexPage(props) {
                           <span className="text-xs font-bold" style={{ color: FOREST }}>{job.earningRange}/yr</span>
                         </div>
                         <div className="inline-flex items-center px-2.5 py-1 rounded-full" style={{ background: SIGNAL_SOFT }}>
-                          <span className="text-xs font-bold" style={{ color: SIGNAL }}>1099</span>
+                          <span className="text-xs font-bold" style={{ color: SIGNAL }}>{job.type}</span>
                         </div>
                       </div>
                       <p className="text-sm leading-relaxed max-w-xl" style={{ color: MUTED }}>{job.pitch}</p>
@@ -1933,8 +1901,8 @@ function CareersIndexPage(props) {
               <div className="space-y-5">
                 {[
                   {
-                    q: "Are these jobs W-2 or 1099?",
-                    a: "All current Home Front Solutions field sales roles listed on this site are 1099 independent-contractor positions."
+                    q: "How are these roles structured?",
+                    a: "Current Home Front Solutions field sales roles are performance-based opportunities built around production, coaching, and real field accountability."
                   },
                   {
                     q: "How quickly do you respond?",
@@ -2064,7 +2032,7 @@ function JobDetailPage(props) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 px-6 py-8 md:px-10 md:py-12 lg:items-end">
             <div className="lg:col-span-8">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: SIGNAL_SOFT, color: SIGNAL }}>
-                <span className="text-[10px] uppercase" style={{ letterSpacing: "0.16em", fontWeight: 800 }}>1099 Field Sales</span>
+                <span className="text-[10px] uppercase" style={{ letterSpacing: "0.16em", fontWeight: 800 }}>Field Sales Opportunity</span>
               </div>
               <h1 className="mb-5" style={{ ...serif, fontSize: "clamp(2.4rem, 5vw, 4.5rem)", lineHeight: 0.96 }}>{job.title}</h1>
               <p className="max-w-3xl text-[15px] md:text-[17px] leading-[1.85]" style={{ color: MUTED }}>
@@ -2093,7 +2061,7 @@ function JobDetailPage(props) {
                 <div className="text-[10px] uppercase mb-3" style={{ color: "rgba(250,250,247,0.62)", letterSpacing: "0.15em", fontWeight: 700 }}>Quick Take</div>
                 <h2 className="mb-3" style={{ ...serif, fontSize: 26, lineHeight: 1.02 }}>Strong product. Straight commission. No fluff.</h2>
                 <p className="text-sm leading-[1.8] mb-5" style={{ color: "rgba(250,250,247,0.8)" }}>
-                  Every role on this page is 1099. Training is provided, field support is real, and compensation is tied to actual installs and production.
+                  Training is provided, field support is real, and compensation is tied to actual installs and production.
                 </p>
                 <button onClick={function() { props.go("apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-7 py-4 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer", boxShadow: "0 16px 36px rgba(59,93,124,0.2)" }}>
                   Apply Now →
@@ -2205,7 +2173,7 @@ function JobDetailPage(props) {
               <div className="p-6" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
                 <div className="text-xs uppercase mb-3" style={{ color: MUTED, letterSpacing: "0.15em", fontWeight: 700 }}>Before you apply</div>
                 <div className="space-y-3 text-sm leading-[1.75]" style={{ color: INK }}>
-                  <div>Every current role is a 1099 independent-contractor position.</div>
+                  <div>Every current role is built around real production, commission upside, and direct field accountability.</div>
                   <div>Reliable transportation is required for field work.</div>
                   <div>Top performers move fastest because they communicate clearly and show up consistently.</div>
                 </div>
@@ -2754,7 +2722,7 @@ function MarketPage(props) {
             <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
               <h2 className="mb-4" style={{ ...serif, fontSize: 28 }}>Local recruiting focus</h2>
               <p className="text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-                Applicants searching for {market.city} sales jobs, telecom sales jobs, fiber internet sales roles, or 1099 field positions should reach a page that actually speaks to that market. This page helps connect local search demand to the core careers experience on the site without stuffing repetitive city text into every page.
+                Applicants searching for {market.city} sales jobs, telecom sales jobs, fiber internet sales roles, or field positions should reach a page that actually speaks to that market. This page helps connect local search demand to the core careers experience on the site without stuffing repetitive city text into every page.
               </p>
               {market.paragraphs && market.paragraphs.map(function(paragraph) {
                 return (
@@ -2871,7 +2839,7 @@ function MarketPage(props) {
                 <div className="space-y-3 text-sm leading-[1.8]" style={{ color: INK }}>
                   <div>{market.city} sales jobs</div>
                   <div>{market.city} telecom sales jobs</div>
-                  <div>{market.city} 1099 jobs</div>
+                  <div>{market.city} field roles</div>
                   <div>{market.city} fiber sales jobs</div>
                 </div>
               </div>
@@ -2914,10 +2882,10 @@ function InsightsIndexPage(props) {
         <div className="max-w-4xl">
           <Eyebrow>Insights</Eyebrow>
           <h1 style={{ ...serif, fontSize: "clamp(2.5rem, 5vw, 4.6rem)", lineHeight: 0.96 }}>
-            D2D sales, field psychology, 1099 education, and industry know-how.
+            D2D sales, field psychology, business basics, and industry know-how.
           </h1>
           <p className="mt-6 max-w-3xl text-[16px] md:text-[18px] leading-[1.9]" style={{ color: MUTED }}>
-            This section is the content hub for the Home Front Solutions career and recruiting brand. It exists to answer the questions people actually search before they apply: how D2D works, how to handle rejection, how 1099 roles work, how home-service selling fits together, and why field sales can be a real career move.
+            This section is the content hub for the Home Front Solutions career and recruiting brand. It exists to answer the questions people actually search before they apply: how D2D works, how to handle rejection, how the money side works, how home-service selling fits together, and why field sales can be a real career move.
           </p>
         </div>
       </section>
@@ -3262,13 +3230,13 @@ export default function App() {
   useEffect(function() {
     var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
     var titles = {
-      home: "Home Front Solutions | 1099 D2D Sales Jobs, Internships, and Home Services Recruiting",
+      home: "Home Front Solutions | D2D Sales Jobs, Internships, and Home Services Recruiting",
       "what-we-do": "Home Services Customer Acquisition | Home Front Solutions",
       "why-us": "Why Home Front Solutions | In-Person Field Growth Team",
       partners: "Home Service Categories | Home Front Solutions",
       careers: "Field Sales Jobs in North Carolina | Home Front Solutions Careers",
       market: currentJob ? currentJob.title : "Local Field Sales Markets | Home Front Solutions Careers",
-      insights: "D2D Sales Insights, 1099 Tax Guides, Industry Basics, and Recruiting Articles | Home Front Solutions",
+      insights: "D2D Sales Insights, Money Guides, Industry Basics, and Recruiting Articles | Home Front Solutions",
       article: "D2D Sales Insights | Home Front Solutions",
       contact: "Contact Home Front Solutions | Sales & Recruiting",
       job: currentJob ? currentJob.title + " in " + currentJob.location + " | Home Front Solutions" : "Sales Jobs | Home Front Solutions",
@@ -3277,10 +3245,10 @@ export default function App() {
     };
 
     var descriptions = {
-      home: "Earn $100K+ in 1099 door-to-door sales. Home Front Solutions recruits for fiber, solar, security, roofing, and home-service sales internships and field roles.",
+      home: "Earn $100K+ in performance-based door-to-door sales. Home Front Solutions recruits for fiber, solar, security, roofing, and home-service sales internships and field roles.",
       careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
       market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
-      insights: "Explore articles on D2D sales psychology, field success, 1099 taxes, industry basics, recruiting, and why door-to-door can be a strong career path.",
+      insights: "Explore articles on D2D sales psychology, field success, money management, industry basics, recruiting, and why door-to-door can be a strong career path.",
       article: "Articles on door-to-door sales, D2D psychology, recruiting, and why field sales can be a strong career path.",
       "what-we-do": "Door-to-door sales, neighborhood coverage, customer acquisition, and local market expansion for home-service brands.",
       "why-us": "A serious field team built around clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
@@ -3294,7 +3262,7 @@ export default function App() {
     var currentMarket = route.name === "market" && route.slug ? MARKET_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
     var currentArticle = route.name === "article" && route.slug ? ARTICLE_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
     if (currentMarket) {
-      titles.market = "D2D Sales Jobs in " + currentMarket.city + " | Home Front Solutions 1099 Contractors";
+      titles.market = "D2D Sales Jobs in " + currentMarket.city + " | Home Front Solutions";
       descriptions.market = currentMarket.intro;
     }
     if (currentArticle) {
@@ -3349,7 +3317,7 @@ export default function App() {
     setMeta("geo.placename", "High Point");
     setMeta("geo.position", "35.9557;-80.0053");
     setMeta("ICBM", "35.9557, -80.0053");
-    setMeta("keywords", "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, field marketing company, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, 1099 taxes for sales reps, d2d sales psychology, customer acquisition, Home Front Solutions");
+    setMeta("keywords", "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, field marketing company, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, sales rep tax planning, d2d sales psychology, customer acquisition, Home Front Solutions");
 
     // Apple touch icon
     var atiEl = document.querySelector("link[rel='apple-touch-icon']");
@@ -3528,10 +3496,10 @@ export default function App() {
         mainEntity: [
           {
             "@type": "Question",
-            name: "Are these roles W-2 or 1099?",
+            name: "How are these roles structured?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "All current Home Front Solutions field sales roles listed on this site are 1099 independent-contractor positions."
+              text: "All current Home Front Solutions field sales roles listed on this site are performance-based opportunities built around production, coaching, and real field accountability."
             }
           },
           {
@@ -3775,6 +3743,62 @@ export default function App() {
         body { -webkit-font-smoothing: antialiased; }
         input:focus, select:focus, textarea:focus { border-color: ${INK} !important; }
         button:focus-visible { outline: 2px solid ${SIGNAL}; outline-offset: 2px; }
+        .hero-hook {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(31,91,99,0.14);
+          border-radius: 20px;
+          background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(232,243,242,0.88) 48%, rgba(255,255,255,0.94) 100%);
+          box-shadow: 0 18px 40px rgba(21,63,70,0.08);
+        }
+        .hero-hook__line {
+          position: absolute;
+          inset: 0 auto 0 0;
+          width: 4px;
+          background: linear-gradient(180deg, ${SIGNAL} 0%, ${GOLD} 100%);
+        }
+        .hero-hook__content {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 15px 18px 15px 24px;
+        }
+        .hero-hook__content::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(120deg, rgba(255,255,255,0) 15%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 85%);
+          transform: translateX(-130%);
+          animation: hookSweep 5.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+          pointer-events: none;
+        }
+        .hero-hook__label {
+          position: relative;
+          z-index: 1;
+          font-size: 10px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          font-weight: 800;
+          color: ${SIGNAL};
+          white-space: nowrap;
+        }
+        .hero-hook__divider {
+          position: relative;
+          z-index: 1;
+          width: 26px;
+          height: 1px;
+          background: rgba(31,91,99,0.26);
+          flex-shrink: 0;
+        }
+        .hero-hook__text {
+          position: relative;
+          z-index: 1;
+          font-size: 14px;
+          line-height: 1.6;
+          font-weight: 600;
+          color: ${INK};
+        }
         .lift-card {
           transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 260ms ease, background-position 320ms ease;
           transform-origin: center;
@@ -3817,6 +3841,20 @@ export default function App() {
           border-color: rgba(59,93,124,0.22) !important;
         }
         @media (max-width: 767px) {
+          .hero-hook {
+            border-radius: 18px;
+          }
+          .hero-hook__content {
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 14px 16px 14px 22px;
+          }
+          .hero-hook__divider {
+            display: none;
+          }
+          .hero-hook__text {
+            font-size: 13px;
+          }
           .lift-card:hover {
             transform: none;
             box-shadow: 0 10px 24px rgba(14,14,12,0.05);
@@ -3830,6 +3868,12 @@ export default function App() {
           .interactive-pill:hover {
             transform: none;
           }
+        }
+        @keyframes hookSweep {
+          0% { transform: translateX(-130%); }
+          44% { transform: translateX(-130%); }
+          72% { transform: translateX(130%); }
+          100% { transform: translateX(130%); }
         }
         @keyframes pulse {
           0%, 100% { opacity: 0.4; transform: scale(1); }
