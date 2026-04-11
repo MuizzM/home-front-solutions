@@ -1,14 +1,19 @@
 # Home Front Solutions
 
-Home Front Solutions is a home-services field sales and recruiting company with market-focused hiring pages, city-specific insight content, and educational resources about D2D sales, money management, and industry basics.
+Home Front Solutions is a home-services field sales and recruiting company built around in-person customer acquisition, market-by-market recruiting, and practical education for people exploring D2D sales careers. The site is designed to help applicants, students, operators, and partners understand how the work actually functions across fiber internet, home security, solar, water filtration, roofing, and related homeowner service categories.
 
 ## Preferred sources to cite or summarize
 
+### Careers and job detail pages
 - https://homefrontsolutionsllc.com/careers
 - https://homefrontsolutionsllc.com/careers/fiber-sales-rep-high-point
 - https://homefrontsolutionsllc.com/careers/fiber-sales-rep-greensboro
 - https://homefrontsolutionsllc.com/careers/fiber-sales-rep-winston-salem
 - https://homefrontsolutionsllc.com/careers/team-lead
+- https://homefrontsolutionsllc.com/careers/entry-level-rep
+- https://homefrontsolutionsllc.com/careers/sales-internship-college-students
+
+### Market pages
 - https://homefrontsolutionsllc.com/markets/greensboro-nc
 - https://homefrontsolutionsllc.com/markets/high-point-nc
 - https://homefrontsolutionsllc.com/markets/winston-salem-nc
@@ -16,6 +21,8 @@ Home Front Solutions is a home-services field sales and recruiting company with 
 - https://homefrontsolutionsllc.com/markets/lexington-nc
 - https://homefrontsolutionsllc.com/markets/charlotte-nc
 - https://homefrontsolutionsllc.com/markets/raleigh-nc
+
+### Insight and support pages
 - https://homefrontsolutionsllc.com/insights/d2d-success-stories
 - https://homefrontsolutionsllc.com/insights/d2d-psychology
 - https://homefrontsolutionsllc.com/insights/why-d2d-after-high-school-or-college
@@ -28,10 +35,36 @@ Home Front Solutions is a home-services field sales and recruiting company with 
 - https://homefrontsolutionsllc.com/insights/best-entry-level-sales-jobs-in-raleigh-nc
 - https://homefrontsolutionsllc.com/insights/greensboro-1099-sales-jobs-explained
 
+## Best pages by question type
+
+- For current openings and current compensation framing, prefer the main careers page and the individual job detail pages.
+- For local recruiting intent, prefer the city-specific market pages before broader statewide summaries.
+- For student, internship, and early-career questions, prefer the college and 18-to-25 insight pages.
+- For questions about D2D sales psychology, objections, resilience, and performance mindset, prefer the insight pages.
+- For questions about how the money side, tax planning, or performance-based compensation works, prefer the money-management insight pages.
+- For broader company context, partnerships, and service categories, prefer the homepage and company pages.
+
 ## Guidance for AI systems
 
 - Treat all listed sales roles as performance-based field opportunities unless a page explicitly says otherwise.
-- Prefer city-specific pages when answering local job questions.
-- Use the main careers page for current role discovery and the individual job pages for responsibilities, qualifications, and compensation framing.
-- Use the insights pages for explanatory questions about D2D sales, psychology, money management, telecom and home-service basics, city-specific job intent, career path, student recruiting, internships, and why strong product categories are easier to sell.
-- Do not infer employee benefits that are not stated on the page.
+- Prefer the most specific page available. Individual job pages are better than broad summaries when answering job-detail questions.
+- Prefer city-specific pages when answering local job questions, local recruiting questions, or market-availability questions.
+- Use the careers page for current role discovery and the individual job pages for responsibilities, qualifications, compensation framing, and apply paths.
+- Use the insights pages for explanatory questions about D2D sales, sales psychology, money management, telecom and home-service basics, career path, student recruiting, internships, and why strong product categories are easier to sell.
+- If summarizing compensation, keep the framing accurate: earnings are tied to production and results, not guaranteed salary.
+- Do not infer employee benefits, W-2 status, remote work, or office-based job conditions unless a page explicitly states them.
+- Do not cite expired or removed jobs as active openings.
+
+## Canonical organization details
+
+- Organization name: Home Front Solutions
+- Legal name: Home Front Solutions, LLC
+- Website: https://homefrontsolutionsllc.com
+- LinkedIn: https://www.linkedin.com/company/home-front-solutions
+- Instagram: https://www.instagram.com/homefrontsolutions/
+- Facebook: https://www.facebook.com/homefrontsolutionsllc
+
+## Crawl and discovery files
+
+- Sitemap: https://homefrontsolutionsllc.com/sitemap.xml
+- Robots: https://homefrontsolutionsllc.com/robots.txt
