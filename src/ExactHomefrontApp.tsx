@@ -24,7 +24,6 @@ var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 var serif = { fontFamily: "'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
-var FIBER_PROVIDERS = ["AT&T Fiber", "T-Mobile Fiber", "Astound", "Brightspeed", "Frontier", "Google Fiber", "Lumos", "MetroNet", "GoNetspeed", "Starlink"];
 
 var JOBS = [
   {
@@ -375,19 +374,19 @@ var MARKET_PAGES = [
     slug: "raleigh-nc",
     city: "Raleigh, NC",
     region: "Raleigh",
-    title: "Fiber Sales Jobs in Raleigh, NC",
-    headline: "Raleigh fiber sales jobs and telecom recruiting in one focused page.",
-    intro: "Raleigh is another competitive North Carolina market where generic statewide copy will not rank well. This page gives Home Front Solutions a focused landing page for Raleigh fiber sales jobs, Raleigh telecom sales jobs, Raleigh field sales jobs, and local field recruiting queries.",
-    localAngle: "The value here is creating a strong, indexable Raleigh page that matches how people actually search for jobs in the Triangle, rather than relying on one broad careers page to cover every city.",
+    title: "Sales Jobs in Raleigh, NC",
+    headline: "Raleigh sales jobs, field roles, and Triangle recruiting in one focused page.",
+    intro: "Raleigh is a competitive Triangle market where generic statewide copy is too broad. This page gives Home Front Solutions a focused local destination for Raleigh sales jobs, field roles, early-career recruiting, and Triangle-area applicant discovery.",
+    localAngle: "The value here is creating a strong Raleigh page that matches how people actually search across the Triangle, from local job seekers to students at nearby North Carolina universities.",
     highlights: [
-      "Raleigh-targeted recruiting page for fiber sales jobs and telecom sales jobs",
-      "Clear field-role expectations and performance standards",
-      "Built to support broader regional search coverage across North Carolina"
+      "Raleigh-targeted recruiting page for field sales and early-career opportunities",
+      "Clear expectations, market context, and performance standards",
+      "Built to support broader Triangle and North Carolina discovery"
     ],
     paragraphs: [
-      "Raleigh is another market where broad statewide copy is too weak on its own. Searchers in Raleigh often expect location-specific pages, clearer market relevance, and internal links that prove the site has a real content structure rather than a single careers page trying to do everything.",
-      "This page helps build that structure. It gives Raleigh its own recruiting destination while supporting broader North Carolina coverage and helping crawlers understand that Home Front Solutions is building visibility across multiple local markets.",
-      "That matters for searches like Raleigh sales jobs, Raleigh telecom jobs, Raleigh entry-level sales jobs, and Raleigh field positions, where users want to see a page that reflects the city directly before they trust the site enough to apply."
+      "Raleigh is a market where local intent matters. Searchers want clearer city relevance, cleaner role framing, and enough internal structure to trust that the company is real rather than one broad careers page trying to cover every city in North Carolina.",
+      "This page helps build that structure. It gives Raleigh its own recruiting destination while supporting broader Triangle discovery and connecting into deeper insight pages around sales careers, field growth, and student recruiting.",
+      "That matters for searches like Raleigh sales jobs, entry-level sales jobs in Raleigh, Triangle field roles, and student-friendly opportunities near NC State, Duke, and UNC, where people want to see a page that reflects the market directly before they trust the site enough to apply."
     ]
   }
 ];
@@ -675,6 +674,27 @@ var ARTICLE_PAGES = [
     ]
   },
   {
+    slug: "raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students",
+    title: "Raleigh Sales Jobs for NC State, UNC, Duke, and Triangle Students",
+    eyebrow: "Triangle Students",
+    description: "A Raleigh- and Triangle-focused guide for students and recent grads comparing sales jobs, internships, and early-career options with real upside.",
+    intro: "The Triangle produces ambitious students every year from NC State, UNC-Chapel Hill, Duke, UNC Charlotte, ECU, and other strong North Carolina schools. A lot of them are looking for work that feels sharper than low-ceiling hourly jobs or resume-padding internships. Raleigh sales jobs stand out when they offer live communication reps, real accountability, and a path to actual growth.",
+    sections: [
+      {
+        heading: "Students from top North Carolina schools often want faster skill growth",
+        body: "Candidates coming out of NC State, UNC, Duke, UNC Charlotte, ECU, and other North Carolina programs are usually not just looking for a paycheck. They want momentum. Sales gives them live reps in communication, persuasion, emotional control, and performance under pressure."
+      },
+      {
+        heading: "The Triangle is a strong fit for business-minded students",
+        body: "Raleigh and the broader Triangle attract people who care about business, technology, startups, and professional upside. That makes the market a strong fit for students who want to build real selling skill instead of sitting inside a vague internship with little pressure and even less feedback."
+      },
+      {
+        heading: "A serious sales role can separate a student early",
+        body: "The students who learn how to communicate clearly, handle objections, and create trust early usually carry that advantage into recruiting, leadership, entrepreneurship, and marketing. That is why stronger Raleigh sales roles can create more long-term value than generic student work."
+      }
+    ]
+  },
+  {
     slug: "greensboro-1099-sales-jobs-explained",
     title: "Greensboro Performance-Based Sales Jobs Explained for New Applicants",
     eyebrow: "Greensboro Jobs",
@@ -946,6 +966,27 @@ var ARTICLE_PAGES = [
         body: "The right field sales environment gives a new rep structure, feedback, and a clear path to improvement. If a role sells only hype and does not explain how people get better, that is usually a warning sign."
       }
     ]
+  },
+  {
+    slug: "why-sales-and-marketing-are-the-backbone-of-business",
+    title: "Why Sales and Marketing Are the Backbone of Every Business",
+    eyebrow: "Business Basics",
+    description: "A clean explanation of why sales and marketing sit at the center of business growth, and why learning them early creates real career leverage.",
+    intro: "A business can have a strong product, smart operations, and talented people, but if it cannot attract attention and turn that attention into revenue, it stalls. That is why sales and marketing sit at the center of every serious company. Marketing creates awareness and demand. Sales turns trust, timing, and communication into actual customers.",
+    sections: [
+      {
+        heading: "Marketing creates attention, sales converts it",
+        body: "The cleanest way to think about it is this: marketing gets people interested, and sales helps them commit. When those two functions are weak, even a good business becomes harder to grow. When they are strong, the whole company gets better leverage."
+      },
+      {
+        heading: "Every department depends on revenue eventually",
+        body: "Operations, recruiting, product, finance, and leadership all benefit when the business is growing. That growth usually starts with customer acquisition. Learning sales and marketing helps people understand how companies actually move, not just how they look from the outside."
+      },
+      {
+        heading: "People who learn both early become more valuable",
+        body: "Someone who understands positioning, messaging, demand, trust, and conversion brings more value to almost any business. That is why sales and marketing skill compounds. It helps in recruiting, entrepreneurship, leadership, partnerships, and client-facing work far beyond one job title."
+      }
+    ]
   }
 ];
 
@@ -1202,7 +1243,7 @@ function getMarketArticleSlugs(marketSlug) {
     "piedmont-triad-nc": ["how-much-do-door-to-door-reps-make-in-north-carolina", "bead-program-fiber-expansion-and-sales-opportunity", "what-makes-a-good-door-to-door-rep", "telecom-industry-basics-for-fiber-sales-reps"],
     "lexington-nc": ["why-d2d-after-high-school-or-college", "sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "d2d-psychology"],
     "charlotte-nc": ["best-sales-jobs-in-charlotte-nc", "best-summer-sales-internship-in-charlotte", "d2d-psychology", "fiber-vs-solar-sales-which-is-easier-to-sell"],
-    "raleigh-nc": ["best-entry-level-sales-jobs-in-raleigh-nc", "how-to-start-in-field-sales-with-no-experience", "telecom-industry-basics-for-fiber-sales-reps", "why-d2d-after-high-school-or-college"]
+    "raleigh-nc": ["best-entry-level-sales-jobs-in-raleigh-nc", "raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students", "how-to-start-in-field-sales-with-no-experience", "why-sales-and-marketing-are-the-backbone-of-business"]
   };
   return map[marketSlug] || ["d2d-success-stories", "d2d-psychology", "how-to-start-in-field-sales-with-no-experience", "sales-internship-for-college-students"];
 }
@@ -1214,7 +1255,7 @@ function getJobArticleSlugs(job) {
     "fiber-sales-rep-winston-salem": ["d2d-success-stories", "fiber-internet-gold-rush", "what-makes-a-good-door-to-door-rep"],
     "team-lead": ["what-makes-a-good-door-to-door-rep", "how-much-do-door-to-door-reps-make-in-north-carolina", "d2d-psychology"],
     "entry-level-rep": ["how-to-start-in-field-sales-with-no-experience", "how-to-win-your-first-30-days-in-d2d", "why-d2d-after-high-school-or-college"],
-    "sales-internship-college-students": ["sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "best-summer-sales-internship-in-charlotte"]
+    "sales-internship-college-students": ["sales-internship-for-college-students", "raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students", "best-summer-sales-internship-in-charlotte"]
   };
   return map[job.slug] || ["d2d-success-stories", "d2d-psychology", "how-to-start-in-field-sales-with-no-experience"];
 }
@@ -1233,7 +1274,10 @@ function getRelatedArticleSlugs(article) {
     "how-much-do-door-to-door-reps-make-in-north-carolina": ["best-sales-jobs-in-greensboro-nc", "best-entry-level-sales-jobs-in-raleigh-nc", "what-makes-a-good-door-to-door-rep"],
     "fiber-vs-solar-sales-which-is-easier-to-sell": ["why-fiber-is-easier-to-sell-than-weak-products", "telecom-industry-basics-for-fiber-sales-reps", "how-to-start-in-field-sales-with-no-experience"],
     "what-makes-a-good-door-to-door-rep": ["d2d-psychology", "how-to-handle-rejection-in-door-to-door-sales", "how-to-win-your-first-30-days-in-d2d"],
-    "how-to-start-in-field-sales-with-no-experience": ["why-d2d-after-high-school-or-college", "how-to-win-your-first-30-days-in-d2d", "what-makes-a-good-door-to-door-rep"]
+    "how-to-start-in-field-sales-with-no-experience": ["why-d2d-after-high-school-or-college", "how-to-win-your-first-30-days-in-d2d", "what-makes-a-good-door-to-door-rep"],
+    "best-entry-level-sales-jobs-in-raleigh-nc": ["raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students", "how-to-start-in-field-sales-with-no-experience", "why-sales-and-marketing-are-the-backbone-of-business"],
+    "raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students": ["best-entry-level-sales-jobs-in-raleigh-nc", "sales-internship-for-college-students", "why-sales-and-marketing-are-the-backbone-of-business"],
+    "why-sales-and-marketing-are-the-backbone-of-business": ["sales-internship-for-college-students", "why-d2d-after-high-school-or-college", "what-makes-a-good-door-to-door-rep"]
   };
   if (map[article.slug]) return map[article.slug];
   return ARTICLE_PAGES.filter(function(item) { return item.slug !== article.slug; }).slice(0, 3).map(function(item) { return item.slug; });
@@ -1476,24 +1520,19 @@ function Footer(props) {
 function HomePage(props) {
   var learningTracks = [
     {
-      slug: "d2d-psychology",
-      kicker: "Sales Psychology",
-      blurb: "Learn how strong reps manage rejection, keep emotional control, and build trust faster at the door."
+      slug: "why-sales-and-marketing-are-the-backbone-of-business",
+      kicker: "Business Basics",
+      blurb: "A cleaner explanation of why sales and marketing sit underneath growth in almost every serious company."
     },
     {
-      slug: "why-d2d-after-high-school-or-college",
-      kicker: "Career Path",
-      blurb: "See why D2D can be a stronger early-career move than low-ceiling hourly work or generic internships."
+      slug: "raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students",
+      kicker: "Triangle Students",
+      blurb: "A Raleigh and North Carolina university angle for students comparing internships, sales jobs, and early-career paths."
     },
     {
-      slug: "1099-taxes-for-door-to-door-sales-reps",
-      kicker: "Money & Discipline",
-      blurb: "Understand how smart reps plan ahead, track income, and stay organized when the pay is performance-based."
-    },
-    {
-      slug: "telecom-industry-basics-for-fiber-sales-reps",
-      kicker: "Industry Basics",
-      blurb: "Get the simple version of how providers, field teams, homeowners, and service categories fit together."
+      slug: "fiber-internet-gold-rush",
+      kicker: "Industry Trend",
+      blurb: "A sharper read on BEAD, data centers, AI infrastructure, and why fiber keeps pulling attention."
     }
   ];
   return (
@@ -1509,7 +1548,7 @@ function HomePage(props) {
               Home services growth, built face to face and scaled market by market.
             </h1>
             <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              Home Front Solutions helps brands grow through disciplined field execution and gives ambitious reps a real path to earn, improve, and lead.
+              We help brands grow through disciplined field execution and give ambitious reps a real path to improve, produce, and lead.
             </p>
             <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3">
               <button onClick={function() { props.go("contact"); }} className="inline-flex items-center justify-center px-7 py-4 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: "linear-gradient(135deg, #11120F 0%, #233447 100%)", color: PAPER, border: "none", cursor: "pointer", minHeight: 54, boxShadow: "0 16px 34px rgba(14,14,12,0.18)" }} aria-label="Schedule a discovery call with our sales team">
@@ -1533,21 +1572,8 @@ function HomePage(props) {
               <p className="text-sm leading-[1.85] mb-4" style={{ color: MUTED }}>
                 Founded by <span style={{ color: INK, fontWeight: 700 }}>Muizz Muhammad</span>, Home Front Solutions is built around disciplined field execution, modern recruiting infrastructure, and a belief that homeowner conversations should feel professional, honest, and easy to trust.
               </p>
-              <div className="space-y-2 mb-4">
-                {[
-                  ["Campaigns across fiber, security, solar, water filtration, and roofing", SIGNAL_SOFT, SIGNAL],
-                  ["Field roles, internships, and leadership-track opportunities", BLUE_SOFT, BLUE]
-                ].map(function(item) {
-                  return (
-                    <div key={item[0]} className="flex items-center gap-3 p-3 rounded-2xl" style={{ background: "#FFFFFF", border: "1px solid rgba(14,14,12,0.06)" }}>
-                      <span style={{ width: 8, height: 8, borderRadius: 999, background: item[2], flexShrink: 0 }} />
-                      <span className="text-sm leading-relaxed" style={{ color: INK, fontWeight: 600 }}>{item[0]}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="text-xs leading-relaxed" style={{ color: MUTED }}>
-                Built for category expansion, disciplined field execution, and trusted homeowner conversations.
+              <div className="text-sm leading-[1.85]" style={{ color: MUTED }}>
+                The focus is simple: stronger markets, sharper recruiting, cleaner execution, and customer conversations that feel easy to trust.
               </div>
             </div>
           </aside>
@@ -1576,10 +1602,10 @@ function HomePage(props) {
           <div className="lg:col-span-5">
             <Eyebrow>Local Recruiting Pages</Eyebrow>
             <h2 style={{ ...serif, fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", lineHeight: 1.05 }}>
-              Explore local recruiting pages by city and region.
+              Explore hiring pages by city and region.
             </h2>
             <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              If you are searching for Greensboro sales jobs, High Point field opportunities, Winston-Salem recruiting pages, Lexington entry points, or broader Charlotte and Raleigh hiring pages, start with the market links below.
+              Start with the market that feels closest to you, then move into open roles and deeper reading only if you want more context.
             </p>
           </div>
           <div className="lg:col-span-7">
@@ -1602,79 +1628,15 @@ function HomePage(props) {
         </div>
       </div>
 
-      <div className="mt-8 p-6 md:p-8" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #F8FBFB 100%)", border: "1px solid rgba(31,91,99,0.1)", borderRadius: 28, boxShadow: "0 16px 34px rgba(14,14,12,0.045)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-4">
-            <Eyebrow>Main Fiber Providers</Eyebrow>
-            <h2 style={{ ...serif, fontSize: "clamp(1.7rem, 3vw, 2.25rem)", lineHeight: 1.06 }}>
-              Fiber-provider searches should turn into deeper reading and real applications.
-            </h2>
-            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              People search brand names like Google Fiber, Brightspeed, Lumos, MetroNet, Astound, and Frontier every day. This section keeps that intent inside the site by sending visitors into role pages, provider-focused articles, and the main careers funnel.
-            </p>
-            <div className="mt-6 flex flex-col sm:flex-row lg:flex-col gap-3">
-              <button onClick={function() { props.go("careers"); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
-                See Open Roles
-              </button>
-              <button onClick={function() { props.go("article", "google-fiber-sales-jobs"); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: "#fff", color: INK, border: "1px solid " + RULE, cursor: "pointer" }}>
-                Explore Provider Articles
-              </button>
-            </div>
-          </div>
-          <div className="lg:col-span-8">
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
-              {FIBER_PROVIDERS.map(function(provider) {
-                var providerArticleMap = {
-                  "Google Fiber": "google-fiber-sales-jobs",
-                  "Brightspeed": "brightspeed-fiber-sales-opportunities",
-                  "Lumos": "lumos-vs-metronet-fiber-expansion",
-                  "MetroNet": "lumos-vs-metronet-fiber-expansion",
-                  "Starlink": "starlink-vs-fiber-internet-what-homeowners-care-about"
-                };
-                var articleSlug = providerArticleMap[provider];
-                return (
-                  <div
-                    key={provider}
-                    className="p-4 lift-card interactive-panel"
-                    style={{ background: "rgba(255,255,255,0.92)", border: "1px solid rgba(14,14,12,0.07)", borderRadius: 20, boxShadow: "0 8px 22px rgba(14,14,12,0.035)" }}
-                  >
-                    <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>Provider Search</div>
-                    <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{provider}</div>
-                    <div className="mt-4 flex flex-col gap-2">
-                      {articleSlug && (
-                        <button
-                          onClick={function() { props.go("article", articleSlug); }}
-                          className="text-left text-xs font-semibold"
-                          style={{ background: "none", border: "none", padding: 0, color: SIGNAL, cursor: "pointer" }}
-                        >
-                          Read article →
-                        </button>
-                      )}
-                      <button
-                        onClick={function() { props.go("careers"); }}
-                        className="text-left text-xs font-semibold"
-                        style={{ background: "none", border: "none", padding: 0, color: MUTED, cursor: "pointer" }}
-                      >
-                        View roles →
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
       <section className="mt-10">
         <div className="flex items-end justify-between gap-6 mb-8">
           <div>
-            <Eyebrow>Learn Before You Apply</Eyebrow>
+            <Eyebrow>Insights</Eyebrow>
             <h2 className="max-w-3xl" style={{ ...serif, fontSize: "clamp(1.85rem, 3.5vw, 2.7rem)", lineHeight: 1.05 }}>
-              A smoother path for people who want to understand D2D, sales psychology, pay structure, and the home-services field.
+              Read deeper only if you want more context.
             </h2>
             <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              Smart people usually want to understand the game before they step into it. These guides make the opportunity feel clearer, more practical, and easier to trust.
+              The homepage stays simple. The insights section is where we go deeper on careers, business, industry trends, and the questions people usually ask before they apply.
             </p>
           </div>
           <button onClick={function() { props.go("insights"); }} className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold interactive-pill" style={{ background: SURF, color: INK, border: "1px solid " + RULE, cursor: "pointer" }}>
@@ -1711,40 +1673,6 @@ function HomePage(props) {
               </div>
             );
           })}
-        </div>
-      </section>
-
-      <section className="mt-8">
-        <div className="p-6 md:p-8" style={{ background: "linear-gradient(140deg, #FFFFFF 0%, " + SURF2 + " 55%, #EEF2FF 100%)", border: "1px solid rgba(30,64,175,0.08)", borderRadius: 24, boxShadow: "0 18px 40px rgba(14,14,12,0.05)" }}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-4">
-              <Eyebrow>Students And Interns</Eyebrow>
-              <h2 style={{ ...serif, fontSize: "clamp(1.7rem, 3.1vw, 2.3rem)", lineHeight: 1.06 }}>
-                Content for college students, recent grads, and 18 to 25 year olds looking for a real sales path.
-              </h2>
-            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              For people who want more than a generic internship, this is where the path starts to feel practical, ambitious, and real.
-            </p>
-            </div>
-            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-              {ARTICLE_PAGES.filter(function(article) {
-                return article.slug === "sales-internship-for-college-students" || article.slug === "best-summer-sales-job-for-18-to-25" || article.slug === "why-d2d-after-high-school-or-college";
-              }).map(function(article) {
-                return (
-                  <button
-                    key={article.slug}
-                    onClick={function() { props.go("article", article.slug); }}
-                    className="p-5 text-left lift-card interactive-panel"
-                    style={{ background: "rgba(255,255,255,0.82)", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
-                  >
-                    <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
-                    <div style={{ ...serif, fontSize: 24, lineHeight: 1.08, color: INK }}>{article.title}</div>
-                    <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </section>
       </section>
