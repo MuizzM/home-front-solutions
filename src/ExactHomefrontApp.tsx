@@ -16,12 +16,12 @@ var FOREST = "#2E6E69";
 var FOREST_SOFT = "#E8F4F0";
 var GOLD = "#C48A47";
 var GOLD_SOFT = "#F6E8D5";
-var LOGO = "/logo.png";
+var LOGO = "/logo-128.png";
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
 var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 
-var serif = { fontFamily: "'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
+var serif = { fontFamily: "'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
 
@@ -1396,7 +1396,7 @@ function HomePage(props) {
         <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-14">
             <div className="lg:col-span-5">
-              <div className="text-[11px] mb-4" style={{ color: MUTED, fontFamily: "'JetBrains Mono', ui-monospace, monospace", letterSpacing: "0.04em" }}>SECTION I / HOW THIS WORKS</div>
+              <div className="text-[11px] mb-4" style={{ color: MUTED, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.04em" }}>SECTION I / HOW THIS WORKS</div>
               <h2 style={{ ...serif, fontSize: "clamp(2rem, 4vw, 2.75rem)", lineHeight: 1.05 }}>
                 Three things we do, every day, in every market we work.
               </h2>
@@ -1411,7 +1411,7 @@ function HomePage(props) {
             ].map(function(item) {
               return (
                 <div key={item.t} className="p-8 lift-card" style={{ background: item.bg, borderTop: "3px solid " + item.accent, borderRadius: 18 }}>
-                  <div className="text-[11px] mb-4" style={{ color: item.accent, fontFamily: "'JetBrains Mono', ui-monospace, monospace", letterSpacing: "0.05em", fontWeight: 600 }}>{item.n}</div>
+                  <div className="text-[11px] mb-4" style={{ color: item.accent, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.05em", fontWeight: 600 }}>{item.n}</div>
                   <h3 className="mb-3" style={{ ...serif, fontSize: 22, color: INK }}>{item.t}</h3>
                   <p className="text-sm leading-[1.85]" style={{ color: MUTED }}>{item.d}</p>
                 </div>
@@ -1537,7 +1537,7 @@ function HomePage(props) {
       <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-10 md:p-14" style={{ background: BLUE_SOFT, borderTop: "4px solid " + BLUE }}>
-            <div className="text-[11px] mb-5" style={{ color: BLUE, fontFamily: "'JetBrains Mono', ui-monospace, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR BRANDS THAT NEED FIELD GROWTH</div>
+            <div className="text-[11px] mb-5" style={{ color: BLUE, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR BRANDS THAT NEED FIELD GROWTH</div>
             <h3 className="mb-4" style={{ ...serif, fontSize: "clamp(1.5rem, 2.5vw, 1.875rem)", lineHeight: 1.1, color: INK }}>
               Add a door-to-door channel to your customer acquisition.
             </h3>
@@ -1549,7 +1549,7 @@ function HomePage(props) {
             </button>
           </div>
           <div className="p-10 md:p-14" style={{ background: SIGNAL_SOFT, borderTop: "4px solid " + SIGNAL }}>
-            <div className="text-[11px] mb-5" style={{ color: SIGNAL, fontFamily: "'JetBrains Mono', ui-monospace, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR PEOPLE WHO WANT TO WORK</div>
+            <div className="text-[11px] mb-5" style={{ color: SIGNAL, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR PEOPLE WHO WANT TO WORK</div>
             <h3 className="mb-4" style={{ ...serif, fontSize: "clamp(1.5rem, 2.5vw, 1.875rem)", lineHeight: 1.1, color: INK }}>
               You bring the hustle. We bring the product, the training, and the territory.
             </h3>
@@ -3716,8 +3716,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", background: PAPER, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <div style={{ fontFamily: "'Aptos', 'Segoe UI', system-ui, sans-serif", background: PAPER, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <style>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -3790,7 +3789,7 @@ export default function App() {
 
       <Header go={go} />
 
-      <div style={{ flex: 1 }}>
+      <main style={{ flex: 1 }}>
         {route.name === "home" && <HomePage go={go} />}
         {route.name === "what-we-do" && <WhatWeDoPage go={go} />}
         {route.name === "why-us" && <WhyUsPage go={go} />}
@@ -3805,7 +3804,7 @@ export default function App() {
         {route.name === "contact" && <ContactPage go={go} />}
         {route.name === "privacy" && <PrivacyPage go={go} />}
         {route.name === "terms" && <TermsPage go={go} />}
-      </div>
+      </main>
 
       <Footer go={go} />
     </div>
