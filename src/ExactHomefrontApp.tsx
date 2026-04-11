@@ -3,19 +3,23 @@ import { useState, useEffect } from "react";
 
 var PAPER = "#FAFAF7";
 var SURF = "#FFFFFF";
-var SURF2 = "#F5F3EC";
+var SURF2 = "#F4F0E8";
 var INK = "#0E0E0C";
-var RULE = "#E5E2D8";
+var RULE = "#DFD7CA";
 var MUTED = "#6B6960";
 var MUTED2 = "#9B9890";
-var SIGNAL = "#3B5D7C";
-var SIGNAL_SOFT = "#EDF4FA";
-var BLUE = "#1E40AF";
-var BLUE_SOFT = "#EEF2FF";
-var FOREST = "#15803D";
-var FOREST_SOFT = "#ECFDF5";
-var GOLD = "#B45309";
-var GOLD_SOFT = "#FEF3C7";
+var SIGNAL = "#1F5B63";
+var SIGNAL_SOFT = "#E8F3F2";
+var BLUE = "#153F46";
+var BLUE_SOFT = "#EAF3F1";
+var FOREST = "#2E6E69";
+var FOREST_SOFT = "#E8F4F0";
+var GOLD = "#C48A47";
+var GOLD_SOFT = "#F6E8D5";
+var LOGO = "/logo.jpg";
+var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
+var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions-llc";
+var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 
 var serif = { fontFamily: "'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
 
@@ -1063,6 +1067,7 @@ function Header(props) {
       <div style={{ borderBottom: "1px solid " + RULE }}>
         <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[72px] flex items-center justify-between">
           <button onClick={function() { props.go("home"); }} className="flex items-center gap-2.5" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 46, height: 46, borderRadius: 10, objectFit: "cover", boxShadow: "0 10px 24px rgba(21,63,70,0.12)" }} />
             <span style={{ ...serif, fontSize: 19, color: INK, lineHeight: 1, fontWeight: 600 }}>Home Front Solutions</span>
           </button>
           <nav className="hidden md:flex items-center gap-9">
@@ -1076,6 +1081,9 @@ function Header(props) {
             <button onClick={function() { props.go("contact"); }} className="text-sm font-semibold px-5 py-2.5 rounded-md hover:opacity-90 transition-opacity" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
               Contact Sales
             </button>
+            <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="text-sm font-semibold" style={{ color: SIGNAL }}>
+              Instagram
+            </a>
           </nav>
           <button onClick={function() { setOpen(!open); }} className="md:hidden p-1" style={{ background: "none", border: "none" }} aria-label={open ? "Close navigation menu" : "Open navigation menu"} aria-expanded={open}>
             {open
@@ -1098,6 +1106,10 @@ function Header(props) {
             <button onClick={function() { setOpen(false); props.go("contact"); }} className="mt-6 text-center font-semibold py-3.5 rounded-md" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
               Contact Sales
             </button>
+            <div className="mt-6 flex items-center gap-4 text-sm">
+              <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={{ color: SIGNAL, fontWeight: 600 }}>Instagram</a>
+              <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" style={{ color: SIGNAL, fontWeight: 600 }}>LinkedIn</a>
+            </div>
           </div>
         </div>
       )}
@@ -1112,11 +1124,25 @@ function Footer(props) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-10">
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 mb-5">
+              <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 46, height: 46, borderRadius: 10, objectFit: "cover", boxShadow: "0 10px 24px rgba(21,63,70,0.12)" }} />
               <span style={{ ...serif, fontSize: 19, fontWeight: 600 }}>Home Front Solutions</span>
             </div>
             <p className="text-sm leading-relaxed max-w-sm" style={{ color: MUTED }}>
               A door-to-door marketing company helping homeowners buy better essential services, from fiber and security to solar, water filtration, and roofing.
             </p>
+            <div className="flex flex-wrap items-center gap-3 mt-5">
+              {[
+                ["Instagram", INSTAGRAM_URL],
+                ["LinkedIn", LINKEDIN_URL],
+                ["Facebook", FACEBOOK_URL]
+              ].map(function(item) {
+                return (
+                  <a key={item[0]} href={item[1]} target="_blank" rel="noreferrer" className="interactive-pill inline-flex items-center px-3 py-2 rounded-full text-xs font-semibold" style={{ color: SIGNAL, background: SIGNAL_SOFT, border: "1px solid rgba(31,91,99,0.16)" }}>
+                    {item[0]}
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
           <div className="md:col-span-2">
@@ -3334,7 +3360,7 @@ export default function App() {
       name: "Home Front Solutions",
       legalName: "Home Front Solutions, LLC",
       url: "https://homefrontsolutionsllc.com",
-      logo: "https://homefrontsolutionsllc.com/logo.png",
+      logo: "https://homefrontsolutionsllc.com/logo.jpg",
       image: "https://homefrontsolutionsllc.com/og-image.jpg",
       description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
       telephone: "+13364209379",
@@ -3365,9 +3391,9 @@ export default function App() {
         { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "10:00", closes: "18:00" },
       ],
       sameAs: [
-        "https://www.facebook.com/homefrontsolutionsllc",
-        "https://www.linkedin.com/company/home-front-solutions-llc",
-        "https://www.instagram.com/homefrontsolutionsllc",
+        FACEBOOK_URL,
+        LINKEDIN_URL,
+        INSTAGRAM_URL,
       ],
       makesOffer: PARTNERS.map(function(p) {
         return { "@type": "Offer", itemOffered: { "@type": "Service", name: p + " customer acquisition and field sales support", areaServed: "United States" } };
@@ -3380,16 +3406,16 @@ export default function App() {
       "@id": "https://homefrontsolutionsllc.com/#organization",
       name: "Home Front Solutions, LLC",
       url: "https://homefrontsolutionsllc.com",
-      logo: "https://homefrontsolutionsllc.com/logo.png",
+      logo: "https://homefrontsolutionsllc.com/logo.jpg",
       foundingLocation: {
         "@type": "Place",
         name: "High Point, North Carolina"
       },
       founder: { "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad" },
       sameAs: [
-        "https://www.facebook.com/homefrontsolutionsllc",
-        "https://www.linkedin.com/company/home-front-solutions-llc",
-        "https://www.instagram.com/homefrontsolutionsllc"
+        FACEBOOK_URL,
+        LINKEDIN_URL,
+        INSTAGRAM_URL
       ]
     };
 
