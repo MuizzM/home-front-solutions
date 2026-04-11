@@ -801,6 +801,90 @@ var ARTICLE_PAGES = [
     ]
   },
   {
+    slug: "google-fiber-sales-jobs",
+    title: "Google Fiber Sales Jobs: Why the Category Pulls Attention",
+    eyebrow: "Provider Search",
+    description: "Why Google Fiber-related searches pull so much attention, what applicants actually mean when they search them, and how fiber-brand recognition helps field sales interest.",
+    intro: "People search Google Fiber sales jobs because the brand name is familiar, the category feels legitimate, and fiber itself already has strong demand. Even when the exact role is not owned by Google Fiber directly, the search intent still tells you something important: recognized fiber brands create stronger attention and more curiosity than vague sales offers.",
+    sections: [
+      {
+        heading: "Recognizable fiber brands create cleaner search intent",
+        body: "When people search a known provider by name, they are usually looking for legitimacy, demand, and a real market. Brand familiarity lowers skepticism and makes a fiber role feel more tangible before the applicant even clicks."
+      },
+      {
+        heading: "Applicants are really searching for category quality",
+        body: "A Google Fiber search is often bigger than one company name. It usually reflects interest in premium broadband, field growth, modern infrastructure, and the kinds of sales environments tied to strong products instead of weak offers."
+      },
+      {
+        heading: "Brand-recognition searches should route into real opportunities",
+        body: "The smart funnel is not to let provider-name traffic die on a generic page. It is to move that traffic into actual field roles, market pages, and content that explains how fiber sales works in practice."
+      }
+    ]
+  },
+  {
+    slug: "brightspeed-fiber-sales-opportunities",
+    title: "Brightspeed Fiber Sales Opportunities and Why the Category Matters",
+    eyebrow: "Provider Search",
+    description: "A Brightspeed-focused article for search traffic around fiber growth, field sales opportunity, and why strong broadband categories attract applicants.",
+    intro: "Brightspeed fiber sales opportunity is the kind of search phrase that signals real commercial interest. People making that search usually want to know whether the category is growing, whether the product is credible, and whether the sales side of the opportunity has real upside.",
+    sections: [
+      {
+        heading: "Fiber expansion creates stronger local sales windows",
+        body: "As Brightspeed and other broadband providers continue expanding in relevant markets, the opportunity is not just technical. New serviceability creates a real window for local customer acquisition and neighborhood-level momentum."
+      },
+      {
+        heading: "A stronger product makes the sales conversation cleaner",
+        body: "Applicants are drawn to categories where the homeowner need is already obvious. Fiber usually gives reps a simpler conversation than categories where trust is weaker or demand has to be manufactured from scratch."
+      },
+      {
+        heading: "Searches for provider names should still end in practical guidance",
+        body: "The best outcome is not just ranking for a provider keyword. It is converting that attention into deeper reading, market discovery, and actual career-path action for applicants who want to work in a live category."
+      }
+    ]
+  },
+  {
+    slug: "lumos-vs-metronet-fiber-expansion",
+    title: "Lumos vs MetroNet Fiber Expansion: Why Regional Fiber Growth Matters",
+    eyebrow: "Fiber Expansion",
+    description: "A search-friendly comparison of Lumos and MetroNet growth interest, and why regional fiber expansion creates stronger recruiting and sales opportunity.",
+    intro: "Lumos and MetroNet searches reflect a larger pattern: people are paying attention to regional fiber expansion. When multiple provider brands are pushing growth, the broader takeaway is that fiber demand, route relevance, and customer-acquisition opportunity all get stronger.",
+    sections: [
+      {
+        heading: "Regional expansion creates real local relevance",
+        body: "One reason Lumos and MetroNet searches matter is that people want local proof. Regional buildout makes fiber feel real in specific neighborhoods and cities instead of staying abstract."
+      },
+      {
+        heading: "Provider comparison searches signal category momentum",
+        body: "When people compare providers, they are often trying to understand where the category is moving, which brands are active, and whether the market looks alive. That kind of search behavior is useful because it points to genuine interest instead of passive browsing."
+      },
+      {
+        heading: "The bigger opportunity is the trend behind the names",
+        body: "The real SEO and recruiting value is not only the brand names themselves. It is that regional provider growth points to a live category where field teams, route execution, and customer education can matter a lot."
+      }
+    ]
+  },
+  {
+    slug: "starlink-vs-fiber-internet-what-homeowners-care-about",
+    title: "Starlink vs Fiber Internet: What Homeowners Actually Care About",
+    eyebrow: "Homeowner Comparison",
+    description: "A practical comparison of Starlink and fiber internet focused on speed, reliability, latency, and what homeowners really care about when deciding.",
+    intro: "Starlink gets attention because it feels innovative and broad-reaching. Fiber keeps winning attention because it is faster, more stable, and easier for many households to justify when it is available. Homeowners do not usually compare these categories as abstract technology. They compare them around reliability, streaming, gaming, work-from-home performance, and whether the service feels worth paying for every month.",
+    sections: [
+      {
+        heading: "Homeowners care about reliability more than buzzwords",
+        body: "Most people want internet that works consistently for streaming, work, school, gaming, and everyday household use. Fiber usually wins that conversation where it is available because the performance story is easier to trust."
+      },
+      {
+        heading: "Availability changes the comparison",
+        body: "Starlink matters most in places where wired options are weak or unavailable. Fiber matters most in places where households can upgrade into a faster and more stable connection. That means geography often decides which category feels more attractive."
+      },
+      {
+        heading: "For field sales, the cleaner product story usually wins",
+        body: "A simpler homeowner story creates a better sales environment. The clearer the benefits feel, the easier it is for a rep to guide a conversation without sounding defensive or overcomplicated."
+      }
+    ]
+  },
+  {
     slug: "fiber-vs-solar-sales-which-is-easier-to-sell",
     title: "Fiber vs Solar Sales: Which Is Easier to Sell?",
     eyebrow: "Category Comparison",
@@ -1142,6 +1226,10 @@ function getRelatedArticleSlugs(article) {
     "best-summer-sales-internship-in-charlotte": ["sales-internship-for-college-students", "best-summer-sales-job-for-18-to-25", "best-sales-jobs-in-charlotte-nc"],
     "fiber-internet-gold-rush": ["bead-program-fiber-expansion-and-sales-opportunity", "fiber-vs-solar-sales-which-is-easier-to-sell", "telecom-industry-basics-for-fiber-sales-reps"],
     "bead-program-fiber-expansion-and-sales-opportunity": ["fiber-internet-gold-rush", "how-much-do-door-to-door-reps-make-in-north-carolina", "telecom-industry-basics-for-fiber-sales-reps"],
+    "google-fiber-sales-jobs": ["fiber-internet-gold-rush", "brightspeed-fiber-sales-opportunities", "telecom-industry-basics-for-fiber-sales-reps"],
+    "brightspeed-fiber-sales-opportunities": ["google-fiber-sales-jobs", "lumos-vs-metronet-fiber-expansion", "fiber-internet-gold-rush"],
+    "lumos-vs-metronet-fiber-expansion": ["fiber-internet-gold-rush", "bead-program-fiber-expansion-and-sales-opportunity", "google-fiber-sales-jobs"],
+    "starlink-vs-fiber-internet-what-homeowners-care-about": ["fiber-vs-solar-sales-which-is-easier-to-sell", "telecom-industry-basics-for-fiber-sales-reps", "fiber-internet-gold-rush"],
     "how-much-do-door-to-door-reps-make-in-north-carolina": ["best-sales-jobs-in-greensboro-nc", "best-entry-level-sales-jobs-in-raleigh-nc", "what-makes-a-good-door-to-door-rep"],
     "fiber-vs-solar-sales-which-is-easier-to-sell": ["why-fiber-is-easier-to-sell-than-weak-products", "telecom-industry-basics-for-fiber-sales-reps", "how-to-start-in-field-sales-with-no-experience"],
     "what-makes-a-good-door-to-door-rep": ["d2d-psychology", "how-to-handle-rejection-in-door-to-door-sales", "how-to-win-your-first-30-days-in-d2d"],
@@ -1518,29 +1606,58 @@ function HomePage(props) {
           <div className="lg:col-span-4">
             <Eyebrow>Main Fiber Providers</Eyebrow>
             <h2 style={{ ...serif, fontSize: "clamp(1.7rem, 3vw, 2.25rem)", lineHeight: 1.06 }}>
-              Fiber-provider searches should still lead people into careers and growth pages.
+              Fiber-provider searches should turn into deeper reading and real applications.
             </h2>
             <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              People search brand names like Google Fiber, Brightspeed, Lumos, MetroNet, Astound, and Frontier every day. This section helps that intent stay connected to the Home Front recruiting funnel instead of ending on a dead page.
+              People search brand names like Google Fiber, Brightspeed, Lumos, MetroNet, Astound, and Frontier every day. This section keeps that intent inside the site by sending visitors into role pages, provider-focused articles, and the main careers funnel.
             </p>
-            <button onClick={function() { props.go("careers"); }} className="mt-6 inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
-              See Open Roles
-            </button>
+            <div className="mt-6 flex flex-col sm:flex-row lg:flex-col gap-3">
+              <button onClick={function() { props.go("careers"); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
+                See Open Roles
+              </button>
+              <button onClick={function() { props.go("article", "google-fiber-sales-jobs"); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: "#fff", color: INK, border: "1px solid " + RULE, cursor: "pointer" }}>
+                Explore Provider Articles
+              </button>
+            </div>
           </div>
           <div className="lg:col-span-8">
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
               {FIBER_PROVIDERS.map(function(provider) {
+                var providerArticleMap = {
+                  "Google Fiber": "google-fiber-sales-jobs",
+                  "Brightspeed": "brightspeed-fiber-sales-opportunities",
+                  "Lumos": "lumos-vs-metronet-fiber-expansion",
+                  "MetroNet": "lumos-vs-metronet-fiber-expansion",
+                  "Starlink": "starlink-vs-fiber-internet-what-homeowners-care-about"
+                };
+                var articleSlug = providerArticleMap[provider];
                 return (
-                  <button
+                  <div
                     key={provider}
-                    onClick={function() { props.go("careers"); }}
-                    className="text-left p-4 lift-card interactive-panel"
+                    className="p-4 lift-card interactive-panel"
                     style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 18, cursor: "pointer", boxShadow: "0 8px 22px rgba(14,14,12,0.04)" }}
                   >
                     <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>Provider Search</div>
                     <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{provider}</div>
-                    <div className="mt-3 text-xs font-semibold" style={{ color: MUTED }}>View roles →</div>
-                  </button>
+                    <div className="mt-4 flex flex-col gap-2">
+                      {articleSlug && (
+                        <button
+                          onClick={function() { props.go("article", articleSlug); }}
+                          className="text-left text-xs font-semibold"
+                          style={{ background: "none", border: "none", padding: 0, color: SIGNAL, cursor: "pointer" }}
+                        >
+                          Read article →
+                        </button>
+                      )}
+                      <button
+                        onClick={function() { props.go("careers"); }}
+                        className="text-left text-xs font-semibold"
+                        style={{ background: "none", border: "none", padding: 0, color: MUTED, cursor: "pointer" }}
+                      >
+                        View roles →
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
