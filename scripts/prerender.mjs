@@ -97,6 +97,93 @@ function buildJobFeedXml(jobs) {
   ].join("\n");
 }
 
+function buildSitemapXml(paths) {
+  const urls = paths.map((routePath) => {
+    const location = routePath === "/"
+      ? "https://homefrontsolutionsllc.com/"
+      : `https://homefrontsolutionsllc.com${routePath}`;
+    return `  <url>\n    <loc>${escapeXml(location)}</loc>\n  </url>`;
+  }).join("\n");
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    urls,
+    "</urlset>",
+    "",
+  ].join("\n");
+}
+
+function buildJobSitemapXml(jobs) {
+  const urls = jobs.flatMap((job) => [
+    `  <url>\n    <loc>${escapeXml(job.detailUrl)}</loc>\n  </url>`,
+    `  <url>\n    <loc>${escapeXml(job.applyUrl)}</loc>\n  </url>`,
+  ]).join("\n");
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    urls,
+    "</urlset>",
+    "",
+  ].join("\n");
+}
+
+function buildRobotsTxt() {
+  return [
+    "User-agent: *",
+    "Allow: /",
+    "",
+    "# Keep thin conversion pages out of search indexes while allowing discovery of primary content.",
+    "Disallow: /careers/*/apply",
+    "Disallow: /careers/*/apply/thank-you",
+    "",
+    "# Sitemaps",
+    "Sitemap: https://homefrontsolutionsllc.com/sitemap.xml",
+    "Sitemap: https://homefrontsolutionsllc.com/job-sitemap.xml",
+    "",
+    "# AI and retrieval-friendly note:",
+    "# Public marketing, careers, and market pages may be crawled and summarized.",
+    "",
+  ].join("\n");
+}
+
+function buildYoungProfessionalCampaign(jobs) {
+  const campaigns = jobs.map((job) => ({
+    title: job.title,
+    location: job.location,
+    audience: "young professionals, recent grads, college students, and career switchers who want high-income field sales experience",
+    detailUrl: job.detailUrl,
+    applyUrl: job.applyUrl,
+    linkedinPost: `Young professionals in ${job.location}: if you want a real income path instead of another low-upside entry-level role, this ${job.title} opening at Home Front Solutions is live.\n\nWhat stands out:\n- ${job.shortPitch}\n- ${job.benefits[0]}\n- ${job.benefits[1] || job.benefits[0]}\n\nSee the role: ${job.detailUrl}\nApply here: ${job.applyUrl}`,
+    instagramCaption: `${job.location} opportunity: ${job.title}.\n\nBuilt for ambitious young professionals who want real earnings, fast growth, and strong communication skills.\n\nApply: ${job.applyUrl}`,
+    textBlurb: `${job.title} in ${job.location} is open at Home Front Solutions. Good fit for driven young professionals who want strong income upside. Details: ${job.detailUrl} Apply: ${job.applyUrl}`,
+  }));
+
+  return `${JSON.stringify(campaigns, null, 2)}\n`;
+}
+
+function buildYoungProfessionalMarkdown(jobs) {
+  const sections = jobs.map((job) => [
+    `## ${job.title} - ${job.location}`,
+    "",
+    "LinkedIn",
+    `${job.title} is live at Home Front Solutions for candidates in ${job.location}. This is a strong fit for young professionals who want real income upside, faster career growth, and customer-facing experience that compounds.`,
+    "",
+    `Apply: ${job.applyUrl}`,
+    `Learn more: ${job.detailUrl}`,
+    "",
+    "Instagram",
+    `${job.location}: ${job.title}. Real earning upside. Strong training. Built for ambitious young professionals.`,
+    "",
+    "Text / DM",
+    `${job.title} is open in ${job.location}. If you know someone early in their career who wants a serious field-sales opportunity, send them this: ${job.applyUrl}`,
+    "",
+  ].join("\n")).join("\n");
+
+  return `# Young Professional Outreach Pack\n\n${sections}`;
+}
+
 async function writeRouteHtml(routePath, template, render) {
   const { appHtml, seo } = render(routePath);
   const html = template
@@ -126,6 +213,11 @@ async function main() {
   const jobs = getJobsForAutomation();
   await fs.writeFile(path.join(distDir, "job-board-feed.json"), `${JSON.stringify(jobs, null, 2)}\n`, "utf8");
   await fs.writeFile(path.join(distDir, "job-board-feed.xml"), buildJobFeedXml(jobs), "utf8");
+  await fs.writeFile(path.join(distDir, "sitemap.xml"), buildSitemapXml(paths), "utf8");
+  await fs.writeFile(path.join(distDir, "job-sitemap.xml"), buildJobSitemapXml(jobs), "utf8");
+  await fs.writeFile(path.join(distDir, "robots.txt"), buildRobotsTxt(), "utf8");
+  await fs.writeFile(path.join(distDir, "young-professional-campaign.json"), buildYoungProfessionalCampaign(jobs), "utf8");
+  await fs.writeFile(path.join(distDir, "young-professional-campaign.md"), buildYoungProfessionalMarkdown(jobs), "utf8");
 
   await fs.rm(path.join(distDir, "server"), { recursive: true, force: true });
 }
