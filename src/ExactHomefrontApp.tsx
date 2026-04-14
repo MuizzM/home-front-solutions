@@ -4006,6 +4006,41 @@ export function getPrerenderPaths() {
     .concat(JOBS.map(function(job) { return getPathForRoute("apply", job.slug); }));
 }
 
+export function getJobsForAutomation() {
+  return JOBS.map(function(job) {
+    var salary = getSalaryRange(job.earningRange);
+    return {
+      id: job.slug,
+      title: job.title,
+      slug: job.slug,
+      location: job.location,
+      employmentType: job.type === "Internship" ? "INTERN" : "CONTRACTOR",
+      category: "Field Sales",
+      datePosted: "2026-04-10",
+      validThrough: "2026-12-31T23:59",
+      description: job.overview,
+      shortPitch: job.pitch,
+      responsibilities: job.responsibilities.slice(),
+      qualifications: job.qualifications.slice(),
+      benefits: job.benefits.slice(),
+      salary: {
+        min: salary.min,
+        max: salary.max,
+        currency: "USD",
+        unitText: "YEAR",
+      },
+      applyUrl: "https://homefrontsolutionsllc.com" + getPathForRoute("apply", job.slug),
+      detailUrl: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+      company: {
+        name: "Home Front Solutions, LLC",
+        website: "https://homefrontsolutionsllc.com",
+        email: "info@homefrontsolutionsllc.com",
+        phone: "+13364209379",
+      },
+    };
+  });
+}
+
 export default function App(props) {
   props = props || {};
   var initialPath = props.initialPath || (typeof window !== "undefined" ? window.location.pathname : "/");
