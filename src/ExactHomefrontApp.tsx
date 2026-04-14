@@ -2878,7 +2878,9 @@ function ApplyPage(props) {
 function ThankYouPage(props) {
   var job = JOBS.find(function(j) { return j.slug === props.slug; });
   var submission = null;
-  try { submission = window.__lastApplication; } catch (err) {}
+  if (typeof window !== "undefined") {
+    try { submission = window.__lastApplication; } catch (err) {}
+  }
 
   return (
     <section className="max-w-[680px] mx-auto px-5 md:px-10 pt-16 md:pt-24 pb-32">
@@ -3517,12 +3519,503 @@ function TermsPage(props) {
   );
 }
 
-export default function App() {
-  var _r = useState(function() { return getRouteFromPath(window.location.pathname); });
+function buildSeoPayload(route) {
+  var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
+  var titles = {
+    home: "Home Front Solutions | D2D Sales Jobs, Internships, and Home Services Recruiting",
+    "what-we-do": "Home Services Customer Acquisition | Home Front Solutions",
+    "why-us": "Why Home Front Solutions | In-Person Field Growth Team",
+    partners: "Home Service Categories | Home Front Solutions",
+    careers: "Field Sales Jobs in North Carolina | Home Front Solutions Careers",
+    market: currentJob ? currentJob.title : "Local Field Sales Markets | Home Front Solutions Careers",
+    insights: "D2D Sales Insights, Money Guides, Industry Basics, and Recruiting Articles | Home Front Solutions",
+    article: "D2D Sales Insights | Home Front Solutions",
+    contact: "Contact Home Front Solutions | Sales & Recruiting",
+    privacy: "Privacy Policy | Home Front Solutions",
+    terms: "Terms of Service | Home Front Solutions",
+    job: currentJob ? currentJob.title + " in " + currentJob.location + " | Home Front Solutions" : "Sales Jobs | Home Front Solutions",
+    apply: currentJob ? "Apply for " + currentJob.title + " | Home Front Solutions Careers" : "Apply | Home Front Solutions Careers",
+    "thank-you": "Application Received | Home Front Solutions Careers",
+  };
+
+  var descriptions = {
+    home: "Earn $100K+ in performance-based door-to-door sales. Home Front Solutions recruits for fiber, solar, security, roofing, and home-service sales internships and field roles.",
+    careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
+    market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
+    insights: "Explore articles on D2D sales psychology, field success, money management, industry basics, recruiting, and why door-to-door can be a strong career path.",
+    article: "Articles on door-to-door sales, D2D psychology, recruiting, and why field sales can be a strong career path.",
+    "what-we-do": "Door-to-door sales, neighborhood coverage, customer acquisition, and local market expansion for home-service brands.",
+    "why-us": "A serious field team built around clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
+    partners: "See the home-service categories Home Front Solutions supports across active residential markets.",
+    contact: "Talk with Home Front Solutions about field sales coverage, recruiting, partnerships, or open career opportunities.",
+    privacy: "Read the Home Front Solutions privacy policy covering applicant, customer, and website data collection and use.",
+    terms: "Review the Home Front Solutions terms covering website use, communications, applications, and service-related interactions.",
+    job: currentJob ? currentJob.pitch + " View compensation, responsibilities, qualifications, and next steps." : "Explore open sales roles at Home Front Solutions.",
+    apply: currentJob ? "Apply for the " + currentJob.title + " role in " + currentJob.location + ". The application takes about five minutes." : "Apply to Home Front Solutions.",
+    "thank-you": currentJob ? "Your application for " + currentJob.title + " has been received by Home Front Solutions." : "Your application has been received.",
+  };
+
+  var currentMarket = route.name === "market" && route.slug ? MARKET_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
+  var currentArticle = route.name === "article" && route.slug ? ARTICLE_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
+  if (currentMarket) {
+    titles.market = "D2D Sales Jobs in " + currentMarket.city + " | Home Front Solutions";
+    descriptions.market = currentMarket.intro;
+  }
+  if (currentArticle) {
+    titles.article = currentArticle.title + " | Home Front Solutions";
+    descriptions.article = currentArticle.description;
+  }
+
+  var title = titles[route.name] || titles.home;
+  var description = descriptions[route.name] || descriptions.home;
+  var pagePath = getPathForRoute(route.name, route.slug);
+  var pageUrl = "https://homefrontsolutionsllc.com" + pagePath;
+  var socialImage = "https://homefrontsolutionsllc.com/og-image.jpg";
+  var robotsValue = (route.name === "thank-you" || route.name === "apply")
+    ? "noindex, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+
+  var localBizSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://homefrontsolutionsllc.com/#business",
+    name: "Home Front Solutions",
+    legalName: "Home Front Solutions, LLC",
+    url: "https://homefrontsolutionsllc.com",
+    logo: "https://homefrontsolutionsllc.com/logo.png",
+    image: socialImage,
+    description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
+    telephone: "+13364209379",
+    email: "info@homefrontsolutionsllc.com",
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "High Point",
+      addressRegion: "NC",
+      postalCode: "27260",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 35.9557,
+      longitude: -80.0053,
+    },
+    areaServed: [
+      { "@type": "Country", name: "United States" },
+      { "@type": "City", name: "High Point", containedInPlace: { "@type": "State", name: "North Carolina" } },
+      { "@type": "City", name: "Greensboro", containedInPlace: { "@type": "State", name: "North Carolina" } },
+      { "@type": "City", name: "Winston-Salem", containedInPlace: { "@type": "State", name: "North Carolina" } },
+      { "@type": "City", name: "Jamestown", containedInPlace: { "@type": "State", name: "North Carolina" } },
+      { "@type": "City", name: "Kernersville", containedInPlace: { "@type": "State", name: "North Carolina" } },
+    ],
+    openingHoursSpecification: [
+      { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "20:00" },
+      { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "10:00", closes: "18:00" },
+    ],
+    sameAs: [FACEBOOK_URL, LINKEDIN_URL, INSTAGRAM_URL],
+    makesOffer: PARTNERS.map(function(p) {
+      return { "@type": "Offer", itemOffered: { "@type": "Service", name: p + " customer acquisition and field sales support", areaServed: "United States" } };
+    }),
+  };
+
+  var organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://homefrontsolutionsllc.com/#organization",
+    name: "Home Front Solutions, LLC",
+    url: "https://homefrontsolutionsllc.com",
+    logo: "https://homefrontsolutionsllc.com/logo.png",
+    foundingLocation: {
+      "@type": "Place",
+      name: "High Point, North Carolina"
+    },
+    founder: { "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad" },
+    sameAs: [FACEBOOK_URL, LINKEDIN_URL, INSTAGRAM_URL]
+  };
+
+  var founderSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad",
+    name: "Muizz Muhammad",
+    jobTitle: "Founder",
+    worksFor: { "@id": "https://homefrontsolutionsllc.com/#business" }
+  };
+
+  var serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "https://homefrontsolutionsllc.com/#services",
+    serviceType: "Door-to-door customer acquisition and field sales support",
+    provider: { "@id": "https://homefrontsolutionsllc.com/#business" },
+    areaServed: "United States",
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Home Front Solutions service categories",
+      itemListElement: PARTNERS.map(function(p) {
+        return {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: p + " field sales support"
+          }
+        };
+      })
+    }
+  };
+
+  var websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://homefrontsolutionsllc.com/#website",
+    url: "https://homefrontsolutionsllc.com",
+    name: "Home Front Solutions",
+    publisher: { "@id": "https://homefrontsolutionsllc.com/#business" },
+    inLanguage: "en-US",
+  };
+
+  var breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://homefrontsolutionsllc.com/" },
+    ],
+  };
+  if (route.name !== "home") {
+    breadcrumbSchema.itemListElement.push({
+      "@type": "ListItem",
+      position: 2,
+      name: title,
+      item: pageUrl,
+    });
+  }
+
+  var schemas = [localBizSchema, organizationSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
+
+  if (route.name === "home") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: HOME_FAQS.map(function(item) {
+        return {
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.a
+          }
+        };
+      })
+    });
+  }
+
+  if (route.name === "careers") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Home Front Solutions Open Sales Jobs",
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: JOBS.length,
+      itemListElement: JOBS.map(function(job, index) {
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+          name: job.title + " - " + job.location,
+        };
+      }),
+    });
+
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How are these roles structured?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "All current Home Front Solutions field sales roles listed on this site are performance-based opportunities built around production, coaching, and real field accountability."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "How quickly do you respond to applicants?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Qualified applicants typically hear back within 48 hours."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Do I need prior sales experience?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Not always. Some roles are open to coachable applicants without prior sales experience, and training is provided."
+          }
+        }
+      ]
+    });
+  }
+
+  if (route.name === "market" && currentMarket) {
+    var marketJobs = JOBS.filter(function(job) {
+      var city = currentMarket.city.toLowerCase();
+      var location = job.location.toLowerCase();
+      return city.indexOf(location.replace(", nc", "")) !== -1
+        || location.indexOf(currentMarket.region.toLowerCase()) !== -1
+        || currentMarket.region === "Piedmont Triad";
+    });
+    if (!marketJobs.length) {
+      marketJobs = JOBS.slice(0, 3);
+    }
+
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: currentMarket.title,
+      url: pageUrl,
+      description: currentMarket.intro,
+      about: {
+        "@type": "Thing",
+        name: currentMarket.city + " field sales recruiting and home services hiring"
+      }
+    });
+
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: currentMarket.city + " open field sales roles",
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: marketJobs.length,
+      itemListElement: marketJobs.map(function(job, index) {
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+          name: job.title + " - " + job.location
+        };
+      })
+    });
+
+    marketJobs.forEach(function(job) {
+      var salary = getSalaryRange(job.earningRange);
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        title: job.title,
+        description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
+        identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug + "-market" },
+        datePosted: "2026-04-10",
+        validThrough: "2026-12-31T23:59",
+        employmentType: "CONTRACTOR",
+        hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        jobLocation: {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: job.location.split(",")[0].trim(),
+            addressRegion: "NC",
+            addressCountry: "US"
+          }
+        },
+        baseSalary: {
+          "@type": "MonetaryAmount",
+          currency: "USD",
+          value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" }
+        },
+        experienceRequirements: "No prior sales experience required for select roles. Training provided.",
+        applicantLocationRequirements: {
+          "@type": "Country",
+          name: "United States"
+        },
+        directApply: true,
+        url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug)
+      });
+    });
+
+    if (MARKET_FAQS[currentMarket.slug] && MARKET_FAQS[currentMarket.slug].length) {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: MARKET_FAQS[currentMarket.slug].map(function(item) {
+          return {
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.a
+            }
+          };
+        })
+      });
+    }
+  }
+
+  if (route.name === "insights") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: "Home Front Solutions Insights",
+      url: pageUrl,
+      description: descriptions.insights,
+      hasPart: ARTICLE_PAGES.map(function(article) {
+        return {
+          "@type": "Article",
+          headline: article.title,
+          url: "https://homefrontsolutionsllc.com" + getPathForRoute("article", article.slug)
+        };
+      })
+    });
+  }
+
+  if (route.name === "article" && currentArticle) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: currentArticle.title,
+      description: currentArticle.description,
+      image: socialImage,
+      author: {
+        "@type": "Organization",
+        name: "Home Front Solutions"
+      },
+      publisher: {
+        "@id": "https://homefrontsolutionsllc.com/#business"
+      },
+      mainEntityOfPage: pageUrl
+    });
+  }
+
+  if (route.name === "why-us") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      name: "About Home Front Solutions",
+      url: pageUrl,
+      about: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+      description: "About Home Front Solutions, including founder, company focus, field-sales recruiting, and home-services growth model."
+    });
+  }
+
+  if (route.name === "job" && route.slug) {
+    var job = JOBS.find(function(j) { return j.slug === route.slug; });
+    if (job) {
+      var salary = getSalaryRange(job.earningRange);
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        title: job.title,
+        description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
+        identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug },
+        datePosted: "2026-04-10",
+        validThrough: "2026-12-31T23:59",
+        employmentType: "CONTRACTOR",
+        hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        jobLocation: {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: job.location.split(",")[0].trim(),
+            addressRegion: "NC",
+            addressCountry: "US",
+          },
+        },
+        baseSalary: {
+          "@type": "MonetaryAmount",
+          currency: "USD",
+          value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" },
+        },
+        experienceRequirements: "No prior sales experience required for select roles. Training provided.",
+        directApply: true,
+        url: pageUrl,
+        applicantLocationRequirements: {
+          "@type": "Country",
+          name: "United States",
+        },
+      });
+    }
+  }
+
+  var meta = [
+    { name: "description", content: description },
+    { name: "robots", content: robotsValue },
+    { name: "googlebot", content: robotsValue },
+    { name: "author", content: "Home Front Solutions, LLC" },
+    { name: "publisher", content: "Home Front Solutions, LLC" },
+    { name: "theme-color", content: "#3B5D7C" },
+    { name: "apple-mobile-web-app-title", content: "Home Front" },
+    { name: "application-name", content: "Home Front Solutions" },
+    { name: "format-detection", content: "telephone=yes" },
+    { name: "geo.region", content: "US-NC" },
+    { name: "geo.placename", content: "High Point" },
+    { name: "geo.position", content: "35.9557;-80.0053" },
+    { name: "ICBM", content: "35.9557, -80.0053" },
+    { name: "keywords", content: "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, field marketing company, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, sales rep tax planning, d2d sales psychology, customer acquisition, Home Front Solutions" },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:type", content: route.name === "job" || route.name === "article" ? "article" : "website" },
+    { property: "og:site_name", content: "Home Front Solutions" },
+    { property: "og:locale", content: "en_US" },
+    { property: "og:url", content: pageUrl },
+    { property: "og:image", content: socialImage },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:image:alt", content: "Home Front Solutions. National field sales and home services company" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { name: "twitter:url", content: pageUrl },
+    { name: "twitter:image", content: socialImage },
+    { name: "twitter:image:alt", content: "Home Front Solutions. National field sales and home services company" },
+    { name: "twitter:site", content: "@homefrontllc" },
+  ];
+
+  return {
+    title: title,
+    description: description,
+    path: pagePath,
+    pageUrl: pageUrl,
+    socialImage: socialImage,
+    robots: robotsValue,
+    meta: meta,
+    schemas: schemas,
+  };
+}
+
+export function getSeoForPath(pathname) {
+  return buildSeoPayload(getRouteFromPath(pathname));
+}
+
+export function getPrerenderPaths() {
+  return []
+    .concat([
+      "/",
+      "/what-we-do",
+      "/why-us",
+      "/partners",
+      "/careers",
+      "/contact",
+      "/privacy",
+      "/terms",
+      "/insights",
+    ])
+    .concat(MARKET_PAGES.map(function(item) { return getPathForRoute("market", item.slug); }))
+    .concat(ARTICLE_PAGES.map(function(item) { return getPathForRoute("article", item.slug); }))
+    .concat(JOBS.map(function(job) { return getPathForRoute("job", job.slug); }))
+    .concat(JOBS.map(function(job) { return getPathForRoute("apply", job.slug); }));
+}
+
+export default function App(props) {
+  props = props || {};
+  var initialPath = props.initialPath || (typeof window !== "undefined" ? window.location.pathname : "/");
+  var staticMode = !!props.staticMode;
+  var _r = useState(function() { return getRouteFromPath(initialPath); });
   var route = _r[0];
   var setRoute = _r[1];
 
   useEffect(function() {
+    if (staticMode || typeof window === "undefined") return;
     function handlePopState() {
       setRoute(getRouteFromPath(window.location.pathname));
     }
@@ -3533,6 +4026,7 @@ export default function App() {
   }, []);
 
   useEffect(function() {
+    if (staticMode || typeof window === "undefined" || typeof document === "undefined") return;
     // Mobile browsers can keep focus on the tapped control during SPA navigation,
     // which sometimes causes the viewport to jump to the bottom. Clear it and
     // force the new route to settle at the top after layout has updated.
@@ -3553,49 +4047,9 @@ export default function App() {
 
   // SEO: Update document title and meta tags per route
   useEffect(function() {
-    var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
-    var titles = {
-      home: "Home Front Solutions | D2D Sales Jobs, Internships, and Home Services Recruiting",
-      "what-we-do": "Home Services Customer Acquisition | Home Front Solutions",
-      "why-us": "Why Home Front Solutions | In-Person Field Growth Team",
-      partners: "Home Service Categories | Home Front Solutions",
-      careers: "Field Sales Jobs in North Carolina | Home Front Solutions Careers",
-      market: currentJob ? currentJob.title : "Local Field Sales Markets | Home Front Solutions Careers",
-      insights: "D2D Sales Insights, Money Guides, Industry Basics, and Recruiting Articles | Home Front Solutions",
-      article: "D2D Sales Insights | Home Front Solutions",
-      contact: "Contact Home Front Solutions | Sales & Recruiting",
-      job: currentJob ? currentJob.title + " in " + currentJob.location + " | Home Front Solutions" : "Sales Jobs | Home Front Solutions",
-      apply: currentJob ? "Apply for " + currentJob.title + " | Home Front Solutions Careers" : "Apply | Home Front Solutions Careers",
-      "thank-you": "Application Received | Home Front Solutions Careers",
-    };
-
-    var descriptions = {
-      home: "Earn $100K+ in performance-based door-to-door sales. Home Front Solutions recruits for fiber, solar, security, roofing, and home-service sales internships and field roles.",
-      careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
-      market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
-      insights: "Explore articles on D2D sales psychology, field success, money management, industry basics, recruiting, and why door-to-door can be a strong career path.",
-      article: "Articles on door-to-door sales, D2D psychology, recruiting, and why field sales can be a strong career path.",
-      "what-we-do": "Door-to-door sales, neighborhood coverage, customer acquisition, and local market expansion for home-service brands.",
-      "why-us": "A serious field team built around clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
-      partners: "See the home-service categories Home Front Solutions supports across active residential markets.",
-      contact: "Talk with Home Front Solutions about field sales coverage, recruiting, partnerships, or open career opportunities.",
-      job: currentJob ? currentJob.pitch + " View compensation, responsibilities, qualifications, and next steps." : "Explore open sales roles at Home Front Solutions.",
-      apply: currentJob ? "Apply for the " + currentJob.title + " role in " + currentJob.location + ". The application takes about five minutes." : "Apply to Home Front Solutions.",
-      "thank-you": currentJob ? "Your application for " + currentJob.title + " has been received by Home Front Solutions." : "Your application has been received.",
-    };
-
-    var currentMarket = route.name === "market" && route.slug ? MARKET_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
-    var currentArticle = route.name === "article" && route.slug ? ARTICLE_PAGES.find(function(item) { return item.slug === route.slug; }) : null;
-    if (currentMarket) {
-      titles.market = "D2D Sales Jobs in " + currentMarket.city + " | Home Front Solutions";
-      descriptions.market = currentMarket.intro;
-    }
-    if (currentArticle) {
-      titles.article = currentArticle.title + " | Home Front Solutions";
-      descriptions.article = currentArticle.description;
-    }
-
-    document.title = titles[route.name] || titles.home;
+    if (staticMode || typeof document === "undefined") return;
+    var seo = buildSeoPayload(route);
+    document.title = seo.title;
 
     function setMeta(name, content, isProperty) {
       var attr = isProperty ? "property" : "name";
@@ -3608,41 +4062,9 @@ export default function App() {
       el.setAttribute("content", content);
     }
 
-    var desc = descriptions[route.name] || descriptions.home;
-    var pagePath = getPathForRoute(route.name, route.slug);
-    setMeta("description", desc);
-    setMeta("og:title", titles[route.name] || titles.home, true);
-    setMeta("og:description", desc, true);
-    setMeta("og:type", route.name === "job" ? "article" : "website", true);
-    setMeta("og:site_name", "Home Front Solutions", true);
-    setMeta("og:locale", "en_US", true);
-    setMeta("og:url", "https://homefrontsolutionsllc.com" + pagePath, true);
-    setMeta("og:image", "https://homefrontsolutionsllc.com/og-image.jpg", true);
-    setMeta("og:image:width", "1200", true);
-    setMeta("og:image:height", "630", true);
-    setMeta("og:image:alt", "Home Front Solutions. National field sales and home services company", true);
-    setMeta("twitter:card", "summary_large_image");
-    setMeta("twitter:title", titles[route.name] || titles.home);
-    setMeta("twitter:description", desc);
-    setMeta("twitter:image", "https://homefrontsolutionsllc.com/og-image.jpg");
-    setMeta("twitter:image:alt", "Home Front Solutions. National field sales and home services company");
-    setMeta("twitter:site", "@homefrontllc");
-    var robotsValue = (route.name === "thank-you" || route.name === "apply")
-      ? "noindex, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-      : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
-    setMeta("robots", robotsValue);
-    setMeta("googlebot", robotsValue);
-    setMeta("author", "Home Front Solutions, LLC");
-    setMeta("publisher", "Home Front Solutions, LLC");
-    setMeta("theme-color", "#3B5D7C");
-    setMeta("apple-mobile-web-app-title", "Home Front");
-    setMeta("application-name", "Home Front Solutions");
-    setMeta("format-detection", "telephone=yes");
-    setMeta("geo.region", "US-NC");
-    setMeta("geo.placename", "High Point");
-    setMeta("geo.position", "35.9557;-80.0053");
-    setMeta("ICBM", "35.9557, -80.0053");
-    setMeta("keywords", "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, field marketing company, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, sales rep tax planning, d2d sales psychology, customer acquisition, Home Front Solutions");
+    seo.meta.forEach(function(item) {
+      setMeta(item.property || item.name, item.content, !!item.property);
+    });
 
     // Apple touch icon
     var atiEl = document.querySelector("link[rel='apple-touch-icon']");
@@ -3653,386 +4075,13 @@ export default function App() {
     }
     atiEl.setAttribute("href", "https://homefrontsolutionsllc.com/apple-touch-icon.png");
 
-    // JSON-LD: LocalBusiness schema (the big one for local Google rankings)
-    var localBizSchema = {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "@id": "https://homefrontsolutionsllc.com/#business",
-      name: "Home Front Solutions",
-      legalName: "Home Front Solutions, LLC",
-      url: "https://homefrontsolutionsllc.com",
-      logo: "https://homefrontsolutionsllc.com/logo.png",
-      image: "https://homefrontsolutionsllc.com/og-image.jpg",
-      description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
-      telephone: "+13364209379",
-      email: "info@homefrontsolutionsllc.com",
-      priceRange: "$$",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "High Point",
-        addressRegion: "NC",
-        postalCode: "27260",
-        addressCountry: "US",
-      },
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: 35.9557,
-        longitude: -80.0053,
-      },
-      areaServed: [
-        { "@type": "Country", name: "United States" },
-        { "@type": "City", name: "High Point", containedInPlace: { "@type": "State", name: "North Carolina" } },
-        { "@type": "City", name: "Greensboro", containedInPlace: { "@type": "State", name: "North Carolina" } },
-        { "@type": "City", name: "Winston-Salem", containedInPlace: { "@type": "State", name: "North Carolina" } },
-        { "@type": "City", name: "Jamestown", containedInPlace: { "@type": "State", name: "North Carolina" } },
-        { "@type": "City", name: "Kernersville", containedInPlace: { "@type": "State", name: "North Carolina" } },
-      ],
-      openingHoursSpecification: [
-        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "20:00" },
-        { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "10:00", closes: "18:00" },
-      ],
-      sameAs: [
-        FACEBOOK_URL,
-        LINKEDIN_URL,
-        INSTAGRAM_URL,
-      ],
-      makesOffer: PARTNERS.map(function(p) {
-        return { "@type": "Offer", itemOffered: { "@type": "Service", name: p + " customer acquisition and field sales support", areaServed: "United States" } };
-      }),
-    };
-
-    var organizationSchema = {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "@id": "https://homefrontsolutionsllc.com/#organization",
-      name: "Home Front Solutions, LLC",
-      url: "https://homefrontsolutionsllc.com",
-      logo: "https://homefrontsolutionsllc.com/logo.png",
-      foundingLocation: {
-        "@type": "Place",
-        name: "High Point, North Carolina"
-      },
-      founder: { "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad" },
-      sameAs: [
-        FACEBOOK_URL,
-        LINKEDIN_URL,
-        INSTAGRAM_URL
-      ]
-    };
-
-    var founderSchema = {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad",
-      name: "Muizz Muhammad",
-      jobTitle: "Founder",
-      worksFor: { "@id": "https://homefrontsolutionsllc.com/#business" }
-    };
-
-    var serviceSchema = {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "@id": "https://homefrontsolutionsllc.com/#services",
-      serviceType: "Door-to-door customer acquisition and field sales support",
-      provider: { "@id": "https://homefrontsolutionsllc.com/#business" },
-      areaServed: "United States",
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: "Home Front Solutions service categories",
-        itemListElement: PARTNERS.map(function(p) {
-          return {
-            "@type": "Offer",
-            itemOffered: {
-              "@type": "Service",
-              name: p + " field sales support"
-            }
-          };
-        })
-      }
-    };
-
-    // Website schema (sitelinks search box eligible)
-    var websiteSchema = {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": "https://homefrontsolutionsllc.com/#website",
-      url: "https://homefrontsolutionsllc.com",
-      name: "Home Front Solutions",
-      publisher: { "@id": "https://homefrontsolutionsllc.com/#business" },
-      inLanguage: "en-US",
-    };
-
-    // Breadcrumb schema for inner pages
-    var breadcrumbSchema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: "https://homefrontsolutionsllc.com/" },
-      ],
-    };
-    if (route.name !== "home") {
-      breadcrumbSchema.itemListElement.push({
-        "@type": "ListItem",
-        position: 2,
-        name: titles[route.name] || route.name,
-        item: "https://homefrontsolutionsllc.com" + pagePath,
-      });
-    }
-
-    var schemas = [localBizSchema, organizationSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
-
-    if (route.name === "home") {
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: HOME_FAQS.map(function(item) {
-          return {
-            "@type": "Question",
-            name: item.q,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: item.a
-            }
-          };
-        })
-      });
-    }
-
-    if (route.name === "careers") {
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        name: "Home Front Solutions Open Sales Jobs",
-        itemListOrder: "https://schema.org/ItemListOrderAscending",
-        numberOfItems: JOBS.length,
-        itemListElement: JOBS.map(function(job, index) {
-          return {
-            "@type": "ListItem",
-            position: index + 1,
-            url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
-            name: job.title + " - " + job.location,
-          };
-        }),
-      });
-
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: [
-          {
-            "@type": "Question",
-            name: "How are these roles structured?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "All current Home Front Solutions field sales roles listed on this site are performance-based opportunities built around production, coaching, and real field accountability."
-            }
-          },
-          {
-            "@type": "Question",
-            name: "How quickly do you respond to applicants?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Qualified applicants typically hear back within 48 hours."
-            }
-          },
-          {
-            "@type": "Question",
-            name: "Do I need prior sales experience?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Not always. Some roles are open to coachable applicants without prior sales experience, and training is provided."
-            }
-          }
-        ]
-      });
-    }
-
-    if (route.name === "market" && currentMarket) {
-      var marketJobs = JOBS.filter(function(job) {
-        var city = currentMarket.city.toLowerCase();
-        var location = job.location.toLowerCase();
-        return city.indexOf(location.replace(", nc", "")) !== -1
-          || location.indexOf(currentMarket.region.toLowerCase()) !== -1
-          || currentMarket.region === "Piedmont Triad";
-      });
-      if (!marketJobs.length) {
-        marketJobs = JOBS.slice(0, 3);
-      }
-
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        name: currentMarket.title,
-        url: "https://homefrontsolutionsllc.com" + pagePath,
-        description: currentMarket.intro,
-        about: {
-          "@type": "Thing",
-          name: currentMarket.city + " field sales recruiting and home services hiring"
-        }
-      });
-
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        name: currentMarket.city + " open field sales roles",
-        itemListOrder: "https://schema.org/ItemListOrderAscending",
-        numberOfItems: marketJobs.length,
-        itemListElement: marketJobs.map(function(job, index) {
-          return {
-            "@type": "ListItem",
-            position: index + 1,
-            url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
-            name: job.title + " - " + job.location
-          };
-        })
-      });
-
-      marketJobs.forEach(function(job) {
-        var salary = getSalaryRange(job.earningRange);
-        schemas.push({
-          "@context": "https://schema.org",
-          "@type": "JobPosting",
-          title: job.title,
-          description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
-          identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug + "-market" },
-          datePosted: "2026-04-10",
-          validThrough: "2026-12-31T23:59",
-          employmentType: "CONTRACTOR",
-          hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
-          jobLocation: {
-            "@type": "Place",
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: job.location.split(",")[0].trim(),
-              addressRegion: "NC",
-              addressCountry: "US"
-            }
-          },
-          baseSalary: {
-            "@type": "MonetaryAmount",
-            currency: "USD",
-            value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" }
-          },
-          experienceRequirements: "No prior sales experience required for select roles. Training provided.",
-          applicantLocationRequirements: {
-            "@type": "Country",
-            name: "United States"
-          },
-          directApply: true,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug)
-        });
-      });
-
-      if (MARKET_FAQS[currentMarket.slug] && MARKET_FAQS[currentMarket.slug].length) {
-        schemas.push({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: MARKET_FAQS[currentMarket.slug].map(function(item) {
-            return {
-              "@type": "Question",
-              name: item.q,
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: item.a
-              }
-            };
-          })
-        });
-      }
-    }
-
-    if (route.name === "insights") {
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        name: "Home Front Solutions Insights",
-        url: "https://homefrontsolutionsllc.com" + pagePath,
-        description: descriptions.insights,
-        hasPart: ARTICLE_PAGES.map(function(article) {
-          return {
-            "@type": "Article",
-            headline: article.title,
-            url: "https://homefrontsolutionsllc.com" + getPathForRoute("article", article.slug)
-          };
-        })
-      });
-    }
-
-    if (route.name === "article" && currentArticle) {
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "Article",
-        headline: currentArticle.title,
-        description: currentArticle.description,
-        author: {
-          "@type": "Organization",
-          name: "Home Front Solutions"
-        },
-        publisher: {
-          "@id": "https://homefrontsolutionsllc.com/#business"
-        },
-        mainEntityOfPage: "https://homefrontsolutionsllc.com" + pagePath
-      });
-    }
-
-    if (route.name === "why-us") {
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "AboutPage",
-        name: "About Home Front Solutions",
-        url: "https://homefrontsolutionsllc.com" + pagePath,
-        about: { "@id": "https://homefrontsolutionsllc.com/#organization" },
-        description: "About Home Front Solutions, including founder, company focus, field-sales recruiting, and home-services growth model."
-      });
-    }
-
-    // JobPosting schema for job detail pages (Google Jobs widget)
-    if (route.name === "job" && route.slug) {
-      var job = JOBS.find(function(j) { return j.slug === route.slug; });
-      if (job) {
-        var salary = getSalaryRange(job.earningRange);
-        schemas.push({
-          "@context": "https://schema.org",
-          "@type": "JobPosting",
-          title: job.title,
-          description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
-          identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug },
-          datePosted: "2026-04-10",
-          validThrough: "2026-12-31T23:59",
-          employmentType: "CONTRACTOR",
-          hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
-          jobLocation: {
-            "@type": "Place",
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: job.location.split(",")[0].trim(),
-              addressRegion: "NC",
-              addressCountry: "US",
-            },
-          },
-          baseSalary: {
-            "@type": "MonetaryAmount",
-            currency: "USD",
-            value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" },
-          },
-          experienceRequirements: "No prior sales experience required for select roles. Training provided.",
-          directApply: true,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
-          applicantLocationRequirements: {
-            "@type": "Country",
-            name: "United States",
-          },
-        });
-      }
-    }
-
     // Inject all schemas
     var existing = document.getElementById("ld-json");
     if (existing) existing.remove();
     var script = document.createElement("script");
     script.id = "ld-json";
     script.type = "application/ld+json";
-    script.textContent = JSON.stringify(schemas);
+    script.textContent = JSON.stringify(seo.schemas);
     document.head.appendChild(script);
 
     // Canonical URL
@@ -4042,12 +4091,16 @@ export default function App() {
       canonicalEl.setAttribute("rel", "canonical");
       document.head.appendChild(canonicalEl);
     }
-    canonicalEl.setAttribute("href", "https://homefrontsolutionsllc.com" + pagePath);
-  }, [route.name, route.slug]);
+    canonicalEl.setAttribute("href", seo.pageUrl);
+  }, [route.name, route.slug, staticMode]);
 
   function go(name, slug) {
     var nextRoute = { name: name, slug: slug || null };
     var nextPath = getPathForRoute(nextRoute.name, nextRoute.slug);
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      setRoute(nextRoute);
+      return;
+    }
     if (document.activeElement && typeof document.activeElement.blur === "function") {
       document.activeElement.blur();
     }
