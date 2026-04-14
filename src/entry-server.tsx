@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
-import App, { getPrerenderPaths, getSeoForPath } from "./ExactHomefrontApp";
+import App, { getJobsForAutomation, getPrerenderPaths, getSeoForPath } from "./ExactHomefrontApp";
 
 export function render(pathname: string) {
   const appHtml = renderToString(
@@ -16,3 +16,4 @@ export function render(pathname: string) {
 }
 
 export { getPrerenderPaths };
+export { getJobsForAutomation };

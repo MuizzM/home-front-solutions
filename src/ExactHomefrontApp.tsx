@@ -968,6 +968,90 @@ var ARTICLE_PAGES = [
     ]
   },
   {
+    slug: "best-jobs-for-young-professionals-in-greensboro-nc",
+    title: "Best Jobs for Young Professionals in Greensboro, NC Who Want Real Income Growth",
+    eyebrow: "Young Professionals",
+    description: "A Greensboro-focused guide for young professionals comparing career options and looking for higher-income work that builds communication skill and upward mobility.",
+    intro: "A lot of young professionals in Greensboro are not just looking for a job. They are looking for momentum. The best opportunities usually combine skill growth, direct accountability, and enough upside to make the work feel worth taking seriously.",
+    sections: [
+      {
+        heading: "Young professionals usually need slope, not just stability",
+        body: "Early-career candidates often get stuck in roles that look safe but do not move their income, confidence, or communication ability very far. A better role gives them a steeper learning curve and a more visible path upward."
+      },
+      {
+        heading: "Greensboro rewards people who can communicate clearly and move fast",
+        body: "A stronger market creates better feedback. In Greensboro, the opportunities that tend to stand out are the ones where the candidate can improve quickly, be measured clearly, and see whether the work is actually compounding."
+      },
+      {
+        heading: "The best fit is usually a role with skill transfer and upside",
+        body: "Young professionals should compare roles based on what they leave with. Communication skill, resilience, customer confidence, and the ability to close live conversations transfer into almost every future leadership or business path."
+      }
+    ]
+  },
+  {
+    slug: "recent-grad-sales-jobs-in-raleigh-nc",
+    title: "Recent Grad Sales Jobs in Raleigh, NC With Better Upside Than Generic Entry-Level Roles",
+    eyebrow: "Recent Grads",
+    description: "A Raleigh guide for recent grads comparing sales jobs, early-career upside, and roles that build real communication skill instead of vague resume filler.",
+    intro: "Recent grads in Raleigh usually face the same decision: take a safe but forgettable entry-level role, or choose a position that develops real skill and actually changes their earning potential. The better option is usually the one with more accountability, more reps, and more upside.",
+    sections: [
+      {
+        heading: "Recent grads should compare ceiling, not just starting comfort",
+        body: "A lot of early-career jobs feel organized but leave the candidate in almost the same place a year later. Stronger sales roles create faster learning because the feedback is immediate and the scorecard is obvious."
+      },
+      {
+        heading: "Raleigh candidates usually care about legitimacy and trajectory",
+        body: "In Raleigh, recent grads often want to know whether the company is real, whether the opportunity has serious upside, and whether the work builds something that matters beyond the first paycheck. Those are smart filters."
+      },
+      {
+        heading: "The best early-career roles make confidence measurable",
+        body: "When a candidate can see their communication improve, their results improve, and their compensation move with it, the role tends to feel more meaningful than a job built mostly around low-risk tasks."
+      }
+    ]
+  },
+  {
+    slug: "communication-skills-jobs-for-college-grads-in-charlotte",
+    title: "Communication Skills Jobs for College Grads in Charlotte",
+    eyebrow: "Charlotte Career Growth",
+    description: "A Charlotte-focused article for college grads who want jobs that sharpen communication, confidence, persuasion, and real-world professional presence.",
+    intro: "A college grad in Charlotte can learn a lot from almost any job, but not every job improves communication under pressure. The strongest communication-skill roles create live conversations, direct accountability, and enough repetition for the candidate to actually become more effective month after month.",
+    sections: [
+      {
+        heading: "Communication skill improves faster in live environments",
+        body: "The jobs that change people quickest are usually the ones where they have to talk to real people, handle uncertainty, and recover in real time instead of hiding behind internal tasks."
+      },
+      {
+        heading: "Charlotte is a good market for competitive early-career candidates",
+        body: "Charlotte rewards people who can stay clear, composed, and persuasive. That is why communication-heavy roles can become such a strong launchpad there for college grads who want something more demanding than generic admin work."
+      },
+      {
+        heading: "The right job turns communication into career leverage",
+        body: "A candidate who learns how to hold attention, explain value, and guide decisions becomes more valuable in sales, leadership, recruiting, business development, and almost any client-facing role."
+      }
+    ]
+  },
+  {
+    slug: "how-young-professionals-build-income-fast-in-field-sales",
+    title: "How Young Professionals Build Income Faster in Field Sales",
+    eyebrow: "Income Growth",
+    description: "A practical guide for young professionals comparing income growth paths and why field sales can accelerate confidence, skill, and earnings faster than slower early-career tracks.",
+    intro: "Young professionals usually do not need a miracle. They need a path where effort, skill, and money actually connect. Field sales tends to attract ambitious people because it shortens the distance between performance and reward.",
+    sections: [
+      {
+        heading: "Field sales gives faster feedback than many desk-heavy roles",
+        body: "In slower corporate tracks, it can take months to understand whether a person is really improving. In field sales, the feedback loop is tighter. The rep learns quickly whether the pitch is working, whether objections are being handled well, and whether they are actually moving toward production."
+      },
+      {
+        heading: "Income tends to move with skill and consistency",
+        body: "That is what makes field sales attractive to ambitious young professionals. The upside is not theoretical if the product is strong, the market is live, and the rep is willing to stay disciplined long enough for the skill curve to compound."
+      },
+      {
+        heading: "The best version of the job creates both income and leverage",
+        body: "A strong field role should not just pay. It should build confidence, resilience, professionalism, and the ability to influence people clearly. That combination is why some early-career candidates accelerate much faster in the field than in lower-pressure roles."
+      }
+    ]
+  },
+  {
     slug: "why-sales-and-marketing-are-the-backbone-of-business",
     title: "Why Sales and Marketing Are the Backbone of Every Business",
     eyebrow: "Business Basics",
@@ -3569,8 +3653,9 @@ function buildSeoPayload(route) {
   var title = titles[route.name] || titles.home;
   var description = descriptions[route.name] || descriptions.home;
   var pagePath = getPathForRoute(route.name, route.slug);
-  var pageUrl = "https://homefrontsolutionsllc.com" + pagePath;
-  var socialImage = "https://homefrontsolutionsllc.com/og-image.jpg";
+  var siteOrigin = "https://www.homefrontsolutionsllc.com";
+  var pageUrl = siteOrigin + pagePath;
+  var socialImage = siteOrigin + "/og-image.jpg";
   var robotsValue = (route.name === "thank-you" || route.name === "apply")
     ? "noindex, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
@@ -3578,11 +3663,11 @@ function buildSeoPayload(route) {
   var localBizSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://homefrontsolutionsllc.com/#business",
+    "@id": "https://www.homefrontsolutionsllc.com/#business",
     name: "Home Front Solutions",
     legalName: "Home Front Solutions, LLC",
-    url: "https://homefrontsolutionsllc.com",
-    logo: "https://homefrontsolutionsllc.com/logo.png",
+    url: siteOrigin,
+    logo: siteOrigin + "/logo.png",
     image: socialImage,
     description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
     telephone: "+13364209379",
@@ -3621,33 +3706,33 @@ function buildSeoPayload(route) {
   var organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": "https://homefrontsolutionsllc.com/#organization",
+    "@id": "https://www.homefrontsolutionsllc.com/#organization",
     name: "Home Front Solutions, LLC",
-    url: "https://homefrontsolutionsllc.com",
-    logo: "https://homefrontsolutionsllc.com/logo.png",
+    url: siteOrigin,
+    logo: siteOrigin + "/logo.png",
     foundingLocation: {
       "@type": "Place",
       name: "High Point, North Carolina"
     },
-    founder: { "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad" },
+    founder: { "@id": "https://www.homefrontsolutionsllc.com/#muizz-muhammad" },
     sameAs: [FACEBOOK_URL, LINKEDIN_URL, INSTAGRAM_URL]
   };
 
   var founderSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad",
+    "@id": "https://www.homefrontsolutionsllc.com/#muizz-muhammad",
     name: "Muizz Muhammad",
     jobTitle: "Founder",
-    worksFor: { "@id": "https://homefrontsolutionsllc.com/#business" }
+    worksFor: { "@id": "https://www.homefrontsolutionsllc.com/#business" }
   };
 
   var serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    "@id": "https://homefrontsolutionsllc.com/#services",
+    "@id": "https://www.homefrontsolutionsllc.com/#services",
     serviceType: "Door-to-door customer acquisition and field sales support",
-    provider: { "@id": "https://homefrontsolutionsllc.com/#business" },
+    provider: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
     areaServed: "United States",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -3667,10 +3752,10 @@ function buildSeoPayload(route) {
   var websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": "https://homefrontsolutionsllc.com/#website",
-    url: "https://homefrontsolutionsllc.com",
+    "@id": "https://www.homefrontsolutionsllc.com/#website",
+    url: siteOrigin,
     name: "Home Front Solutions",
-    publisher: { "@id": "https://homefrontsolutionsllc.com/#business" },
+    publisher: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
     inLanguage: "en-US",
   };
 
@@ -3678,7 +3763,7 @@ function buildSeoPayload(route) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://homefrontsolutionsllc.com/" },
+      { "@type": "ListItem", position: 1, name: "Home", item: siteOrigin + "/" },
     ],
   };
   if (route.name !== "home") {
@@ -3720,7 +3805,7 @@ function buildSeoPayload(route) {
         return {
           "@type": "ListItem",
           position: index + 1,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+          url: siteOrigin + getPathForRoute("job", job.slug),
           name: job.title + " - " + job.location,
         };
       }),
@@ -3792,7 +3877,7 @@ function buildSeoPayload(route) {
         return {
           "@type": "ListItem",
           position: index + 1,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+          url: siteOrigin + getPathForRoute("job", job.slug),
           name: job.title + " - " + job.location
         };
       })
@@ -3809,7 +3894,7 @@ function buildSeoPayload(route) {
         datePosted: "2026-04-10",
         validThrough: "2026-12-31T23:59",
         employmentType: "CONTRACTOR",
-        hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        hiringOrganization: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
         jobLocation: {
           "@type": "Place",
           address: {
@@ -3830,7 +3915,7 @@ function buildSeoPayload(route) {
           name: "United States"
         },
         directApply: true,
-        url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug)
+        url: siteOrigin + getPathForRoute("job", job.slug)
       });
     });
 
@@ -3863,7 +3948,7 @@ function buildSeoPayload(route) {
         return {
           "@type": "Article",
           headline: article.title,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("article", article.slug)
+          url: siteOrigin + getPathForRoute("article", article.slug)
         };
       })
     });
@@ -3881,7 +3966,7 @@ function buildSeoPayload(route) {
         name: "Home Front Solutions"
       },
       publisher: {
-        "@id": "https://homefrontsolutionsllc.com/#business"
+          "@id": "https://www.homefrontsolutionsllc.com/#business"
       },
       mainEntityOfPage: pageUrl
     });
@@ -3893,7 +3978,7 @@ function buildSeoPayload(route) {
       "@type": "AboutPage",
       name: "About Home Front Solutions",
       url: pageUrl,
-      about: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+      about: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
       description: "About Home Front Solutions, including founder, company focus, field-sales recruiting, and home-services growth model."
     });
   }
@@ -3911,7 +3996,7 @@ function buildSeoPayload(route) {
         datePosted: "2026-04-10",
         validThrough: "2026-12-31T23:59",
         employmentType: "CONTRACTOR",
-        hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        hiringOrganization: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
         jobLocation: {
           "@type": "Place",
           address: {
@@ -4006,6 +4091,42 @@ export function getPrerenderPaths() {
     .concat(JOBS.map(function(job) { return getPathForRoute("apply", job.slug); }));
 }
 
+export function getJobsForAutomation() {
+  var siteOrigin = "https://www.homefrontsolutionsllc.com";
+  return JOBS.map(function(job) {
+    var salary = getSalaryRange(job.earningRange);
+    return {
+      id: job.slug,
+      title: job.title,
+      slug: job.slug,
+      location: job.location,
+      employmentType: job.type === "Internship" ? "INTERN" : "CONTRACTOR",
+      category: "Field Sales",
+      datePosted: "2026-04-10",
+      validThrough: "2026-12-31T23:59",
+      description: job.overview,
+      shortPitch: job.pitch,
+      responsibilities: job.responsibilities.slice(),
+      qualifications: job.qualifications.slice(),
+      benefits: job.benefits.slice(),
+      salary: {
+        min: salary.min,
+        max: salary.max,
+        currency: "USD",
+        unitText: "YEAR",
+      },
+      applyUrl: siteOrigin + getPathForRoute("apply", job.slug),
+      detailUrl: siteOrigin + getPathForRoute("job", job.slug),
+      company: {
+        name: "Home Front Solutions, LLC",
+        website: siteOrigin,
+        email: "info@homefrontsolutionsllc.com",
+        phone: "+13364209379",
+      },
+    };
+  });
+}
+
 export default function App(props) {
   props = props || {};
   var initialPath = props.initialPath || (typeof window !== "undefined" ? window.location.pathname : "/");
@@ -4073,7 +4194,7 @@ export default function App(props) {
       atiEl.setAttribute("rel", "apple-touch-icon");
       document.head.appendChild(atiEl);
     }
-    atiEl.setAttribute("href", "https://homefrontsolutionsllc.com/apple-touch-icon.png");
+    atiEl.setAttribute("href", siteOrigin + "/apple-touch-icon.png");
 
     // Inject all schemas
     var existing = document.getElementById("ld-json");
