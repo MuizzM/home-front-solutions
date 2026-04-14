@@ -4129,6 +4129,7 @@ export function getJobsForAutomation() {
 
 export default function App(props) {
   props = props || {};
+  var siteOrigin = "https://www.homefrontsolutionsllc.com";
   var initialPath = props.initialPath || (typeof window !== "undefined" ? window.location.pathname : "/");
   var staticMode = !!props.staticMode;
   var _r = useState(function() { return getRouteFromPath(initialPath); });
