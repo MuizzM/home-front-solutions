@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const distDir = path.join(rootDir, "dist");
 const serverEntryUrl = pathToFileURL(path.join(distDir, "server", "entry-server.js")).href;
+const siteOrigin = "https://www.homefrontsolutionsllc.com";
 
 function escapeHtml(value) {
   return String(value)
@@ -27,7 +28,7 @@ function buildHeadMarkup(seo) {
     `<title>${escapeHtml(seo.title)}</title>`,
     ...seo.meta.map(renderMetaTag),
     `<link rel="canonical" href="${escapeHtml(seo.pageUrl)}" />`,
-    `<link rel="apple-touch-icon" href="https://homefrontsolutionsllc.com/apple-touch-icon.png" />`,
+    `<link rel="apple-touch-icon" href="${escapeHtml(siteOrigin)}/apple-touch-icon.png" />`,
     `<script id="ld-json" type="application/ld+json">${JSON.stringify(seo.schemas)}</script>`,
   ].join("\n    ");
 }
@@ -100,8 +101,8 @@ function buildJobFeedXml(jobs) {
 function buildSitemapXml(paths) {
   const urls = paths.map((routePath) => {
     const location = routePath === "/"
-      ? "https://homefrontsolutionsllc.com/"
-      : `https://homefrontsolutionsllc.com${routePath}`;
+      ? `${siteOrigin}/`
+      : `${siteOrigin}${routePath}`;
     return `  <url>\n    <loc>${escapeXml(location)}</loc>\n  </url>`;
   }).join("\n");
 
@@ -139,8 +140,8 @@ function buildRobotsTxt() {
     "Disallow: /careers/*/apply/thank-you",
     "",
     "# Sitemaps",
-    "Sitemap: https://homefrontsolutionsllc.com/sitemap.xml",
-    "Sitemap: https://homefrontsolutionsllc.com/job-sitemap.xml",
+    `Sitemap: ${siteOrigin}/sitemap.xml`,
+    `Sitemap: ${siteOrigin}/job-sitemap.xml`,
     "",
     "# AI and retrieval-friendly note:",
     "# Public marketing, careers, and market pages may be crawled and summarized.",

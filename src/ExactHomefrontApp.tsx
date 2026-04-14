@@ -3653,8 +3653,9 @@ function buildSeoPayload(route) {
   var title = titles[route.name] || titles.home;
   var description = descriptions[route.name] || descriptions.home;
   var pagePath = getPathForRoute(route.name, route.slug);
-  var pageUrl = "https://homefrontsolutionsllc.com" + pagePath;
-  var socialImage = "https://homefrontsolutionsllc.com/og-image.jpg";
+  var siteOrigin = "https://www.homefrontsolutionsllc.com";
+  var pageUrl = siteOrigin + pagePath;
+  var socialImage = siteOrigin + "/og-image.jpg";
   var robotsValue = (route.name === "thank-you" || route.name === "apply")
     ? "noindex, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
@@ -3662,11 +3663,11 @@ function buildSeoPayload(route) {
   var localBizSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://homefrontsolutionsllc.com/#business",
+    "@id": "https://www.homefrontsolutionsllc.com/#business",
     name: "Home Front Solutions",
     legalName: "Home Front Solutions, LLC",
-    url: "https://homefrontsolutionsllc.com",
-    logo: "https://homefrontsolutionsllc.com/logo.png",
+    url: siteOrigin,
+    logo: siteOrigin + "/logo.png",
     image: socialImage,
     description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
     telephone: "+13364209379",
@@ -3705,33 +3706,33 @@ function buildSeoPayload(route) {
   var organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "@id": "https://homefrontsolutionsllc.com/#organization",
+    "@id": "https://www.homefrontsolutionsllc.com/#organization",
     name: "Home Front Solutions, LLC",
-    url: "https://homefrontsolutionsllc.com",
-    logo: "https://homefrontsolutionsllc.com/logo.png",
+    url: siteOrigin,
+    logo: siteOrigin + "/logo.png",
     foundingLocation: {
       "@type": "Place",
       name: "High Point, North Carolina"
     },
-    founder: { "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad" },
+    founder: { "@id": "https://www.homefrontsolutionsllc.com/#muizz-muhammad" },
     sameAs: [FACEBOOK_URL, LINKEDIN_URL, INSTAGRAM_URL]
   };
 
   var founderSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": "https://homefrontsolutionsllc.com/#muizz-muhammad",
+    "@id": "https://www.homefrontsolutionsllc.com/#muizz-muhammad",
     name: "Muizz Muhammad",
     jobTitle: "Founder",
-    worksFor: { "@id": "https://homefrontsolutionsllc.com/#business" }
+    worksFor: { "@id": "https://www.homefrontsolutionsllc.com/#business" }
   };
 
   var serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    "@id": "https://homefrontsolutionsllc.com/#services",
+    "@id": "https://www.homefrontsolutionsllc.com/#services",
     serviceType: "Door-to-door customer acquisition and field sales support",
-    provider: { "@id": "https://homefrontsolutionsllc.com/#business" },
+    provider: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
     areaServed: "United States",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
@@ -3751,10 +3752,10 @@ function buildSeoPayload(route) {
   var websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": "https://homefrontsolutionsllc.com/#website",
-    url: "https://homefrontsolutionsllc.com",
+    "@id": "https://www.homefrontsolutionsllc.com/#website",
+    url: siteOrigin,
     name: "Home Front Solutions",
-    publisher: { "@id": "https://homefrontsolutionsllc.com/#business" },
+    publisher: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
     inLanguage: "en-US",
   };
 
@@ -3762,7 +3763,7 @@ function buildSeoPayload(route) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://homefrontsolutionsllc.com/" },
+      { "@type": "ListItem", position: 1, name: "Home", item: siteOrigin + "/" },
     ],
   };
   if (route.name !== "home") {
@@ -3804,7 +3805,7 @@ function buildSeoPayload(route) {
         return {
           "@type": "ListItem",
           position: index + 1,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+          url: siteOrigin + getPathForRoute("job", job.slug),
           name: job.title + " - " + job.location,
         };
       }),
@@ -3876,7 +3877,7 @@ function buildSeoPayload(route) {
         return {
           "@type": "ListItem",
           position: index + 1,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+          url: siteOrigin + getPathForRoute("job", job.slug),
           name: job.title + " - " + job.location
         };
       })
@@ -3893,7 +3894,7 @@ function buildSeoPayload(route) {
         datePosted: "2026-04-10",
         validThrough: "2026-12-31T23:59",
         employmentType: "CONTRACTOR",
-        hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        hiringOrganization: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
         jobLocation: {
           "@type": "Place",
           address: {
@@ -3914,7 +3915,7 @@ function buildSeoPayload(route) {
           name: "United States"
         },
         directApply: true,
-        url: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug)
+        url: siteOrigin + getPathForRoute("job", job.slug)
       });
     });
 
@@ -3947,7 +3948,7 @@ function buildSeoPayload(route) {
         return {
           "@type": "Article",
           headline: article.title,
-          url: "https://homefrontsolutionsllc.com" + getPathForRoute("article", article.slug)
+          url: siteOrigin + getPathForRoute("article", article.slug)
         };
       })
     });
@@ -3965,7 +3966,7 @@ function buildSeoPayload(route) {
         name: "Home Front Solutions"
       },
       publisher: {
-        "@id": "https://homefrontsolutionsllc.com/#business"
+          "@id": "https://www.homefrontsolutionsllc.com/#business"
       },
       mainEntityOfPage: pageUrl
     });
@@ -3977,7 +3978,7 @@ function buildSeoPayload(route) {
       "@type": "AboutPage",
       name: "About Home Front Solutions",
       url: pageUrl,
-      about: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+      about: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
       description: "About Home Front Solutions, including founder, company focus, field-sales recruiting, and home-services growth model."
     });
   }
@@ -3995,7 +3996,7 @@ function buildSeoPayload(route) {
         datePosted: "2026-04-10",
         validThrough: "2026-12-31T23:59",
         employmentType: "CONTRACTOR",
-        hiringOrganization: { "@id": "https://homefrontsolutionsllc.com/#organization" },
+        hiringOrganization: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
         jobLocation: {
           "@type": "Place",
           address: {
@@ -4091,6 +4092,7 @@ export function getPrerenderPaths() {
 }
 
 export function getJobsForAutomation() {
+  var siteOrigin = "https://www.homefrontsolutionsllc.com";
   return JOBS.map(function(job) {
     var salary = getSalaryRange(job.earningRange);
     return {
@@ -4113,11 +4115,11 @@ export function getJobsForAutomation() {
         currency: "USD",
         unitText: "YEAR",
       },
-      applyUrl: "https://homefrontsolutionsllc.com" + getPathForRoute("apply", job.slug),
-      detailUrl: "https://homefrontsolutionsllc.com" + getPathForRoute("job", job.slug),
+      applyUrl: siteOrigin + getPathForRoute("apply", job.slug),
+      detailUrl: siteOrigin + getPathForRoute("job", job.slug),
       company: {
         name: "Home Front Solutions, LLC",
-        website: "https://homefrontsolutionsllc.com",
+        website: siteOrigin,
         email: "info@homefrontsolutionsllc.com",
         phone: "+13364209379",
       },
@@ -4192,7 +4194,7 @@ export default function App(props) {
       atiEl.setAttribute("rel", "apple-touch-icon");
       document.head.appendChild(atiEl);
     }
-    atiEl.setAttribute("href", "https://homefrontsolutionsllc.com/apple-touch-icon.png");
+    atiEl.setAttribute("href", siteOrigin + "/apple-touch-icon.png");
 
     // Inject all schemas
     var existing = document.getElementById("ld-json");
