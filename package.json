@@ -12,21 +12,19 @@
     "seo:index-status": "node scripts/google-indexing-api.mjs status"
   },
   "dependencies": {
-    "framer-motion": "^11.11.17",
     "google-auth-library": "^9.15.1",
-    "lucide-react": "^0.468.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-helmet-async": "^3.0.0",
-    "react-router-dom": "^7.14.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "lightningcss": "^1.32.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
+    "terser": "^5.46.1",
     "typescript": "^5.6.2",
     "vite": "^5.4.8"
   }

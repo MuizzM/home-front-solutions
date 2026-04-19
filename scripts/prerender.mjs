@@ -98,12 +98,46 @@ function buildJobFeedXml(jobs) {
   ].join("\n");
 }
 
+function getLastmodForPath(routePath) {
+  // Build-time ISO date. Update rhythm comes from CI / re-deploy cadence.
+  const today = new Date().toISOString().slice(0, 10);
+  return today;
+}
+
+function getPriorityForPath(routePath) {
+  if (routePath === "/") return "1.0";
+  if (/^\/(careers|insights|contact|what-we-do|why-us|partners)$/.test(routePath)) return "0.9";
+  if (/^\/markets\//.test(routePath)) return "0.8";
+  if (/^\/careers\//.test(routePath) && !/\/apply/.test(routePath)) return "0.8";
+  if (/^\/insights\//.test(routePath)) return "0.7";
+  return "0.6";
+}
+
+function getChangefreqForPath(routePath) {
+  if (routePath === "/") return "weekly";
+  if (/^\/(careers|insights)$/.test(routePath)) return "weekly";
+  if (/^\/careers\//.test(routePath)) return "weekly";
+  if (/^\/markets\//.test(routePath)) return "monthly";
+  if (/^\/insights\//.test(routePath)) return "monthly";
+  return "monthly";
+}
+
 function buildSitemapXml(paths) {
   const urls = paths.map((routePath) => {
     const location = routePath === "/"
       ? `${siteOrigin}/`
       : `${siteOrigin}${routePath}`;
-    return `  <url>\n    <loc>${escapeXml(location)}</loc>\n  </url>`;
+    const lastmod = getLastmodForPath(routePath);
+    const changefreq = getChangefreqForPath(routePath);
+    const priority = getPriorityForPath(routePath);
+    return [
+      "  <url>",
+      `    <loc>${escapeXml(location)}</loc>`,
+      `    <lastmod>${lastmod}</lastmod>`,
+      `    <changefreq>${changefreq}</changefreq>`,
+      `    <priority>${priority}</priority>`,
+      "  </url>",
+    ].join("\n");
   }).join("\n");
 
   return [
@@ -116,10 +150,15 @@ function buildSitemapXml(paths) {
 }
 
 function buildJobSitemapXml(jobs) {
-  const urls = jobs.flatMap((job) => [
-    `  <url>\n    <loc>${escapeXml(job.detailUrl)}</loc>\n  </url>`,
-    `  <url>\n    <loc>${escapeXml(job.applyUrl)}</loc>\n  </url>`,
-  ]).join("\n");
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = jobs.map((job) => [
+    "  <url>",
+    `    <loc>${escapeXml(job.detailUrl)}</loc>`,
+    `    <lastmod>${today}</lastmod>`,
+    `    <changefreq>weekly</changefreq>`,
+    `    <priority>0.8</priority>`,
+    "  </url>",
+  ].join("\n")).join("\n");
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -130,21 +169,69 @@ function buildJobSitemapXml(jobs) {
   ].join("\n");
 }
 
+function buildSitemapIndexXml() {
+  const today = new Date().toISOString().slice(0, 10);
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    "  <sitemap>",
+    `    <loc>${siteOrigin}/sitemap.xml</loc>`,
+    `    <lastmod>${today}</lastmod>`,
+    "  </sitemap>",
+    "  <sitemap>",
+    `    <loc>${siteOrigin}/job-sitemap.xml</loc>`,
+    `    <lastmod>${today}</lastmod>`,
+    "  </sitemap>",
+    "</sitemapindex>",
+    "",
+  ].join("\n");
+}
+
 function buildRobotsTxt() {
   return [
     "User-agent: *",
     "Allow: /",
-    "",
-    "# Keep thin conversion pages out of search indexes while allowing discovery of primary content.",
     "Disallow: /careers/*/apply",
     "Disallow: /careers/*/apply/thank-you",
     "",
+    "# Let Google for Jobs + Googlebot-Image crawl the whole site including job pages",
+    "User-agent: Googlebot",
+    "Allow: /",
+    "Disallow: /careers/*/apply/thank-you",
+    "",
+    "User-agent: Googlebot-Image",
+    "Allow: /",
+    "",
+    "# Let LLM retrieval crawlers access the public marketing, careers, and insights",
+    "User-agent: GPTBot",
+    "Allow: /",
+    "",
+    "User-agent: ClaudeBot",
+    "Allow: /",
+    "",
+    "User-agent: PerplexityBot",
+    "Allow: /",
+    "",
+    "User-agent: OAI-SearchBot",
+    "Allow: /",
+    "",
+    "# Block aggressive archive + scrape bots that offer us no value",
+    "User-agent: AhrefsBot",
+    "Disallow: /",
+    "",
+    "User-agent: SemrushBot",
+    "Disallow: /",
+    "",
+    "User-agent: MJ12bot",
+    "Disallow: /",
+    "",
+    "User-agent: DotBot",
+    "Disallow: /",
+    "",
     "# Sitemaps",
+    `Sitemap: ${siteOrigin}/sitemap-index.xml`,
     `Sitemap: ${siteOrigin}/sitemap.xml`,
     `Sitemap: ${siteOrigin}/job-sitemap.xml`,
-    "",
-    "# AI and retrieval-friendly note:",
-    "# Public marketing, careers, and market pages may be crawled and summarized.",
     "",
   ].join("\n");
 }
@@ -211,11 +298,14 @@ async function main() {
     await writeRouteHtml(routePath, template, render);
   }
 
+  const sitemapPaths = paths.filter((routePath) => !/\/apply(\/|$)/.test(routePath));
+
   const jobs = getJobsForAutomation();
   await fs.writeFile(path.join(distDir, "job-board-feed.json"), `${JSON.stringify(jobs, null, 2)}\n`, "utf8");
   await fs.writeFile(path.join(distDir, "job-board-feed.xml"), buildJobFeedXml(jobs), "utf8");
-  await fs.writeFile(path.join(distDir, "sitemap.xml"), buildSitemapXml(paths), "utf8");
+  await fs.writeFile(path.join(distDir, "sitemap.xml"), buildSitemapXml(sitemapPaths), "utf8");
   await fs.writeFile(path.join(distDir, "job-sitemap.xml"), buildJobSitemapXml(jobs), "utf8");
+  await fs.writeFile(path.join(distDir, "sitemap-index.xml"), buildSitemapIndexXml(), "utf8");
   await fs.writeFile(path.join(distDir, "robots.txt"), buildRobotsTxt(), "utf8");
   await fs.writeFile(path.join(distDir, "young-professional-campaign.json"), buildYoungProfessionalCampaign(jobs), "utf8");
   await fs.writeFile(path.join(distDir, "young-professional-campaign.md"), buildYoungProfessionalMarkdown(jobs), "utf8");

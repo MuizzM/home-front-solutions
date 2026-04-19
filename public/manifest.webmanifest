@@ -1,0 +1,26 @@
+{
+  "name": "Home Front Solutions",
+  "short_name": "Home Front",
+  "description": "Nationwide door-to-door sales agency. Field teams for fiber, home security, solar, and home services.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F1E7",
+  "theme_color": "#2E6D5C",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["business", "careers", "productivity"],
+  "icons": [
+    {
+      "src": "/logo-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
