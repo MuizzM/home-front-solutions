@@ -1,27 +1,39 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-var PAPER = "#FAFAF7";
+// ── Design tokens (derived from logo) ───────────────────────────
+var PAPER = "#F5F1E7";           // warm cream from the logo background
+var PAPER_DEEP = "#EEE8D8";       // slightly deeper cream for banded sections
 var SURF = "#FFFFFF";
-var SURF2 = "#F4F0E8";
-var INK = "#0E0E0C";
-var RULE = "#DFD7CA";
-var MUTED = "#6B6960";
-var MUTED2 = "#9B9890";
-var SIGNAL = "#1F5B63";
-var SIGNAL_SOFT = "#E8F3F2";
-var BLUE = "#153F46";
-var BLUE_SOFT = "#EAF3F1";
-var FOREST = "#2E6E69";
-var FOREST_SOFT = "#E8F4F0";
-var GOLD = "#C48A47";
-var GOLD_SOFT = "#F6E8D5";
+var SURF2 = "#EFEADB";
+var INK = "#1B2E3B";              // deep navy-teal from the logo wordmark
+var INK_SOFT = "#2A3F4E";
+var RULE = "#DCD3BF";             // warm hairline
+var MUTED = "#5E6C74";
+var MUTED2 = "#8A96A0";
+var SIGNAL = "#2E6D5C";           // primary teal-green (logo walls)
+var SIGNAL_DEEP = "#1F4E42";      // deeper hover / dark surfaces
+var SIGNAL_SOFT = "#DEEBE3";      // soft mint tint for section accents
+var SIGNAL_SOFTER = "#EDF4EF";
+var SAGE = "#8FB09B";             // light sage from the logo base
+var GOLD = "#D9A63C";             // warm gold (logo door/window)
+var GOLD_DEEP = "#B8862B";
+var GOLD_SOFT = "#F7E9C2";
+var CLAY = "#C25A3D";             // warm accent for emphasis (rare use)
+var FOREST = SIGNAL;
+var FOREST_SOFT = SIGNAL_SOFT;
+var BLUE = INK;
+var BLUE_SOFT = SIGNAL_SOFT;
 var LOGO = "/logo-128.png";
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
 var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
+// Outlook Bookwithme scheduler. Every Book-a-call CTA site-wide points here.
+var BOOKING_URL = "https://outlook.office.com/bookwithme/user/0ea888e3efef4c00ae2eeb04410d7e15@Homefrontsolutionsllc.com/meetingtype/C4O5zoQ0vUK3IHFUZlU87Q2?bookingcode=62272f10-6dfb-4114-a855-3b596b4fb081&anonymous&ismsaljsauthenabled&ep=mlink";
 
-var serif = { fontFamily: "'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif", fontWeight: 500, letterSpacing: "-0.025em" };
+// Display serif — Fraunces, opsz tuned for display
+var serif = { fontFamily: "'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif", fontWeight: 430, letterSpacing: "-0.025em", fontVariationSettings: "'opsz' 144, 'SOFT' 30" };
+var monoKicker = { fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 11, letterSpacing: "0.02em", textTransform: "uppercase", fontWeight: 500 };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
 
@@ -1403,6 +1415,269 @@ function getPathForRoute(name, slug) {
   return "/";
 }
 
+// Animate a number from 0 → target when visible
+function CountUp(props) {
+  var ref = useRef(null);
+  var _v = useState(0); var value = _v[0]; var setValue = _v[1];
+  var _done = useState(false); var done = _done[0]; var setDone = _done[1];
+  useEffect(function() {
+    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") { setValue(props.to); return; }
+    if (done) return;
+    var node = ref.current;
+    if (!node) return;
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && !done) {
+          var target = props.to || 0;
+          var duration = props.duration || 1400;
+          var start = performance.now();
+          var animate = function(now) {
+            var elapsed = now - start;
+            var t = Math.min(1, elapsed / duration);
+            var eased = 1 - Math.pow(1 - t, 3);
+            setValue(target * eased);
+            if (t < 1) { window.requestAnimationFrame(animate); }
+            else { setValue(target); setDone(true); }
+          };
+          window.requestAnimationFrame(animate);
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(node);
+    return function() { io.disconnect(); };
+  }, [props.to, done]);
+  var prefix = props.prefix || "";
+  var suffix = props.suffix || "";
+  var display = Math.round(value);
+  return <span ref={ref}>{prefix}{display}{suffix}</span>;
+}
+
+// Magnetic hover — anchor follows cursor subtly
+function Magnetic(props) {
+  var ref = useRef(null);
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var node = ref.current;
+    if (!node) return;
+    var strength = props.strength || 0.25;
+    function onMove(e) {
+      var rect = node.getBoundingClientRect();
+      var x = e.clientX - (rect.left + rect.width / 2);
+      var y = e.clientY - (rect.top + rect.height / 2);
+      node.style.transform = "translate(" + (x * strength) + "px, " + (y * strength) + "px)";
+    }
+    function onLeave() {
+      node.style.transform = "translate(0, 0)";
+    }
+    node.addEventListener("mousemove", onMove);
+    node.addEventListener("mouseleave", onLeave);
+    return function() {
+      node.removeEventListener("mousemove", onMove);
+      node.removeEventListener("mouseleave", onLeave);
+    };
+  }, [props.strength]);
+  return <span ref={ref} className={"magnetic inline-flex " + (props.className || "")} style={props.style}>{props.children}</span>;
+}
+
+function useRevealOnScroll(deps) {
+  useEffect(function() {
+    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
+    var nodes = document.querySelectorAll(".reveal, .reveal-blur");
+    if (!nodes.length) return;
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.1 });
+    nodes.forEach(function(n) { io.observe(n); });
+    return function() { io.disconnect(); };
+  }, deps || []);
+}
+
+// Mouse-following spotlight for hero sections — Vercel-signature ambient light.
+function Spotlight(props) {
+  var ref = useRef(null);
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var node = ref.current;
+    if (!node) return;
+    var target = (props && props.target) ? document.querySelector(props.target) : node.parentElement;
+    if (!target) return;
+    function onMove(e) {
+      var rect = target.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      node.style.setProperty("--mx", x.toFixed(2) + "%");
+      node.style.setProperty("--my", y.toFixed(2) + "%");
+    }
+    function onEnter() { node.classList.add("spotlight--active"); }
+    function onLeave() { node.classList.remove("spotlight--active"); }
+    target.addEventListener("mousemove", onMove);
+    target.addEventListener("mouseenter", onEnter);
+    target.addEventListener("mouseleave", onLeave);
+    return function() {
+      target.removeEventListener("mousemove", onMove);
+      target.removeEventListener("mouseenter", onEnter);
+      target.removeEventListener("mouseleave", onLeave);
+    };
+  }, [props.target]);
+  return <div ref={ref} className="spotlight" aria-hidden="true" />;
+}
+
+// Cursor-aware 3D tilt. Card rotates toward the cursor, returns on leave.
+function TiltCard(props) {
+  var ref = useRef(null);
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var node = ref.current;
+    if (!node) return;
+    var strength = props.strength || 6;
+    function onMove(e) {
+      var rect = node.getBoundingClientRect();
+      var dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+      var dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+      node.style.setProperty("--ry", (dx * strength).toFixed(2));
+      node.style.setProperty("--rx", (-dy * strength).toFixed(2));
+    }
+    function onLeave() {
+      node.style.setProperty("--ry", "0");
+      node.style.setProperty("--rx", "0");
+    }
+    node.addEventListener("mousemove", onMove);
+    node.addEventListener("mouseleave", onLeave);
+    return function() {
+      node.removeEventListener("mousemove", onMove);
+      node.removeEventListener("mouseleave", onLeave);
+    };
+  }, [props.strength]);
+  var className = "tilt-card--mouse " + (props.className || "");
+  return (
+    <div ref={ref} className={className} style={props.style} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
+      {props.children}
+    </div>
+  );
+}
+
+// Scroll parallax — translates a ref by a factor of window.scrollY.
+function useParallax(ref, factor) {
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var node = ref.current;
+    if (!node) return;
+    var raf = 0;
+    function tick() {
+      raf = 0;
+      var y = window.scrollY * (factor || -0.15);
+      node.style.transform = "translate3d(0," + y.toFixed(1) + "px, 0)";
+    }
+    function onScroll() {
+      if (raf) return;
+      raf = window.requestAnimationFrame(tick);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    tick();
+    return function() {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, [factor]);
+}
+
+function ParallaxLayer(props) {
+  var ref = useRef(null);
+  useParallax(ref, props.factor);
+  return <div ref={ref} aria-hidden={props.ariaHidden || "true"} className={props.className} style={props.style}>{props.children}</div>;
+}
+
+// Instant-page style hover prefetching — warms prerendered HTML before the user clicks.
+// Delegates on the whole document to catch nav, card, and inline links in one listener.
+function useHoverPrefetch() {
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var prefetched = new Set();
+    function isSameOriginInternal(href) {
+      if (!href) return false;
+      if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return false;
+      try {
+        var u = new URL(href, window.location.origin);
+        if (u.origin !== window.location.origin) return false;
+        if (/\/(apply|thank-you)(\/|$)/.test(u.pathname)) return false;
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+    function prefetch(href) {
+      if (!href || prefetched.has(href)) return;
+      prefetched.add(href);
+      var link = document.createElement("link");
+      link.rel = "prefetch";
+      link.href = href;
+      link.as = "document";
+      document.head.appendChild(link);
+    }
+    function onEnter(e) {
+      var target = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!target) return;
+      var href = target.getAttribute("href");
+      if (!isSameOriginInternal(href)) return;
+      prefetch(href);
+    }
+    document.addEventListener("mouseenter", onEnter, true);
+    document.addEventListener("touchstart", onEnter, { passive: true, capture: true });
+    return function() {
+      document.removeEventListener("mouseenter", onEnter, true);
+      document.removeEventListener("touchstart", onEnter, { capture: true });
+    };
+  }, []);
+}
+
+// Thin progress line that fills as the reader scrolls the page.
+function ScrollProgress() {
+  var ref = useRef(null);
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    var bar = ref.current;
+    if (!bar) return;
+    var raf = 0;
+    function onScroll() {
+      if (raf) return;
+      raf = window.requestAnimationFrame(function() {
+        raf = 0;
+        var doc = document.documentElement;
+        var max = doc.scrollHeight - window.innerHeight;
+        var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+        bar.style.width = pct.toFixed(2) + "%";
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return function() {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+  return <div ref={ref} className="scroll-progress" aria-hidden="true" />;
+}
+
+function handleNavClick(e, go, name, slug) {
+  if (!e) return;
+  if (e.defaultPrevented) return;
+  if (e.button !== undefined && e.button !== 0) return;
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  go(name, slug || null);
+}
+
 function getRouteFromPath(pathname) {
   var cleanPath = pathname.replace(/\/+$/, "") || "/";
   var parts = cleanPath.split("/").filter(Boolean);
@@ -1435,16 +1710,27 @@ function Eyebrow(props) {
   return <p className="text-xs uppercase mb-5" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 600 }}>{props.children}</p>;
 }
 
-function LogoMark() {
+function LogoMark(props) {
+  var size = props && props.size ? props.size : 34;
+  var stroke = props && props.stroke ? props.stroke : INK;
   return (
-    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-      <path d="M4 14L16 5L28 14V26H20V18H12V26H4V14Z" stroke={INK} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true" style={{ display: "block" }}>
+      <path d="M6 20 L20 7 L34 20 L34 32 C34 32.55 33.55 33 33 33 L26 33 L26 23 L14 23 L14 33 L7 33 C6.45 33 6 32.55 6 32 Z" fill="none" stroke={stroke} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      <path d="M18 33 L18 27 L22 27 L22 33" fill="none" stroke={stroke} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" opacity="0.55" />
     </svg>
   );
 }
 
 function Header(props) {
   var _m = useState(false); var open = _m[0]; var setOpen = _m[1];
+  var _s = useState(false); var scrolled = _s[0]; var setScrolled = _s[1];
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    function onScroll() { setScrolled(window.scrollY > 8); }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return function() { window.removeEventListener("scroll", onScroll); };
+  }, []);
   var nav = [
     { route: "what-we-do", label: "Services" },
     { route: "why-us", label: "Why Us" },
@@ -1453,26 +1739,33 @@ function Header(props) {
     { route: "insights", label: "Insights" },
   ];
   return (
-    <header style={{ background: PAPER, position: "sticky", top: 0, zIndex: 50 }}>
-      <div style={{ borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1240px] mx-auto px-5 md:px-10 h-[68px] md:h-[74px] flex items-center justify-between">
-          <button onClick={function() { props.go("home"); }} className="flex items-center gap-3" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <span style={{ width: 44, height: 44, borderRadius: 14, background: "#FFFFFF", border: "1px solid rgba(31,91,99,0.12)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 18px rgba(21,63,70,0.06)" }}>
-              <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 34, height: 34, borderRadius: 8, objectFit: "cover" }} />
-            </span>
-            <span style={{ ...serif, fontSize: 19, color: INK, lineHeight: 1, fontWeight: 600 }}>Home Front Solutions</span>
-          </button>
-          <nav className="hidden md:flex items-center gap-8">
+    <header style={{
+      background: scrolled ? "rgba(250,250,247,0.82)" : PAPER,
+      backdropFilter: scrolled ? "saturate(180%) blur(12px)" : "none",
+      WebkitBackdropFilter: scrolled ? "saturate(180%) blur(12px)" : "none",
+      position: "sticky",
+      top: 0,
+      zIndex: 50,
+      transition: "background 240ms ease, box-shadow 240ms ease",
+      boxShadow: scrolled ? "0 1px 0 rgba(14,14,12,0.06), 0 10px 30px rgba(14,14,12,0.04)" : "none"
+    }}>
+      <div style={{ borderBottom: scrolled ? "none" : "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 h-[74px] md:h-[84px] flex items-center justify-between">
+          <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="flex items-center" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} aria-label="Home Front Solutions home">
+            <img src={LOGO} alt="Home Front Solutions" width="56" height="56" style={{ width: "auto", height: 56, objectFit: "contain", display: "block", mixBlendMode: "multiply" }} />
+          </a>
+          <nav className="hidden md:flex items-center gap-9" aria-label="Primary">
             {nav.map(function(item) {
               return (
-                <button key={item.route} onClick={function() { props.go(item.route); }} className="text-sm hover:opacity-70 transition-opacity" style={{ color: INK, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 550 }}>
+                <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { handleNavClick(e, props.go, item.route); }} className="edi-link relative" style={{ color: INK, padding: "6px 0", fontSize: 14, fontWeight: 500, letterSpacing: "-0.005em" }}>
                   {item.label}
-                </button>
+                </a>
               );
             })}
-            <button onClick={function() { props.go("contact"); }} className="text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer", boxShadow: "0 10px 22px rgba(14,14,12,0.12)" }}>
-              Contact Sales
-            </button>
+            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-1.5 px-5 rounded-full transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 40, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", boxShadow: "0 8px 18px rgba(46,109,92,0.32)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = SIGNAL; }}>
+              Book a call
+              <span aria-hidden="true">→</span>
+            </a>
           </nav>
           <button onClick={function() { setOpen(!open); }} className="md:hidden p-1" style={{ background: "none", border: "none" }} aria-label={open ? "Close navigation menu" : "Open navigation menu"} aria-expanded={open}>
             {open
@@ -1487,14 +1780,14 @@ function Header(props) {
           <div className="px-6 py-6 flex flex-col">
             {nav.map(function(item) {
               return (
-                <button key={item.route} onClick={function() { setOpen(false); props.go(item.route); }} className="text-left text-lg" style={{ borderBottom: "1px solid " + RULE, color: INK, background: "none", padding: "14px 0", cursor: "pointer", fontWeight: 500 }}>
+                <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go(item.route); } }} className="text-left text-lg block" style={{ borderBottom: "1px solid " + RULE, color: INK, background: "none", padding: "14px 0", cursor: "pointer", fontWeight: 500 }}>
                   {item.label}
-                </button>
+                </a>
               );
             })}
-            <button onClick={function() { setOpen(false); props.go("contact"); }} className="mt-6 text-center font-semibold py-3.5 rounded-md" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
-              Contact Sales
-            </button>
+            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="mt-6 text-center font-semibold py-3.5 rounded-md block" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer" }}>
+              Book a call
+            </a>
             <div className="mt-6 flex items-center gap-4 text-sm">
               <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={{ color: SIGNAL, fontWeight: 600 }}>Instagram</a>
               <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" style={{ color: SIGNAL, fontWeight: 600 }}>LinkedIn</a>
@@ -1507,26 +1800,28 @@ function Header(props) {
 }
 
 function Footer(props) {
+  var linkStyle = { color: MUTED, cursor: "pointer", fontSize: 14, lineHeight: 1.5, transition: "color 200ms ease" };
+  var linkHoverIn = function(e) { e.currentTarget.style.color = INK; };
+  var linkHoverOut = function(e) { e.currentTarget.style.color = MUTED; };
   return (
-    <footer style={{ borderTop: "1px solid " + RULE, background: SURF, marginTop: 80 }}>
-      <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-10">
+    <footer style={{ borderTop: "1px solid " + RULE, background: PAPER, marginTop: 0 }}>
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-16">
           <div className="md:col-span-5">
-            <div className="flex items-center gap-2.5 mb-5">
-              <img src={LOGO} alt="Home Front Solutions logo" style={{ width: 46, height: 46, borderRadius: 10, objectFit: "cover", boxShadow: "0 10px 24px rgba(21,63,70,0.12)" }} />
-              <span style={{ ...serif, fontSize: 19, fontWeight: 600 }}>Home Front Solutions</span>
+            <div className="mb-6">
+              <img src={LOGO} alt="Home Front Solutions" width="76" height="76" style={{ width: "auto", height: 76, objectFit: "contain", display: "block", mixBlendMode: "multiply" }} />
             </div>
-            <p className="text-sm leading-relaxed max-w-sm" style={{ color: MUTED }}>
+            <p className="max-w-sm" style={{ fontSize: 14.5, lineHeight: 1.68, color: MUTED }}>
               A door-to-door marketing company helping homeowners buy better essential services, from fiber and security to solar, water filtration, and roofing.
             </p>
-            <div className="flex flex-wrap items-center gap-3 mt-5">
+            <div className="flex flex-wrap items-center gap-4 mt-7">
               {[
                 ["Instagram", INSTAGRAM_URL],
                 ["LinkedIn", LINKEDIN_URL],
                 ["Facebook", FACEBOOK_URL]
               ].map(function(item) {
                 return (
-                  <a key={item[0]} href={item[1]} target="_blank" rel="noreferrer" className="interactive-pill inline-flex items-center px-3 py-2 rounded-full text-xs font-semibold" style={{ color: SIGNAL, background: SIGNAL_SOFT, border: "1px solid rgba(31,91,99,0.16)" }}>
+                  <a key={item[0]} href={item[1]} target="_blank" rel="noreferrer" className="edi-link" style={{ color: INK, fontSize: 13, fontWeight: 500 }}>
                     {item[0]}
                   </a>
                 );
@@ -1535,64 +1830,48 @@ function Footer(props) {
           </div>
 
           <div className="md:col-span-2">
-            <p className="text-xs uppercase mb-4" style={{ color: INK, letterSpacing: "0.15em", fontWeight: 700 }}>Company</p>
-            <ul className="space-y-2.5 text-sm">
-              <li><button onClick={function() { props.go("what-we-do"); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>Services</button></li>
-              <li><button onClick={function() { props.go("why-us"); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>Why Us</button></li>
-              <li><button onClick={function() { props.go("partners"); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>Partners</button></li>
+            <p style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Company</p>
+            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Services</a></li>
+              <li><a href="/why-us" onClick={function(e) { handleNavClick(e, props.go, "why-us"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Why Us</a></li>
+              <li><a href="/partners" onClick={function(e) { handleNavClick(e, props.go, "partners"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Partners</a></li>
             </ul>
           </div>
 
           <div className="md:col-span-2">
-            <p className="text-xs uppercase mb-4" style={{ color: INK, letterSpacing: "0.15em", fontWeight: 700 }}>Careers</p>
-            <ul className="space-y-2.5 text-sm">
-              <li><button onClick={function() { props.go("careers"); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>Open Positions</button></li>
-              <li><button onClick={function() { props.go("careers"); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>How We Hire</button></li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-2">
-            <p className="text-xs uppercase mb-4" style={{ color: INK, letterSpacing: "0.15em", fontWeight: 700 }}>Insights</p>
-            <ul className="space-y-2.5 text-sm">
-              {ARTICLE_PAGES.slice(0, 5).map(function(article) {
-                return (
-                  <li key={article.slug}>
-                    <button onClick={function() { props.go("article", article.slug); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                      {article.title}
-                    </button>
-                  </li>
-                );
-              })}
-              <li><button onClick={function() { props.go("insights"); }} style={{ color: INK, background: "none", border: "none", cursor: "pointer", padding: 0, fontWeight: 600 }}>View All Insights</button></li>
+            <p style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Careers</p>
+            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li><a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Open positions</a></li>
+              <li><a href="/why-us" onClick={function(e) { handleNavClick(e, props.go, "why-us"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>How we hire</a></li>
             </ul>
           </div>
 
           <div className="md:col-span-3">
-            <p className="text-xs uppercase mb-4" style={{ color: INK, letterSpacing: "0.15em", fontWeight: 700 }}>Markets</p>
-            <ul className="space-y-2.5 text-sm mb-6">
+            <p style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Markets</p>
+            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {MARKET_PAGES.slice(0, 6).map(function(market) {
                 return (
                   <li key={market.slug}>
-                    <button onClick={function() { props.go("market", market.slug); }} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                      {market.region} Jobs
-                    </button>
+                    <a href={getPathForRoute("market", market.slug)} onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>
+                      {market.region}
+                    </a>
                   </li>
                 );
               })}
             </ul>
-            <p className="text-xs uppercase mb-4" style={{ color: INK, letterSpacing: "0.15em", fontWeight: 700 }}>Contact</p>
-            <ul className="space-y-2.5 text-sm" style={{ color: MUTED }}>
-              <li><a href="mailto:info@homefrontsolutionsllc.com" className="hover:opacity-70 transition-opacity" style={{ color: MUTED }}>info@homefrontsolutionsllc.com</a></li>
-              <li><a href="tel:3364209379" className="hover:opacity-70 transition-opacity" style={{ color: MUTED }}>(336) 420-9379</a></li>
+            <p style={{ ...monoKicker, color: MUTED, marginTop: 28, marginBottom: 18 }}>Contact</p>
+            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0, color: MUTED }}>
+              <li><a href="mailto:info@homefrontsolutionsllc.com" style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a></li>
+              <li><a href="tel:3364209379" style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>(336) 420-9379</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-2" style={{ borderTop: "1px solid " + RULE }}>
-          <div className="text-xs" style={{ color: MUTED }}>© 2026 Home Front Solutions, LLC. All rights reserved.</div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs" style={{ color: MUTED }}>
-            <button onClick={function() { props.go("privacy"); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: MUTED }}>Privacy Policy</button>
-            <button onClick={function() { props.go("terms"); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: MUTED }}>Terms of Service</button>
+        <div className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3" style={{ borderTop: "1px solid " + RULE }}>
+          <div style={{ ...monoKicker, color: MUTED }}>© 2026 Home Front Solutions, LLC</div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ ...monoKicker, color: MUTED }}>
+            <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: MUTED }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Privacy</a>
+            <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: MUTED }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Terms</a>
             <span>Equal Opportunity Employer</span>
           </div>
         </div>
@@ -1622,280 +1901,506 @@ function HomePage(props) {
   return (
     <>
       {/* HERO */}
-      <section
-        className="max-w-[1240px] mx-auto px-5 md:px-10 pt-10 md:pt-18 pb-14 md:pb-22"
-        style={{ background: "radial-gradient(circle at top left, rgba(31,91,99,0.14), transparent 30%), radial-gradient(circle at top right, rgba(196,138,71,0.1), transparent 34%), linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(250,250,247,0.5) 58%, rgba(250,250,247,0) 100%)" }}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-16">
-          <div className="lg:col-span-8">
-            <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
-              Home services growth, built face to face and scaled market by market.
-            </h1>
-            <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              We help brands grow through disciplined field execution and give ambitious reps a real path to improve, produce, and lead.
-            </p>
-            <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3">
-              <button onClick={function() { props.go("contact"); }} className="inline-flex items-center justify-center px-7 py-4 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: "linear-gradient(135deg, #11120F 0%, #233447 100%)", color: PAPER, border: "none", cursor: "pointer", minHeight: 54, boxShadow: "0 16px 34px rgba(14,14,12,0.18)" }} aria-label="Schedule a discovery call with our sales team">
-                Schedule a Discovery Call
-              </button>
-              <button onClick={function() { props.go("careers"); }} className="inline-flex items-center justify-center px-7 py-4 rounded-md font-semibold transition-colors" style={{ background: "rgba(255,255,255,0.8)", color: INK, border: "1px solid rgba(14,14,12,0.16)", cursor: "pointer", minHeight: 54, boxShadow: "0 10px 24px rgba(14,14,12,0.06)" }} onMouseEnter={function(e) { e.currentTarget.style.background = INK; e.currentTarget.style.color = PAPER; }} onMouseLeave={function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.8)"; e.currentTarget.style.color = INK; }} aria-label="View our open sales positions">
-                View Open Positions
-              </button>
-            </div>
-          </div>
+      <section id="home-hero" className="grain relative max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-20 pb-14 md:pb-24">
+        <div className="aurora" aria-hidden="true" />
+        <Spotlight target="#home-hero" />
+        {/* Parallax floating shapes — drift with scroll */}
+        <ParallaxLayer factor={-0.3} className="hidden md:block" style={{ position: "absolute", top: "14%", right: "6%", zIndex: 0 }}>
+          <div className="float-shape" style={{ width: 72, height: 72, borderRadius: "50%", border: "1px solid " + SIGNAL_SOFT, animation: "floatA 9s infinite" }} />
+        </ParallaxLayer>
+        <ParallaxLayer factor={-0.18} className="hidden md:block" style={{ position: "absolute", top: "62%", right: "22%", zIndex: 0 }}>
+          <div className="float-shape" style={{ width: 28, height: 28, borderRadius: "50%", background: GOLD_SOFT, animation: "floatB 11s infinite" }} />
+        </ParallaxLayer>
+        <ParallaxLayer factor={-0.22} className="hidden md:block" style={{ position: "absolute", top: "30%", right: "38%", zIndex: 0 }}>
+          <div className="float-shape" style={{ width: 10, height: 10, borderRadius: "50%", background: SIGNAL, opacity: 0.5, animation: "floatC 7s infinite" }} />
+        </ParallaxLayer>
 
-          <aside className="lg:col-span-4">
-            <div className="p-6 md:p-7 h-full" style={{ background: "linear-gradient(165deg, #FFFFFF 0%, " + SIGNAL_SOFT + " 100%)", border: "1px solid rgba(31,91,99,0.1)", borderRadius: 28, boxShadow: "0 18px 42px rgba(14,14,12,0.06)" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: "#FFFFFF", border: "1px solid rgba(59,93,124,0.12)" }}>
-                <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>From Our Founder</span>
-              </div>
-              <p className="leading-[1.65] mb-5" style={{ ...serif, fontSize: 20, color: INK }}>
-                "Great service starts with a face-to-face conversation. Every customer deserves to understand exactly what they are buying, and every rep we send to a door is trained to make that conversation clear."
-              </p>
-              <div style={{ width: 40, height: 2, background: "linear-gradient(90deg, " + SIGNAL + " 0%, rgba(59,93,124,0.14) 100%)", borderRadius: 999, marginBottom: 16 }} />
-              <p className="text-sm leading-[1.85] mb-4" style={{ color: MUTED }}>
-                Founded by <span style={{ color: INK, fontWeight: 700 }}>Muizz Muhammad</span>, Home Front Solutions is built around disciplined field execution, modern recruiting infrastructure, and a belief that homeowner conversations should feel professional, honest, and easy to trust.
-              </p>
-              <div className="text-sm leading-[1.85]" style={{ color: MUTED }}>
-                The focus is simple: stronger markets, sharper recruiting, cleaner execution, and customer conversations that feel easy to trust.
-              </div>
-            </div>
-          </aside>
+        <div>
+          <h1 className="display" style={{ fontSize: "clamp(3rem, 8.4vw, 7rem)", lineHeight: 0.94, letterSpacing: "-0.04em", color: INK, maxWidth: "14ch" }}>
+            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "0ms" }}>Doors</span>{" "}
+            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms", fontStyle: "italic", color: GOLD_DEEP, fontVariationSettings: "'opsz' 144, 'SOFT' 40", fontWeight: 430 }}>opened.</span>{" "}
+            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "220ms" }}>Deals</span>{" "}
+            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "310ms", fontStyle: "italic", color: SIGNAL, fontVariationSettings: "'opsz' 144, 'SOFT' 40", fontWeight: 430 }}>closed.</span>
+          </h1>
+          <p className="mt-10 md:mt-12 max-w-2xl word-reveal" style={{ animationDelay: "440ms", fontSize: "clamp(1.1rem, 1.4vw, 1.28rem)", color: MUTED, lineHeight: 1.6, fontWeight: 400 }}>
+            Nationwide door-to-door teams for fiber, security, solar, and home services. Professional reps, paid certification, and six-figure first-year earnings on straight commission.
+          </p>
+          <div className="mt-12 md:mt-14 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "560ms" }}>
+            <Magnetic strength={0.2}>
+              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="btn-primary inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 56, fontSize: 15, letterSpacing: "-0.005em", boxShadow: "0 10px 24px rgba(46,109,92,0.28), inset 0 1px 0 rgba(255,255,255,0.16)" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }} aria-label="See open field sales roles">
+                See open roles
+                <span aria-hidden="true" style={{ fontSize: 16, lineHeight: 1, marginLeft: 2 }}>→</span>
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.2}>
+              <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-ghost inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium" style={{ background: "rgba(255,255,255,0.55)", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 56, fontSize: 15, letterSpacing: "-0.005em", backdropFilter: "blur(8px)" }} onMouseEnter={function(e) { e.currentTarget.style.background = "#FFFFFF"; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.55)"; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }} aria-label="For brands that need a field sales partner">
+                For brands
+              </a>
+            </Magnetic>
+          </div>
+          {/* Micro trust line under CTAs */}
+          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 word-reveal" style={{ animationDelay: "680ms", ...monoKicker, color: MUTED }}>
+            <span className="inline-flex items-center gap-2">
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: SIGNAL, boxShadow: "0 0 0 3px " + SIGNAL_SOFT }} />
+              Hiring nationwide
+            </span>
+            <span style={{ color: GOLD_DEEP }}>·</span>
+            <span>{JOBS.length} open roles</span>
+            <span style={{ color: GOLD_DEEP }}>·</span>
+            <span>Paid training</span>
+            <span style={{ color: GOLD_DEEP }}>·</span>
+            <span>Apply in 5 min</span>
+          </div>
         </div>
 
-      {/* Category strip */}
-      <div className="mt-10 pt-6" style={{ borderTop: "1px solid " + RULE }}>
-          <div className="flex items-baseline gap-4 mb-6">
-            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Service Categories</div>
-            <div className="flex-1" style={{ height: 1, background: RULE }} />
-            <div className="text-[10px] uppercase" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>Field Coverage</div>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-4 items-center">
-            {PARTNERS.map(function(p, i) {
-              return (
-                <div key={p} className="flex items-center gap-2.5 p-3 rounded-2xl" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid rgba(14,14,12,0.06)" }}>
-                  <span style={{ ...serif, fontSize: 17, color: INK, fontWeight: 600 }}>{p}</span>
-                </div>
-              );
-            })}
-        </div>
-      </div>
-
-      <div className="mt-8 p-6 md:p-8" style={{ background: "#FFFFFF", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 24, boxShadow: "0 14px 32px rgba(14,14,12,0.04)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-5">
-            <Eyebrow>Local Recruiting Pages</Eyebrow>
-            <h2 style={{ ...serif, fontSize: "clamp(1.8rem, 3.5vw, 2.5rem)", lineHeight: 1.05 }}>
-              Explore hiring pages by city and region.
-            </h2>
-            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              Start with the market that feels closest to you, then move into open roles and deeper reading only if you want more context.
-            </p>
-          </div>
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {MARKET_PAGES.map(function(market) {
-                return (
-                  <button
-                    key={market.slug}
-                    onClick={function() { props.go("market", market.slug); }}
-                    className="p-4 text-left lift-card interactive-panel"
-                    style={{ background: "#FCFCFA", border: "1px solid rgba(14,14,12,0.07)", borderRadius: 20, cursor: "pointer", boxShadow: "0 6px 18px rgba(14,14,12,0.035)" }}
-                  >
-                    <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{market.region}</div>
-                    <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{market.title}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section className="mt-10">
-        <div className="flex items-end justify-between gap-6 mb-8">
-          <div>
-            <Eyebrow>Insights</Eyebrow>
-            <h2 className="max-w-3xl" style={{ ...serif, fontSize: "clamp(1.85rem, 3.5vw, 2.7rem)", lineHeight: 1.05 }}>
-              Read deeper only if you want more context.
-            </h2>
-            <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              The homepage stays simple. The insights section is where we go deeper on careers, business, industry trends, and the questions people usually ask before they apply.
-            </p>
-          </div>
-          <button onClick={function() { props.go("insights"); }} className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold interactive-pill" style={{ background: SURF, color: INK, border: "1px solid " + RULE, cursor: "pointer" }}>
-            View all insights
-            <span className="interactive-arrow" style={{ color: SIGNAL }}>→</span>
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {learningTracks.map(function(track) {
-            var article = ARTICLE_PAGES.find(function(item) { return item.slug === track.slug; });
-            if (!article) return null;
+        {/* Stats strip — separated, breathing room */}
+        <div className="reveal mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-10" data-delay="2" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+          {[
+            { suffix: "+", prefix: "", to: 25, label: "U.S. markets live" },
+            { suffix: "K+", prefix: "$", to: 100, label: "First-year earnings" },
+            { suffix: "+", prefix: "", to: 12, label: "Brand partnerships" },
+            { suffix: "h", prefix: "", to: 48, label: "Recruiter response" },
+          ].map(function(item) {
             return (
-              <div
-                key={track.slug}
-                onClick={function() { props.go("article", article.slug); }}
-                className="group p-6 cursor-pointer lift-card interactive-panel"
-                style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 74%, #F4F8FC 100%)", border: "1px solid rgba(14,14,12,0.08)", borderRadius: 20, boxShadow: "0 10px 26px rgba(14,14,12,0.05)" }}
-                role="link"
-                tabIndex={0}
-                onKeyDown={function(e) {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    props.go("article", article.slug);
-                  }
-                }}
-              >
-                <div className="text-[10px] uppercase mb-3" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{track.kicker}</div>
-                <h3 className="mb-3" style={{ ...serif, fontSize: 24, lineHeight: 1.08 }}>{article.title}</h3>
-                <p className="text-sm leading-[1.8]" style={{ color: MUTED }}>{track.blurb}</p>
-                <div className="inline-flex items-center gap-2 mt-5 text-sm font-semibold" style={{ color: INK }}>
-                  Learn more
-                  <span className="interactive-arrow" style={{ color: SIGNAL }}>→</span>
+              <div key={item.label}>
+                <div className="display" style={{ fontSize: "clamp(2.2rem, 3.4vw, 2.8rem)", lineHeight: 1, color: INK, fontWeight: 500, letterSpacing: "-0.03em" }}>
+                  <CountUp to={item.to} prefix={item.prefix} suffix={item.suffix} duration={1600} />
                 </div>
+                <div className="mt-3" style={{ ...monoKicker, color: MUTED }}>{item.label}</div>
               </div>
             );
           })}
         </div>
-      </section>
+
       </section>
 
-      {/* WHAT WE DO. numbered like a field manual */}
-      <section style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-14">
-            <div className="lg:col-span-5">
-              <div className="text-[11px] mb-4" style={{ color: MUTED, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.04em" }}>SECTION I / HOW THIS WORKS</div>
-              <h2 style={{ ...serif, fontSize: "clamp(2rem, 4vw, 2.75rem)", lineHeight: 1.05 }}>
-                Three things we do, every day, in every market we work.
+      {/* Open Positions preview — reps-first funnel */}
+      <section className="relative" style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-10 reveal">
+            <div>
+              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full" style={{ background: SIGNAL_SOFT, border: "1px solid rgba(46,109,92,0.2)" }}>
+                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: SIGNAL }} />
+                <span style={{ ...monoKicker, color: SIGNAL_DEEP }}>Hiring now &middot; {JOBS.length} open roles</span>
+              </div>
+              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+                Pick your role. Apply in five minutes.
+              </h2>
+              <p className="mt-4 max-w-2xl" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.72 }}>
+                Weekly commission, paid certification, and a clear path to leadership. Below are the roles we're actively hiring for right now.
+              </p>
+            </div>
+            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="edi-link inline-flex items-center text-sm font-medium" style={{ color: SIGNAL_DEEP }}>
+              See all {JOBS.length} roles
+              <span aria-hidden="true" style={{ marginLeft: 6 }}>→</span>
+            </a>
+          </div>
+
+          <ol className="reveal m-0 p-0" data-delay="1" style={{ listStyle: "none", borderTop: "1px solid " + RULE }}>
+            {JOBS.slice(0, 4).map(function(job, i) {
+              return (
+                <li key={job.slug} className="job-row-home" style={{ borderBottom: "1px solid " + RULE, transition: "background-color 260ms ease, padding-left 260ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.backgroundColor = SIGNAL_SOFTER; e.currentTarget.style.paddingLeft = "12px"; }} onMouseLeave={function(e) { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.paddingLeft = "0"; }}>
+                  <div className="grid items-center gap-6 md:gap-10" style={{ gridTemplateColumns: "44px minmax(0,1fr) auto", padding: "24px 8px" }}>
+                    <span style={{ ...monoKicker, color: MUTED }}>{String(i + 1).padStart(2, "0")}</span>
+                    <div className="min-w-0">
+                      <h3 className="mb-1" style={{ ...serif, fontSize: "clamp(1.25rem, 2vw, 1.55rem)", lineHeight: 1.14, color: INK, letterSpacing: "-0.02em", fontWeight: 440 }}>
+                        <a href={getPathForRoute("job", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }} style={{ color: INK }}>{job.title}</a>
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1" style={{ fontSize: 13, color: MUTED }}>
+                        <span>{job.location}</span>
+                        <span>·</span>
+                        <span>{job.type}</span>
+                        <span>·</span>
+                        <span style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <a href={getPathForRoute("job", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }} className="hidden sm:inline-flex items-center justify-center px-5 rounded-full text-sm font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 42, whiteSpace: "nowrap" }}>
+                        Details
+                      </a>
+                      <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center justify-center gap-1.5 px-5 rounded-full text-sm font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 42, whiteSpace: "nowrap", boxShadow: "0 6px 16px rgba(46,109,92,0.3)" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}>
+                        Apply
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+
+          {JOBS.length > 4 && (
+            <div className="mt-8 text-center">
+              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-full text-sm font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 46 }} onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
+                See all {JOBS.length} roles
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ISP & Home-Service Partners */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-20 md:pb-28 reveal">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-12">
+          <div className="lg:col-span-6">
+            <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 16 }}>Brands we represent</div>
+            <h2 className="display reveal-blur" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.028em", color: INK }}>
+              The names homeowners already trust.
+            </h2>
+          </div>
+          <div className="lg:col-span-6">
+            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
+              Fiber internet, home security, solar, water filtration, roofing, and home services. We only run campaigns with strong products, real coverage, and pricing that holds up at the door.
+            </p>
+          </div>
+        </div>
+        <div className="marquee" style={{ borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE, padding: "40px 0" }}>
+          <div className="marquee__track">
+            {[0, 1].map(function(dupe) {
+              return (
+                <div key={dupe} aria-hidden={dupe === 1} className="flex items-center shrink-0" style={{ gap: 64 }}>
+                  {[
+                    "AT&T Fiber", "T-Mobile", "Brightspeed", "Kinetic", "Ripple Fiber", "Frontier",
+                    "Google Fiber", "Lumos", "MetroNet", "GoNetspeed", "Starlink", "Vivint"
+                  ].map(function(name) {
+                    return (
+                      <span key={name + "-" + dupe} style={{ ...serif, fontSize: "clamp(1.25rem, 1.8vw, 1.65rem)", color: INK, fontWeight: 440, letterSpacing: "-0.02em", lineHeight: 1.2, whiteSpace: "nowrap" }}>
+                        {name}
+                      </span>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* States marquee — nationwide coverage ticker */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-4 pb-20 md:pb-24 reveal">
+        <div className="flex flex-wrap items-baseline justify-between gap-4 mb-6" style={{ borderTop: "1px solid " + RULE, paddingTop: 22 }}>
+          <span style={{ ...monoKicker, color: SIGNAL }}>Coverage</span>
+          <span style={{ ...monoKicker, color: MUTED }}>Active + launching states</span>
+        </div>
+        <div className="marquee" style={{ paddingTop: 12, paddingBottom: 12 }}>
+          <div className="marquee__track">
+            {[0, 1].map(function(dupe) {
+              return (
+                <div key={dupe} aria-hidden={dupe === 1} className="flex items-center shrink-0" style={{ gap: 56 }}>
+                  {[
+                    "North Carolina", "South Carolina", "Georgia", "Florida", "Tennessee",
+                    "Virginia", "Texas", "Arizona", "Colorado", "Ohio",
+                    "Indiana", "Michigan", "Pennsylvania", "New York", "Nevada",
+                    "Utah", "Missouri", "Kentucky", "Alabama", "Oklahoma"
+                  ].map(function(state) {
+                    return (
+                      <span key={state + "-" + dupe} className="inline-flex items-center gap-2" style={{ whiteSpace: "nowrap" }}>
+                        <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: SIGNAL, opacity: 0.55 }} />
+                        <span style={{ ...serif, fontSize: "clamp(1.125rem, 1.5vw, 1.35rem)", color: INK, fontWeight: 440, letterSpacing: "-0.015em" }}>{state}</span>
+                      </span>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Local Markets — large editorial link list */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24 md:pb-32 reveal">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-12 md:mb-16">
+          <div className="lg:col-span-7">
+            <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 16 }}>Featured markets</div>
+            <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
+              Running teams coast to coast.
+            </h2>
+          </div>
+          <div className="lg:col-span-6">
+            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
+              Headquartered in High Point, North Carolina. Running teams across the Southeast, Midwest, Mountain West, and Sunbelt. The North Carolina markets below are where we started and where our recruiting engine is sharpest. Book a call for a custom plan in any U.S. market.
+            </p>
+          </div>
+        </div>
+
+        <ul className="m-0 p-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-0" style={{ listStyle: "none", borderTop: "1px solid " + RULE }}>
+          {MARKET_PAGES.map(function(market) {
+            return (
+              <li key={market.slug} style={{ borderBottom: "1px solid " + RULE }}>
+                <a
+                  href={getPathForRoute("market", market.slug)}
+                  onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
+                  className="market-city group flex items-baseline justify-between"
+                  style={{
+                    padding: "22px 4px",
+                    color: INK,
+                    transition: "padding 320ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms ease"
+                  }}
+                  onMouseEnter={function(e) { e.currentTarget.style.paddingLeft = "14px"; e.currentTarget.style.color = SIGNAL_DEEP; e.currentTarget.querySelector('.arrow').style.opacity = "1"; e.currentTarget.querySelector('.arrow').style.transform = "translateX(0)"; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.paddingLeft = "4px"; e.currentTarget.style.color = INK; e.currentTarget.querySelector('.arrow').style.opacity = "0"; e.currentTarget.querySelector('.arrow').style.transform = "translateX(-6px)"; }}
+                >
+                  <span style={{ ...serif, fontSize: "clamp(1.5rem, 2.4vw, 1.85rem)", letterSpacing: "-0.022em", fontWeight: 440, lineHeight: 1.15 }}>{market.region}</span>
+                  <span className="arrow" aria-hidden="true" style={{ color: SIGNAL, fontSize: 18, opacity: 0, transform: "translateX(-6px)", transition: "opacity 260ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1)" }}>→</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="mt-10 flex items-center justify-between flex-wrap gap-4">
+          <p style={{ ...monoKicker, color: MUTED }}>{MARKET_PAGES.length} active markets</p>
+          <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="edi-link inline-flex items-center text-sm font-medium" style={{ color: SIGNAL_DEEP }}>
+            See open roles by market
+            <span aria-hidden="true" style={{ marginLeft: 6 }}>→</span>
+          </a>
+        </div>
+      </section>
+
+      {/* How we work — 3 steps */}
+      <section className="relative" style={{ background: SIGNAL_SOFTER, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16 reveal">
+            <div className="lg:col-span-7">
+              <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 18 }}>How we work</div>
+              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
+                Three steps. One business day to start.
               </h2>
             </div>
+            <div className="lg:col-span-5">
+              <p style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.72 }}>
+                No drawn-out sales cycle. A call, a plan, and boots on the street. Here's how every new partnership actually unfolds.
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6">
+          <ol className="m-0 p-0 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 reveal" data-delay="1" style={{ listStyle: "none" }}>
             {[
-              { n: "01", t: "We knock the doors", d: "Trained, badged, branded representatives work neighborhoods with a real script, real standards, and a six-module certification before they touch a single porch.", bg: SIGNAL_SOFT, accent: SIGNAL },
-              { n: "02", t: "We close the customer", d: "Qualify on the doorstep. Present the right product. Handle the objection. Set the install. We are paid on activations, not signatures, which keeps us honest.", bg: BLUE_SOFT, accent: BLUE },
-              { n: "03", t: "You see every metric", d: "Knocks, conversations, sits, closes, scheduled installs, activated installs. Daily reporting in real time. No black box, no monthly slide deck, no surprises.", bg: FOREST_SOFT, accent: FOREST },
-            ].map(function(item) {
+              { step: "01", title: "Discovery call", time: "30 minutes", body: "We learn your markets, current field performance, and what you'd need us to run. Straight conversation, no deck." },
+              { step: "02", title: "Deploy the team", time: "2 to 3 weeks", body: "We recruit, certify, badge, and route reps locally. You get a launch plan, territory maps, and a single point of contact." },
+              { step: "03", title: "Drive results", time: "Week one onward", body: "Reps start knocking. You see daily dashboards for activity, close rate, and activated installs. Scale when the unit economics hold." },
+            ].map(function(s) {
               return (
-                <div key={item.t} className="p-8 lift-card" style={{ background: item.bg, borderTop: "3px solid " + item.accent, borderRadius: 18 }}>
-                  <div className="text-[11px] mb-4" style={{ color: item.accent, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.05em", fontWeight: 600 }}>{item.n}</div>
-                  <h3 className="mb-3" style={{ ...serif, fontSize: 22, color: INK }}>{item.t}</h3>
-                  <p className="text-sm leading-[1.85]" style={{ color: MUTED }}>{item.d}</p>
-                </div>
+                <li key={s.step} style={{ listStyle: "none" }}>
+                  <TiltCard strength={5} className="relative p-8 md:p-9 rounded-2xl block" style={{
+                    background: SURF,
+                    border: "1px solid " + RULE
+                  }}
+                  onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; }}>
+                    <div className="flex items-baseline justify-between mb-10">
+                      <span style={{ ...monoKicker, color: SIGNAL }}>{s.step}</span>
+                      <span style={{ ...monoKicker, color: MUTED }}>{s.time}</span>
+                    </div>
+                    <h3 style={{ ...serif, fontSize: 26, lineHeight: 1.12, letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>{s.title}</h3>
+                    <p className="mt-5 pt-5" style={{ fontSize: 15, color: MUTED, lineHeight: 1.7, borderTop: "1px solid " + RULE }}>{s.body}</p>
+                  </TiltCard>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* AI TRAINING CALLOUT */}
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          <div className="lg:col-span-6">
-            <Eyebrow>How We Train</Eyebrow>
-            <h2 className="mb-6" style={{ ...serif, fontSize: "clamp(1.875rem, 3.5vw, 2.5rem)", lineHeight: 1.05 }}>
-              We teach our reps with AI-powered coaching.
-            </h2>
-            <p className="text-base leading-[1.85] mb-6" style={{ color: MUTED }}>
-              Most door-to-door companies hand new reps a script and send them outside. We do something different. Every Home Front rep practices the pitch with an AI coaching tool that scores their delivery, identifies weaknesses, and gives personalized feedback before they ever knock a real door.
-            </p>
-            <p className="text-base leading-[1.85]" style={{ color: MUTED }}>
-              The result is reps who are sharper on day one and improve faster every week. It is one of the reasons we can hire candidates with no prior sales experience and have them earning commission within their first two weeks.
-            </p>
-          </div>
-          <div className="lg:col-span-6">
-            <div className="p-8 md:p-10 lift-card" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 22 }}>
-              <div className="text-[10px] uppercase mb-4" style={{ color: SIGNAL, letterSpacing: "0.18em", fontWeight: 700 }}>What Reps Learn</div>
-              <ul className="space-y-4">
-                {[
-                  ["The Product", "Offer basics, customer fit, pricing structure, and install flow across active service categories"],
-                  ["The Pitch", "Opening lines, value framing, qualifying questions that work at the door"],
-                  ["Objection Handling", "How to respond to the 12 most common homeowner objections"],
-                  ["Compliance", "What you can and cannot say. Brand standards. Customer privacy."],
-                  ["Field Simulation", "Live AI roleplay practice scored on tone, pace, and structure"],
-                  ["Tools and CRM", "How to log activity, schedule installs, and track your numbers"],
-                ].map(function(item) {
-                  return (
-                    <li key={item[0]} className="flex items-start gap-3">
-                      <span style={{ color: INK, marginTop: 8, width: 4, height: 4, background: INK, borderRadius: "50%", flexShrink: 0 }}></span>
-                      <div>
-                        <div className="text-sm font-semibold" style={{ color: INK }}>{item[0]}</div>
-                        <div className="text-xs mt-0.5" style={{ color: MUTED }}>{item[1]}</div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+      {/* Founder — editorial profile */}
+      <section className="relative overflow-hidden" style={{ background: PAPER_DEEP, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
+        <div aria-hidden="true" style={{ position: "absolute", top: -160, right: -120, width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle, rgba(46,109,92,0.11), transparent 65%)" }} />
+        <div aria-hidden="true" style={{ position: "absolute", bottom: -180, left: -100, width: 480, height: 480, borderRadius: "50%", background: "radial-gradient(circle, rgba(217,166,60,0.09), transparent 65%)" }} />
+        <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-36">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+            <div className="lg:col-span-5 reveal">
+              <figure className="m-0">
+                {/* Gradient frame — green → sage → gold, mirroring the logo palette */}
+                <div style={{
+                  position: "relative",
+                  padding: 3,
+                  borderRadius: 24,
+                  background: "linear-gradient(145deg, " + SIGNAL + " 0%, " + SAGE + " 52%, " + GOLD + " 100%)",
+                  boxShadow: "0 30px 80px rgba(14,14,12,0.12), 0 2px 0 rgba(14,14,12,0.03)",
+                  transition: "transform 560ms var(--ease-spring), box-shadow 560ms var(--ease-spring)"
+                }}
+                onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 40px 100px rgba(14,14,12,0.16), 0 2px 0 rgba(14,14,12,0.03)"; }}
+                onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 30px 80px rgba(14,14,12,0.12), 0 2px 0 rgba(14,14,12,0.03)"; }}>
+                  <div style={{
+                    aspectRatio: "4 / 5",
+                    borderRadius: 21,
+                    overflow: "hidden",
+                    background: SURF,
+                    position: "relative"
+                  }}>
+                    <img
+                      src="/founder.jpg"
+                      alt="Muizz Muhammad, founder of Home Front Solutions"
+                      loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+                    />
+                  </div>
+                </div>
+                {/* Clean editorial caption below */}
+                <figcaption className="mt-5 flex items-center justify-between gap-4" style={{ borderTop: "1px solid " + RULE, paddingTop: 14 }}>
+                  <span style={{ ...monoKicker, color: SIGNAL }}>Founder &middot; Est. 2023</span>
+                  <span style={{ ...monoKicker, color: MUTED }}>High Point, NC</span>
+                </figcaption>
+              </figure>
+            </div>
+            <div className="lg:col-span-7 reveal" data-delay="1">
+              <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 18 }}>The founder</div>
+              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.2rem, 4.6vw, 3.4rem)", lineHeight: 1, letterSpacing: "-0.034em", color: INK }}>
+                Built by someone who still walks the streets.
+              </h2>
+              <p className="mt-8 max-w-2xl" style={{ fontSize: 17, color: INK, lineHeight: 1.68 }}>
+                <span style={{ ...serif, fontSize: 19, color: INK }}>I'm Muizz Muhammad.</span> I started Home Front Solutions in North Carolina after years in the field. Not behind a strategy deck. Knocking doors, closing customers, and building the teams that do the same.
+              </p>
+              <p className="mt-5 max-w-2xl" style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
+                Our culture is simple. If you produce, you move. No politics, no favorites, no layer between the reps and the people running the company. Every manager was promoted out of the field, which keeps the standard honest. I still ride along. I still pick up at 8pm when a rep calls.
+              </p>
+              <p className="mt-5 max-w-2xl" style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
+                Home Front runs field teams nationwide. We ship the same disciplined playbook into every city we launch — headquartered in High Point, NC, working across the Southeast, Midwest, Mountain West, and Sunbelt. If you're a brand that needs door-to-door done right, or a driven rep looking for a place that invests in its people, you're in the right place.
+              </p>
+
+              <div className="mt-10 pt-8 flex flex-wrap items-center gap-x-8 gap-y-4" style={{ borderTop: "1px solid " + RULE }}>
+                <div>
+                  <div style={{ ...serif, fontSize: 42, fontStyle: "italic", color: SIGNAL_DEEP, lineHeight: 1, letterSpacing: "-0.02em", fontWeight: 420 }}>Muizz</div>
+                  <div className="mt-1" style={{ ...monoKicker, color: MUTED }}>Founder, Home Front Solutions</div>
+                </div>
+                <a href="https://www.linkedin.com/in/muizzmuhammad/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: INK, color: "#F5F1E7", minHeight: 44, fontSize: 14, border: "none", textDecoration: "none" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = INK; }}>
+                  Connect on LinkedIn
+                  <span aria-hidden="true" style={{ fontSize: 11 }}>↗</span>
+                </a>
+                <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="edi-link inline-flex items-center text-sm font-medium" style={{ color: SIGNAL_DEEP, fontWeight: 500 }}>
+                  Send a direct note
+                  <span aria-hidden="true" style={{ marginLeft: 4 }}>→</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* WHY HOME FRONT */}
-      <section style={{ background: SURF2, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
-          <Eyebrow>Why Home Front</Eyebrow>
-          <h2 className="max-w-3xl mb-6" style={{ ...serif, fontSize: "clamp(2rem, 4vw, 2.75rem)", lineHeight: 1.05 }}>
-            A locally owned company built on professionalism and trust.
-          </h2>
-          <p className="max-w-2xl mb-14 text-base md:text-lg leading-relaxed" style={{ color: MUTED }}>
-            Home Front Solutions is an independently owned door-to-door marketing company built for clear offers, disciplined field execution, and respectful homeowner conversations across essential home-service categories.
-          </p>
+      {/* Path to leadership */}
+      <section style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16 reveal">
+            <div className="lg:col-span-7">
+              <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 18 }}>Path to leadership</div>
+              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
+                Start at a door. End up running a market.
+              </h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.72 }}>
+                Promotion isn't a performance review or a line on a future OKR. It's a production standard. Hit the numbers, coach the next rep, and the next role opens.
+              </p>
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 reveal" data-delay="1">
             {[
               {
-                t: "Honest, in-person service",
-                d: "Every conversation happens face-to-face on your doorstep with a professional representative wearing branded company attire and a photo ID. No high-pressure tactics, no surprise charges. just clear information so you can make the best decision for your home.",
-                accent: SIGNAL,
+                step: "01",
+                role: "Field Rep",
+                range: "$100K – $185K",
+                timeline: "Months 1 – 12",
+                duties: "Own a territory. Hit daily activity targets. Get sharper at the doorstep every week.",
               },
               {
-                t: "Built for strong home-service offers",
-                d: "We focus on categories that make sense at the doorstep: fiber internet, home security, solar, water filtration, roofing, and other homeowner offers where clarity and trust matter.",
-                accent: BLUE,
+                step: "02",
+                role: "Team Lead",
+                range: "$150K – $250K",
+                timeline: "Earned, not assigned",
+                duties: "Run a four-to-six-person team. Ride-alongs, morning meetings, personal pipeline on the side.",
               },
               {
-                t: "Locally rooted, nationally trusted",
-                d: "We are an independently owned company that operates field teams in markets across the country. Our leadership is accessible, our standards are consistent, and our commitment to every customer is the same wherever they live.",
-                accent: FOREST,
-              },
-              {
-                t: "Trained, certified representatives",
-                d: "Every member of our field team completes a comprehensive certification program before they ever knock a door. Our reps are coached to listen first, explain clearly, and treat every customer the way they would want a salesperson to treat their own family.",
-                accent: GOLD,
+                step: "03",
+                role: "Area Manager",
+                range: "$250K+",
+                timeline: "12 – 18 months",
+                duties: "Own the market. Build the team. Own the P&L. Report directly to ownership.",
               },
             ].map(function(item) {
               return (
-                <div key={item.t} className="pl-6" style={{ borderLeft: "3px solid " + item.accent }}>
-                  <h3 className="mb-3" style={{ ...serif, fontSize: 22, color: INK }}>{item.t}</h3>
-                  <p className="text-sm leading-[1.85]" style={{ color: MUTED }}>{item.d}</p>
-                </div>
+                <TiltCard key={item.role} strength={5} className="p-9 md:p-10 rounded-2xl" style={{
+                  background: SURF,
+                  border: "1px solid " + RULE
+                }}
+                onMouseEnter={function(e) { e.currentTarget.style.borderColor = "rgba(46,109,92,0.28)"; }}
+                onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; }}>
+                  <div className="flex items-baseline justify-between mb-10">
+                    <span style={{ ...monoKicker, color: MUTED }}>{item.step}</span>
+                    <span style={{ ...monoKicker, color: MUTED }}>{item.timeline}</span>
+                  </div>
+                  <h3 style={{ ...serif, fontSize: 28, lineHeight: 1.1, letterSpacing: "-0.025em", color: INK, fontWeight: 440 }}>{item.role}</h3>
+                  <div className="mt-4" style={{ ...serif, fontSize: 18, color: SIGNAL_DEEP, fontWeight: 440, letterSpacing: "-0.015em" }}>{item.range}</div>
+                  <p className="mt-6 pt-6" style={{ fontSize: 15, color: MUTED, lineHeight: 1.7, borderTop: "1px solid " + RULE }}>{item.duties}</p>
+                </TiltCard>
               );
             })}
           </div>
         </div>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-4">
-            <Eyebrow>Common Questions</Eyebrow>
-            <h2 style={{ ...serif, fontSize: "clamp(1.9rem, 3.5vw, 2.5rem)", lineHeight: 1.06 }}>
-              Straight answers for applicants comparing D2D, pay structure, and field work.
+      {/* WHY HOME FRONT — kept at bottom for SEO but hidden visually */}
+      <section aria-hidden="true" style={{ display: "none" }}>
+        <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 reveal">
+            <div className="lg:col-span-5">
+              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Why Home Front</div>
+              <h2 className="display" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
+                A serious company doing the work the right way.
+              </h2>
+              <p className="mt-6" style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
+                We're independently owned, focused on one thing, and comfortable being held to a higher bar than the industry average. No pressure tactics. No hidden fees. No chasing easy signatures that cancel a week later.
+              </p>
+            </div>
+            <div className="lg:col-span-7">
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-12" style={{ borderTop: "1px solid " + RULE, paddingTop: 32 }}>
+                {[
+                  { t: "Honest, in-person service", d: "Every conversation is face-to-face, with a rep in branded attire and a photo ID. We're there to answer questions clearly, not push anyone into anything." },
+                  { t: "Focused categories only", d: "Fiber internet. Home security. Solar. Water filtration. Roofing. Home services where clarity and trust actually matter at the doorstep." },
+                  { t: "Locally rooted teams", d: "Independent ownership, local reps, real territories. Leadership stays close to the field so standards don't drift between markets." },
+                  { t: "Trained before they knock", d: "Every rep finishes certification before their first real door. We coach listening first, explanation second, and the close when it's genuinely earned." },
+                ].map(function(item, i) {
+                  return (
+                    <div key={item.t} className="reveal" data-delay={((i % 2) + 1)}>
+                      <dt style={{ ...monoKicker, color: MUTED, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</dt>
+                      <dd className="m-0">
+                        <div style={{ ...serif, fontSize: 22, lineHeight: 1.2, letterSpacing: "-0.022em", color: INK, fontWeight: 440, marginBottom: 12 }}>{item.t}</div>
+                        <p style={{ fontSize: 15, lineHeight: 1.75, color: MUTED }}>{item.d}</p>
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-hidden="true" style={{ display: "none" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="lg:col-span-4 reveal">
+            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Frequently asked</div>
+            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+              The things people actually ask before applying.
             </h2>
-            <p className="mt-4 text-sm md:text-[15px] leading-[1.9]" style={{ color: MUTED }}>
-              The strongest recruiting pages answer the real questions up front: structure, pay, training, and what kind of products the role actually covers.
+            <p className="mt-5" style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>
+              Straight answers about pay, structure, and the day-to-day work. If something's missing, ask when we talk.
             </p>
           </div>
-          <div className="lg:col-span-8 space-y-4">
-            {HOME_FAQS.map(function(item) {
+          <div className="lg:col-span-8 reveal" data-delay="1" style={{ borderTop: "1px solid " + RULE }}>
+            {HOME_FAQS.map(function(item, i) {
               return (
-                <div key={item.q} className="p-5 md:p-6 lift-card interactive-panel" style={{ background: "#FFFFFF", border: "1px solid " + RULE, borderRadius: 18, boxShadow: "0 10px 26px rgba(14,14,12,0.04)" }}>
-                  <h3 style={{ ...serif, fontSize: 24, lineHeight: 1.1, color: INK }}>{item.q}</h3>
-                  <p className="mt-3 text-sm md:text-[15px] leading-[1.85]" style={{ color: MUTED }}>{item.a}</p>
+                <div key={item.q} className="grid items-start" style={{
+                  gridTemplateColumns: "44px minmax(0,1fr)",
+                  gap: 24,
+                  padding: "28px 0",
+                  borderBottom: "1px solid " + RULE
+                }}>
+                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3 className="mb-3" style={{ ...serif, fontSize: "clamp(1.225rem, 2vw, 1.5rem)", lineHeight: 1.18, color: INK, letterSpacing: "-0.018em", fontWeight: 440 }}>{item.q}</h3>
+                    <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>{item.a}</p>
+                  </div>
                 </div>
               );
             })}
@@ -1903,32 +2408,37 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-28">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-10 md:p-14" style={{ background: BLUE_SOFT, borderTop: "4px solid " + BLUE }}>
-            <div className="text-[11px] mb-5" style={{ color: BLUE, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR BRANDS THAT NEED FIELD GROWTH</div>
-            <h3 className="mb-4" style={{ ...serif, fontSize: "clamp(1.5rem, 2.5vw, 1.875rem)", lineHeight: 1.1, color: INK }}>
-              Add a door-to-door channel to your customer acquisition.
-            </h3>
-            <p className="text-sm leading-relaxed mb-8" style={{ color: MUTED }}>
-              Tell us about your markets and timeline. We respond within 24 hours.
-            </p>
-            <button onClick={function() { props.go("contact"); }} className="inline-flex items-center px-6 py-3 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: BLUE, color: PAPER, border: "none", cursor: "pointer" }}>
-              Contact Sales →
-            </button>
-          </div>
-          <div className="p-10 md:p-14" style={{ background: SIGNAL_SOFT, borderTop: "4px solid " + SIGNAL }}>
-            <div className="text-[11px] mb-5" style={{ color: SIGNAL, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: "0.05em", fontWeight: 700 }}>FOR PEOPLE WHO WANT TO WORK</div>
-            <h3 className="mb-4" style={{ ...serif, fontSize: "clamp(1.5rem, 2.5vw, 1.875rem)", lineHeight: 1.1, color: INK }}>
-              You bring the hustle. We bring the product, the training, and the territory.
-            </h3>
-            <p className="text-sm leading-relaxed mb-8" style={{ color: MUTED }}>
-              Five open positions. Earn $100K+ in your first year. No experience required.
-            </p>
-            <button onClick={function() { props.go("careers"); }} className="inline-flex items-center px-6 py-3 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
-              View Open Positions →
-            </button>
+      {/* Closer — two paths */}
+      <section className="relative overflow-hidden" style={{ background: SIGNAL_DEEP, color: "#F5F1E7" }}>
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(900px 500px at 12% -10%, rgba(143,176,155,0.18), transparent 55%), radial-gradient(800px 380px at 88% 110%, rgba(217,166,60,0.12), transparent 60%)" }} />
+        <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-36">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+            <div className="reveal">
+              <div style={{ ...monoKicker, color: "rgba(245,241,231,0.65)", marginBottom: 22 }}>For brands</div>
+              <h3 className="display mb-5" style={{ fontSize: "clamp(1.95rem, 3.2vw, 2.6rem)", lineHeight: 1.04, color: "#F5F1E7", letterSpacing: "-0.032em", fontWeight: 420 }}>
+                A field team in your next market, ready to knock.
+              </h3>
+              <p className="mb-10 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,241,231,0.74)", lineHeight: 1.72 }}>
+                Fiber, security, solar, home services. Tell us the ZIP codes and the launch window. One business day back with honest numbers and a realistic start date — in any U.S. market.
+              </p>
+              <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(217,166,60,0.34)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                Book a 30-min call
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+            <div className="reveal" data-delay="1" style={{ borderTop: "1px solid rgba(245,241,231,0.16)", paddingTop: 40 }}>
+              <div style={{ ...monoKicker, color: "rgba(245,241,231,0.65)", marginBottom: 22 }}>For applicants</div>
+              <h3 className="display mb-5" style={{ fontSize: "clamp(1.95rem, 3.2vw, 2.6rem)", lineHeight: 1.04, color: "#F5F1E7", letterSpacing: "-0.032em", fontWeight: 420 }}>
+                Show up coachable. We'll handle the rest.
+              </h3>
+              <p className="mb-10 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,241,231,0.74)", lineHeight: 1.72 }}>
+                Open roles across the country. Paid training before day one. First-year reps routinely clear $100K. Most started with zero experience.
+              </p>
+              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: "transparent", color: "#F5F1E7", border: "1px solid rgba(245,241,231,0.42)", cursor: "pointer", minHeight: 54, fontSize: 15 }} onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,241,231,0.1)"; e.currentTarget.style.borderColor = "rgba(245,241,231,0.7)"; }} onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,241,231,0.42)"; }}>
+                See open roles
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -1968,37 +2478,147 @@ function WhatWeDoPage(props) {
 }
 
 function WhyUsPage(props) {
-  var reasons = [
-    { n: "01", t: "Independently owned and operated", d: "We are an independently owned company with field teams serving customers in markets across the country. Our leadership is accessible, our standards are consistent, and our reputation matters because we plan to be here for the long run." },
-    { n: "02", t: "Built for multiple home-service categories", d: "We support campaigns across fiber internet, home security, solar, water filtration, roofing, and other homeowner-focused categories where face-to-face selling still wins." },
-    { n: "03", t: "Trained, certified representatives", d: "Every member of our field team completes a six-module certification program before they ever knock a door, covering product knowledge, customer service, and clear, honest communication." },
-    { n: "04", t: "Honest, in-person service", d: "Every conversation happens face-to-face on your doorstep with a professional representative wearing branded company attire and a photo ID. No high-pressure tactics, no surprise charges." },
-    { n: "05", t: "We take customer experience personally", d: "We schedule the installation, follow up to confirm everything is working, and stand behind every recommendation we make. If something is not right, we make it right." },
-    { n: "06", t: "Built for long-term relationships", d: "We are not a pop-up sales team that disappears after the easy customers are signed up. We staff for the long term, support our reps, and stay invested in the markets we serve." },
+  var principles = [
+    { t: "Independently owned", d: "One owner, accountable to the teams and the customers. Decisions happen fast and standards don't drift between markets." },
+    { t: "Focused categories only", d: "Fiber, home security, solar, water filtration, roofing, and home services. Offers where clarity and trust actually matter at the doorstep." },
+    { t: "Trained before they knock", d: "Every rep finishes a six-module certification before touching a real porch. Coaching continues in the field, every week." },
+    { t: "Honest, in-person", d: "Branded attire, photo ID, clear answers. No pressure tactics, no surprise charges. Customers should understand exactly what they're buying." },
+    { t: "Leadership from the field", d: "Every manager was promoted out of production. The people setting the standard have hit it themselves." },
+    { t: "Here for the long run", d: "We staff for longevity, stay invested in the markets we serve, and plan to still be around when the short-game companies are gone." },
   ];
 
   return (
-    <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-20">
-      <Eyebrow>Why Home Front</Eyebrow>
-      <h1 className="max-w-4xl" style={{ ...serif, fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1 }}>
-        Premium field execution, delivered with professionalism and care.
-      </h1>
-      <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-        Home Front Solutions is a door-to-door marketing company built for high-demand home-service offers. Here is what sets us apart and why direct field execution still works when the offer is clear, the process is disciplined, and the rep is professional.
-      </p>
+    <>
+      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-16 md:pb-20">
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(900px 440px at 90% -5%, rgba(46,109,92,0.12), transparent 55%)", zIndex: -1 }} />
+        <div className="reveal max-w-4xl">
+          <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Why Home Front</div>
+          <h1 className="display" style={{ fontSize: "clamp(2.9rem, 6.6vw, 5.2rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
+            The case for doing this work <span style={{ fontStyle: "italic", color: SIGNAL, fontWeight: 420 }}>properly</span>.
+          </h1>
+          <p className="mt-8 max-w-3xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
+            Door-to-door has a reputation problem. Most of it is earned. This is how we run the work differently, and why that shows up in the numbers, the reps, and the customer experience.
+          </p>
+        </div>
+      </section>
 
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-        {reasons.map(function(r) {
-          return (
-            <div key={r.n}>
-              <span className="text-xs" style={{ color: SIGNAL, fontWeight: 700 }}>{r.n}</span>
-              <h2 className="mt-2 mb-3" style={{ ...serif, fontSize: 22 }}>{r.t}</h2>
-              <p className="text-sm leading-[1.85]" style={{ color: MUTED }}>{r.d}</p>
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24 md:pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-14" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+          {principles.map(function(r, i) {
+            return (
+              <div key={r.t}>
+                <div style={{ ...monoKicker, color: i % 2 === 0 ? SIGNAL : GOLD_DEEP, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</div>
+                <h3 className="mb-3" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>{r.t}</h3>
+                <p style={{ fontSize: 15, lineHeight: 1.72, color: MUTED }}>{r.d}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* How it works — 3 disciplines */}
+      <section style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 reveal">
+            <div className="lg:col-span-7">
+              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>How we run it</div>
+              <h2 className="display" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
+                Three things, every day, the same way.
+              </h2>
             </div>
-          );
-        })}
-      </div>
-    </section>
+            <div className="lg:col-span-5">
+              <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.75 }}>
+                The work breaks down into three clear parts. We invest in all three and we measure each one daily, so the signal stays visible to everyone.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px" style={{ background: RULE, border: "1px solid " + RULE, borderRadius: 20, overflow: "hidden" }}>
+            {[
+              { n: "01", t: "We knock the doors", d: "Trained, badged, branded reps work assigned neighborhoods. Six-module certification before anyone touches a real porch." },
+              { n: "02", t: "We close the customer", d: "Qualify on the doorstep. Present clearly. Handle the objection. Book the install. We're paid on activations, not signatures, so the bar stays honest." },
+              { n: "03", t: "You see the numbers", d: "Knocks, conversations, sits, closes, installs. Live dashboards, daily reporting. No black box, no monthly slide deck, no surprises." },
+            ].map(function(item, i) {
+              return (
+                <div key={item.t} className="reveal" data-delay={i + 1} style={{ background: SURF, padding: "44px 36px" }}>
+                  <div style={{ ...monoKicker, color: MUTED, marginBottom: 36 }}>{item.n}</div>
+                  <h3 className="mb-4" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>{item.t}</h3>
+                  <p style={{ fontSize: 15, lineHeight: 1.75, color: MUTED }}>{item.d}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Training — 6-module */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-start">
+          <div className="lg:col-span-6 reveal">
+            <div style={{ ...monoKicker, color: GOLD_DEEP, marginBottom: 18 }}>How we train</div>
+            <h2 className="display mb-6" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
+              Reps practice on AI before they ever knock a real door.
+            </h2>
+            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.72, marginBottom: 20 }}>
+              Most D2D companies hand new reps a script and push them out the door. We don't. Every Home Front rep runs the pitch through an AI coach that scores delivery, flags weak spots, and gives them something specific to fix.
+            </p>
+            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
+              The result: sharper reps on day one and faster improvement every week after. It's why we can hire people with zero sales experience and have them earning commission inside two weeks.
+            </p>
+          </div>
+          <div className="lg:col-span-6 reveal" data-delay="1">
+            <div style={{ ...monoKicker, color: SIGNAL_DEEP, marginBottom: 22 }}>Six-module certification</div>
+            <ol className="space-y-0" style={{ borderTop: "1px solid " + RULE, listStyle: "none", margin: 0, padding: 0 }}>
+              {[
+                ["The product", "Offer basics, who it's for, pricing, and install flow."],
+                ["The pitch", "Openers, value framing, and qualifying questions that actually work on a porch."],
+                ["Objection handling", "The twelve most common homeowner objections, and what to say back."],
+                ["Compliance", "What you can and can't say. Brand standards. Customer privacy."],
+                ["Field simulation", "Live AI roleplay scored on tone, pace, and structure."],
+                ["Tools and CRM", "How to log activity, book installs, and track your own numbers."],
+              ].map(function(item, i) {
+                return (
+                  <li key={item[0]} className="grid items-start" style={{ gridTemplateColumns: "44px minmax(0,1fr)", gap: 20, padding: "20px 0", borderBottom: "1px solid " + RULE }}>
+                    <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                    <div>
+                      <div style={{ ...serif, fontSize: 18, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{item[0]}</div>
+                      <div className="mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.6, color: MUTED }}>{item[1]}</div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32" style={{ borderTop: "1px solid " + RULE }}>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="lg:col-span-4 reveal">
+            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Frequently asked</div>
+            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+              Real questions, straight answers.
+            </h2>
+            <p className="mt-5" style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>
+              If something's missing, ask when we talk.
+            </p>
+          </div>
+          <div className="lg:col-span-8 reveal" data-delay="1" style={{ borderTop: "1px solid " + RULE }}>
+            {HOME_FAQS.map(function(item, i) {
+              return (
+                <div key={item.q} className="grid items-start" style={{ gridTemplateColumns: "44px minmax(0,1fr)", gap: 24, padding: "28px 0", borderBottom: "1px solid " + RULE }}>
+                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3 className="mb-3" style={{ ...serif, fontSize: "clamp(1.225rem, 2vw, 1.5rem)", lineHeight: 1.18, color: INK, letterSpacing: "-0.018em", fontWeight: 440 }}>{item.q}</h3>
+                    <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>{item.a}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -2040,184 +2660,155 @@ function PartnersPage(props) {
 function CareersIndexPage(props) {
   return (
     <>
-      {/* HERO */}
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-16">
-        <div className="flex items-center gap-3 mb-8">
-          <div style={{ width: 24, height: 1, background: SIGNAL }} />
-          <span className="text-[11px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.18em", fontWeight: 700 }}>Careers · {JOBS.length} Open Roles</span>
+      {/* Careers hero */}
+      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-16 md:pb-24">
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(1000px 480px at 15% -10%, rgba(46,109,92,0.14), transparent 55%)", zIndex: -1 }} />
+        <div className="reveal inline-flex items-center px-4 py-1.5 rounded-full mb-10" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)" }}>
+          <span style={{ ...monoKicker, color: SIGNAL_DEEP }}>Careers · {JOBS.length} open roles</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-          <div className="lg:col-span-8">
-            <h1 style={{ ...serif, fontSize: "clamp(2.75rem, 6.5vw, 5rem)", lineHeight: 0.98 }}>
-              Join a team where your work is rewarded and your growth is supported.
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          <div className="lg:col-span-8 reveal">
+            <h1 className="display" style={{ fontSize: "clamp(2.8rem, 6.6vw, 5.2rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
+              A real career in field sales. <span style={{ fontStyle: "italic", color: SIGNAL, fontWeight: 420 }}>Built in</span>, not bolted on.
             </h1>
-            <p className="mt-10 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-              At Home Front Solutions, you have the opportunity to build a real career selling fiber internet for the country's most trusted providers. with <span style={{ color: INK, fontWeight: 600 }}>uncapped earning potential</span>, <span style={{ color: INK, fontWeight: 600 }}>free professional training</span>, and a leadership team that genuinely invests in your success. Whether you have years of sales experience or none at all, we will set you up to thrive.
+            <p className="mt-8 md:mt-10 max-w-2xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
+              Uncapped commission. Paid certification before your first door. A clear path from rep to team lead to area manager. Experience helps, but we hire for drive. Most of our top reps started with none.
             </p>
-
-            {/* Three quick value props - colored */}
-            <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
+            <div className="mt-12 grid grid-cols-3 gap-x-10" style={{ borderTop: "1px solid " + RULE, paddingTop: 32, maxWidth: 680 }}>
               {[
-                { t: "$100K+ earnings", d: "Paid weekly. Uncapped commission.", bg: SIGNAL_SOFT, accent: SIGNAL },
-                { t: "Free training", d: "Full certification before day one.", bg: BLUE_SOFT, accent: BLUE },
-                { t: "Real career path", d: "Promotion from within. Move up fast.", bg: FOREST_SOFT, accent: FOREST },
+                { k: "$100K+", label: "First-year earnings" },
+                { k: "Paid", label: "Six-module training" },
+                { k: "Fast", label: "Promotion from within" },
               ].map(function(item) {
                 return (
-                  <div key={item.t} className="p-5" style={{ background: item.bg, borderTop: "3px solid " + item.accent }}>
-                    <div className="text-sm font-bold mb-1.5" style={{ color: item.accent }}>{item.t}</div>
-                    <div className="text-xs leading-relaxed" style={{ color: INK }}>{item.d}</div>
+                  <div key={item.label}>
+                    <div className="display" style={{ fontSize: "clamp(1.5rem, 2.3vw, 1.9rem)", lineHeight: 1, color: INK, fontWeight: 500, letterSpacing: "-0.025em" }}>{item.k}</div>
+                    <div className="mt-3" style={{ ...monoKicker, color: MUTED }}>{item.label}</div>
                   </div>
                 );
               })}
             </div>
           </div>
-          <aside className="lg:col-span-4 lg:border-l lg:pl-10" style={{ borderColor: RULE }}>
-            <div className="text-[10px] uppercase mb-5" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 700 }}>A Note From Our Founder</div>
-            <p className="leading-[1.7] mb-6" style={{ ...serif, fontSize: 18, color: INK }}>
-              "We hire for character first and experience second. If you are willing to learn, show up consistently, and treat people with respect, we will give you everything you need to succeed here. including the training, the territory, and the support."
-            </p>
-            <p className="text-sm leading-[1.85] mb-6" style={{ color: MUTED }}>
-              Muizz Muhammad built Home Front Solutions to combine old-school field discipline with a cleaner, more modern operating style for recruiting, coaching, and market growth.
-            </p>
-            <div style={{ width: 32, height: 1, background: RULE, marginBottom: 16 }} />
-            <div className="text-xs" style={{ color: MUTED }}>Muizz Muhammad · Founder, Home Front Solutions</div>
+          <aside className="lg:col-span-4 reveal" data-delay="1">
+            <figure style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20, padding: 32 }}>
+              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 22 }}>From the founder</div>
+              <blockquote style={{ ...serif, fontSize: 19, lineHeight: 1.4, color: INK, letterSpacing: "-0.015em", fontWeight: 420, margin: 0 }}>
+                We hire for character first, experience second. Show up, stay coachable, treat people with respect. We'll handle the training, the territory, and the support.
+              </blockquote>
+              <figcaption className="mt-6 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid " + RULE }}>
+                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + SIGNAL + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
+                <span>
+                  <span className="block" style={{ fontSize: 13, color: INK, fontWeight: 600 }}>Muizz Muhammad</span>
+                  <span className="block" style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Founder</span>
+                </span>
+              </figcaption>
+            </figure>
           </aside>
         </div>
       </section>
 
-      {/* OPEN POSITIONS - PROMINENT */}
+      {/* Open positions — editorial table */}
       <section id="open-positions" style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-16 md:py-20">
-          <div className="flex items-end justify-between mb-10">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-12 reveal">
             <div>
-              <Eyebrow>Open Positions</Eyebrow>
-              <h2 style={{ ...serif, fontSize: "clamp(1.75rem, 3vw, 2.25rem)", lineHeight: 1.1 }}>
-                {JOBS.length} positions currently available
+              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 16 }}>Open positions · {JOBS.length} roles</div>
+              <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+                Currently hiring.
               </h2>
             </div>
           </div>
 
-          <div className="space-y-4">
-            {JOBS.map(function(job) {
+          <ol className="reveal" data-delay="1" style={{ borderTop: "1px solid " + RULE, listStyle: "none", margin: 0, padding: 0 }}>
+            {JOBS.map(function(job, i) {
               return (
-                <div
-                  key={job.slug}
-                  onClick={function() { props.go("job", job.slug); }}
-                  className="group w-full p-0 text-left transition-transform duration-200 hover:-translate-y-0.5"
-                  style={{ background: "none", border: "none", cursor: "pointer" }}
-                  aria-label={"Open " + job.title + " in " + job.location}
-                  role="link"
-                  tabIndex={0}
-                  onKeyDown={function(e) {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      props.go("job", job.slug);
-                    }
-                  }}
-                >
-                <div
-                  className="p-6 md:p-7"
-                  style={{
-                    background: "linear-gradient(180deg, " + PAPER + " 0%, #FFFFFF 100%)",
-                    border: "1px solid " + RULE,
-                    borderRadius: 14,
-                    boxShadow: "0 1px 0 rgba(14,14,12,0.03)",
-                    transition: "box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease"
-                  }}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 items-start">
-                    <div className="md:col-span-7">
-                      <h3 className="mb-2" style={{ ...serif, fontSize: "clamp(1.25rem, 2vw, 1.5rem)", color: INK, lineHeight: 1.2 }}>{job.title}</h3>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs mb-3" style={{ color: MUTED }}>
-                        <span style={{ color: INK, fontWeight: 600 }}>{job.location}</span>
+                <li key={job.slug} className="job-row" style={{ borderBottom: "1px solid " + RULE, transition: "background-color 260ms ease, padding-left 260ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.paddingLeft = "12px"; }} onMouseLeave={function(e) { e.currentTarget.style.paddingLeft = "0"; }}>
+                  <div className="grid items-center gap-6 md:gap-10" style={{ gridTemplateColumns: "44px minmax(0,1fr) auto", padding: "28px 8px" }}>
+                    <span style={{ ...monoKicker, color: MUTED }}>{String(i + 1).padStart(2, "0")}</span>
+                    <div className="min-w-0">
+                      <h3 className="mb-1.5" style={{ ...serif, fontSize: "clamp(1.325rem, 2.1vw, 1.65rem)", lineHeight: 1.12, color: INK, letterSpacing: "-0.02em", fontWeight: 440 }}>
+                        <a href={getPathForRoute("job", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }} style={{ color: INK }}>{job.title}</a>
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1" style={{ fontSize: 13, color: MUTED }}>
+                        <span>{job.location}</span>
                         <span>·</span>
                         <span>{job.type}</span>
+                        <span>·</span>
+                        <span style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 mb-3">
-                        <div className="inline-flex items-center px-2.5 py-1 rounded-full" style={{ background: FOREST_SOFT }}>
-                          <span className="text-xs font-bold" style={{ color: FOREST }}>{job.earningRange}/yr</span>
-                        </div>
-                        <div className="inline-flex items-center px-2.5 py-1 rounded-full" style={{ background: SIGNAL_SOFT }}>
-                          <span className="text-xs font-bold" style={{ color: SIGNAL }}>{job.type}</span>
-                        </div>
-                      </div>
-                      <p className="text-sm leading-relaxed max-w-xl" style={{ color: MUTED }}>{job.pitch}</p>
+                      <p className="mt-3 max-w-2xl hidden md:block" style={{ fontSize: 14, color: MUTED, lineHeight: 1.65 }}>{job.pitch}</p>
                     </div>
-                    <div className="md:col-span-5 flex flex-col sm:flex-row md:flex-col lg:flex-row gap-2 md:items-end md:justify-end">
-                      <span className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold transition-colors" style={{ background: "transparent", color: INK, border: "1px solid " + INK, minWidth: 142 }}>
-                        View Details
-                      </span>
-                      <span
-                        onClick={function(e) { e.stopPropagation(); props.go("apply", job.slug); }}
-                        className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold hover:opacity-90 transition-opacity"
-                        style={{ background: "linear-gradient(135deg, #233447 0%, " + SIGNAL + " 100%)", color: PAPER, border: "none", cursor: "pointer", minWidth: 142, boxShadow: "0 14px 28px rgba(59,93,124,0.18)" }}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={function(e) {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            props.go("apply", job.slug);
-                          }
-                        }}
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <a
+                        href={getPathForRoute("job", job.slug)}
+                        onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }}
+                        className="inline-flex items-center justify-center px-5 rounded-full text-sm font-medium transition-colors"
+                        style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 44, whiteSpace: "nowrap" }}
                       >
-                        Apply Now →
-                      </span>
+                        View role
+                      </a>
+                      <a
+                        href={getPathForRoute("apply", job.slug)}
+                        onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }}
+                        className="inline-flex items-center justify-center gap-1.5 px-5 rounded-full text-sm font-medium transition-all"
+                        style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 44, whiteSpace: "nowrap", boxShadow: "0 6px 18px rgba(46,109,92,0.3)" }}
+                        onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
+                        onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
+                      >
+                        Apply
+                        <span aria-hidden="true">→</span>
+                      </a>
                     </div>
                   </div>
-                </div>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ol>
         </div>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-20 md:py-24">
-        <div className="flex items-end justify-between mb-10 gap-6">
-          <div>
-            <Eyebrow>North Carolina Markets</Eyebrow>
-            <h2 className="max-w-3xl" style={{ ...serif, fontSize: "clamp(1.85rem, 3.5vw, 2.8rem)", lineHeight: 1.04 }}>
-              City-targeted career pages built for local search and local applicants.
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-12 reveal">
+          <div className="lg:col-span-7">
+            <div style={{ ...monoKicker, color: MUTED, marginBottom: 16 }}>Markets</div>
+            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+              City-specific pages built for local applicants.
             </h2>
           </div>
-          <p className="hidden md:block max-w-md text-sm leading-[1.8]" style={{ color: MUTED }}>
-            These market pages help applicants and crawlers understand where Home Front Solutions is recruiting now and where we are building visibility next.
-          </p>
+          <div className="lg:col-span-5">
+            <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>
+              Each market page frames what's open locally, where recruiting is moving, and how quickly the field is growing.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {MARKET_PAGES.map(function(market) {
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-0 reveal" data-delay="1" style={{ border: "1px solid " + RULE, borderRadius: 20, overflow: "hidden" }}>
+          {MARKET_PAGES.map(function(market, i) {
+            var rightBorder = (i + 1) % 3 !== 0 && (i + 1) % 2 !== 0;
             return (
-              <div
+              <a
                 key={market.slug}
-                onClick={function() { props.go("market", market.slug); }}
-                className="group p-6 cursor-pointer"
+                href={getPathForRoute("market", market.slug)}
+                onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
+                className="group block"
                 style={{
-                  background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 100%)",
-                  border: "1px solid " + RULE,
-                  borderRadius: 18,
-                  boxShadow: "0 8px 24px rgba(14,14,12,0.04)"
+                  background: SURF,
+                  padding: "28px 28px 32px",
+                  borderRight: "1px solid " + RULE,
+                  borderBottom: "1px solid " + RULE,
+                  transition: "background 260ms ease"
                 }}
-                role="link"
-                tabIndex={0}
-                onKeyDown={function(e) {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    props.go("market", market.slug);
-                  }
-                }}
+                onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(14,14,12,0.02)"; }}
+                onMouseLeave={function(e) { e.currentTarget.style.background = SURF; }}
               >
-                <div className="inline-flex items-center px-2.5 py-1 rounded-full mb-4" style={{ background: SIGNAL_SOFT }}>
-                  <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{market.region}</span>
+                <div className="flex items-center justify-between mb-8">
+                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")} / {market.region}</span>
+                  <span aria-hidden="true" style={{ fontSize: 16, color: MUTED, transition: "transform 260ms ease", display: "inline-block" }}>→</span>
                 </div>
-                <h3 className="mb-3" style={{ ...serif, fontSize: 25, lineHeight: 1.06, color: INK }}>{market.title}</h3>
-                <p className="text-sm leading-[1.8] mb-5" style={{ color: MUTED }}>{market.intro}</p>
-                <div className="inline-flex items-center gap-2 text-sm font-semibold" style={{ color: INK }}>
-                  Explore local page
-                  <span style={{ color: SIGNAL }}>→</span>
-                </div>
-              </div>
+                <h3 className="mb-3" style={{ ...serif, fontSize: 22, lineHeight: 1.14, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{market.headline || market.region}</h3>
+                <p style={{ fontSize: 14, color: MUTED, lineHeight: 1.68 }}>{market.intro}</p>
+              </a>
             );
           })}
         </div>
@@ -2236,14 +2827,15 @@ function CareersIndexPage(props) {
             <div className="mt-6 flex flex-wrap gap-2">
               {MARKET_PAGES.map(function(market) {
                 return (
-                  <button
+                  <a
                     key={market.slug}
-                    onClick={function() { props.go("market", market.slug); }}
+                    href={getPathForRoute("market", market.slug)}
+                    onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
                     className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold"
                     style={{ background: "#fff", border: "1px solid " + RULE, color: INK, cursor: "pointer" }}
                   >
                     {market.region}
-                  </button>
+                  </a>
                 );
               })}
             </div>
@@ -2355,7 +2947,7 @@ function JobDetailPage(props) {
     return (
       <section className="max-w-[1180px] mx-auto px-5 md:px-10 py-32 text-center">
         <h1 className="mb-4" style={{ ...serif, fontSize: 36 }}>Position not found</h1>
-        <button onClick={function() { props.go("careers"); }} style={{ color: SIGNAL, background: "none", border: "none", cursor: "pointer" }}>← View all open positions</button>
+        <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={{ color: SIGNAL, cursor: "pointer" }}>← View all open positions</a>
       </section>
     );
   }
@@ -2366,174 +2958,166 @@ function JobDetailPage(props) {
 
   return (
     <>
-      <div style={{ background: SURF, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1240px] mx-auto px-5 md:px-10 py-3 text-xs flex items-center gap-2" style={{ color: MUTED }}>
-          <button onClick={function() { props.go("home"); }} style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", padding: 0 }}>Home</button>
-          <span>/</span>
-          <button onClick={function() { props.go("careers"); }} style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", padding: 0 }}>Careers</button>
-          <span>/</span>
+      <nav aria-label="Breadcrumb" style={{ borderBottom: "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-4 flex items-center gap-2" style={{ ...monoKicker, color: MUTED }}>
+          <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} style={{ cursor: "pointer", color: "inherit" }}>Home</a>
+          <span style={{ opacity: 0.5 }}>/</span>
+          <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={{ cursor: "pointer", color: "inherit" }}>Careers</a>
+          <span style={{ opacity: 0.5 }}>/</span>
           <span style={{ color: INK }}>{job.title}</span>
         </div>
-      </div>
+      </nav>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-10 md:pt-14 pb-10">
-        <div
-          className="overflow-hidden"
-          style={{
-            background: "radial-gradient(circle at top right, rgba(59,93,124,0.12), transparent 30%), linear-gradient(135deg, #F4F8FC 0%, #FFFFFF 52%, #FAFAF7 100%)",
-            border: "1px solid " + RULE,
-            borderRadius: 24,
-            boxShadow: "0 24px 60px rgba(14,14,12,0.08)"
-          }}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 px-6 py-8 md:px-10 md:py-12 lg:items-end">
-            <div className="lg:col-span-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5" style={{ background: SIGNAL_SOFT, color: SIGNAL }}>
-                <span className="text-[10px] uppercase" style={{ letterSpacing: "0.16em", fontWeight: 800 }}>Field Sales Opportunity</span>
-              </div>
-              <h1 className="mb-5" style={{ ...serif, fontSize: "clamp(2.4rem, 5vw, 4.5rem)", lineHeight: 0.96 }}>{job.title}</h1>
-              <p className="max-w-3xl text-[15px] md:text-[17px] leading-[1.85]" style={{ color: MUTED }}>
-                {job.pitch} This role is built for people who want real upside, real territory responsibility, and a clean path into leadership if they can produce.
-              </p>
-
-              <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[
-                  { label: "Location", value: job.location },
-                  { label: "Type", value: job.type },
-                  { label: "Earnings", value: job.earningRange + "/yr" },
-                  { label: "Posted", value: job.posted }
-                ].map(function(item) {
-                  return (
-                    <div key={item.label} className="p-4" style={{ background: "rgba(255,255,255,0.78)", border: "1px solid " + RULE, borderRadius: 16 }}>
-                      <div className="text-[10px] uppercase mb-2" style={{ color: MUTED, letterSpacing: "0.15em", fontWeight: 700 }}>{item.label}</div>
-                      <div className="text-sm font-semibold leading-snug" style={{ color: INK }}>{item.value}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="lg:col-span-4">
-              <div className="p-5 md:p-6" style={{ background: "#11120F", color: PAPER, borderRadius: 20 }}>
-                <div className="text-[10px] uppercase mb-3" style={{ color: "rgba(250,250,247,0.62)", letterSpacing: "0.15em", fontWeight: 700 }}>Quick Take</div>
-                <h2 className="mb-3" style={{ ...serif, fontSize: 26, lineHeight: 1.02 }}>Strong product. Straight commission. No fluff.</h2>
-                <p className="text-sm leading-[1.8] mb-5" style={{ color: "rgba(250,250,247,0.8)" }}>
-                  Training is provided, field support is real, and compensation is tied to actual installs and production.
-                </p>
-                <button onClick={function() { props.go("apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-7 py-4 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer", boxShadow: "0 16px 36px rgba(59,93,124,0.2)" }}>
-                  Apply Now →
-                </button>
-              </div>
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-12 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          <div className="lg:col-span-8 reveal">
+            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 20 }}>{job.location} · {job.type}</div>
+            <h1 className="display mb-6" style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.5rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>{job.title}</h1>
+            <p className="max-w-3xl" style={{ fontSize: "clamp(1.05rem, 1.3vw, 1.18rem)", color: MUTED, lineHeight: 1.62 }}>
+              {job.pitch} Built for people who want real upside, real territory responsibility, and a clean path into leadership if they can produce.
+            </p>
+            <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-8" style={{ borderTop: "1px solid " + RULE, paddingTop: 28 }}>
+              {[
+                { label: "Location", value: job.location },
+                { label: "Type", value: job.type },
+                { label: "Earnings", value: job.earningRange + "/yr" },
+                { label: "Posted", value: job.posted }
+              ].map(function(item) {
+                return (
+                  <div key={item.label}>
+                    <div style={{ ...monoKicker, color: MUTED, marginBottom: 8 }}>{item.label}</div>
+                    <div style={{ ...serif, fontSize: 17, lineHeight: 1.25, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{item.value}</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+          <aside className="lg:col-span-4 reveal" data-delay="1">
+            <div className="relative overflow-hidden" style={{ background: SIGNAL_DEEP, color: "#F5F1E7", borderRadius: 20, padding: 28 }}>
+              <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(520px 300px at 80% 0%, rgba(143,176,155,0.28), transparent 60%), radial-gradient(420px 240px at 10% 100%, rgba(217,166,60,0.18), transparent 60%)" }} />
+              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, " + SAGE + ", " + GOLD + ")" }} />
+              <div className="relative">
+                <div style={{ ...monoKicker, color: SAGE, marginBottom: 24 }}>The role, plainly</div>
+                <blockquote style={{ ...serif, fontSize: 22, lineHeight: 1.25, letterSpacing: "-0.018em", color: "#F5F1E7", fontWeight: 420, margin: 0 }}>
+                  Real product. Straight commission. Leadership that actually shows up in the field with you.
+                </blockquote>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 52, fontSize: 15, boxShadow: "0 10px 24px rgba(217,166,60,0.32)" }} onMouseEnter={function(e) { e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                  Apply for this role
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pb-16 md:pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-8 space-y-12">
-            <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-4" style={{ ...serif, fontSize: 26 }}>About the role</h2>
-              <p className="leading-[1.85] text-[15px]" style={{ color: MUTED }}>{job.overview}</p>
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-28">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+          <div className="lg:col-span-8 reveal">
+            <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 14 }}>About the role</div>
+              <p style={{ fontSize: 17, lineHeight: 1.72, color: INK, fontWeight: 400 }}>{job.overview}</p>
             </div>
 
-            <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-5" style={{ ...serif, fontSize: 26 }}>What you'll do</h2>
-              <ul className="space-y-3">
+            <div className="mt-16" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 22 }}>What you'll do</div>
+              <ul className="m-0 p-0" style={{ listStyle: "none" }}>
                 {job.responsibilities.map(function(item, i) {
                   return (
-                    <li key={i} className="flex items-start gap-3 text-[14px]" style={{ color: MUTED }}>
-                      <span style={{ color: INK, marginTop: 8, width: 4, height: 4, background: INK, borderRadius: "50%", flexShrink: 0 }}></span>
-                      <span className="leading-[1.7]">{item}</span>
+                    <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.responsibilities.length - 1 ? "none" : "1px solid " + RULE }}>
+                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
                 })}
               </ul>
             </div>
 
-            <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-5" style={{ ...serif, fontSize: 26 }}>What we're looking for</h2>
-              <ul className="space-y-3">
+            <div className="mt-16" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 22 }}>What we're looking for</div>
+              <ul className="m-0 p-0" style={{ listStyle: "none" }}>
                 {job.qualifications.map(function(item, i) {
                   return (
-                    <li key={i} className="flex items-start gap-3 text-[14px]" style={{ color: MUTED }}>
-                      <span style={{ color: INK, marginTop: 8, width: 4, height: 4, background: INK, borderRadius: "50%", flexShrink: 0 }}></span>
-                      <span className="leading-[1.7]">{item}</span>
+                    <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.qualifications.length - 1 ? "none" : "1px solid " + RULE }}>
+                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
                 })}
               </ul>
             </div>
 
-            <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-5" style={{ ...serif, fontSize: 26 }}>What you get</h2>
-              <ul className="space-y-3">
+            <div className="mt-16" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 22 }}>What you get</div>
+              <ul className="m-0 p-0" style={{ listStyle: "none" }}>
                 {job.benefits.map(function(item, i) {
                   return (
-                    <li key={i} className="flex items-start gap-3 text-[14px]" style={{ color: MUTED }}>
-                      <span style={{ color: SIGNAL, marginTop: 8, width: 4, height: 4, background: SIGNAL, borderRadius: "50%", flexShrink: 0 }}></span>
-                      <span className="leading-[1.7]">{item}</span>
+                    <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.benefits.length - 1 ? "none" : "1px solid " + RULE }}>
+                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
                 })}
               </ul>
             </div>
 
-            <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-4" style={{ ...serif, fontSize: 26 }}>About Home Front Solutions</h2>
-              <p className="leading-[1.85] text-[15px] mb-4" style={{ color: MUTED }}>
-                Home Front Solutions is a door-to-door marketing company built around major fiber and connectivity categories, including AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, Google Fiber, Lumos, MetroNet, GoNetspeed, Starlink, and other high-interest provider searches that homeowners and applicants already recognize. We hire and train professional field sales representatives in markets across the country.
+            <div className="mt-16" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 14 }}>About Home Front Solutions</div>
+              <p className="mb-5" style={{ fontSize: 16, lineHeight: 1.72, color: INK }}>
+                Home Front Solutions is a door-to-door marketing company built around major fiber and connectivity categories, including AT&amp;T Fiber, T-Mobile Fiber, Astound, Brightspeed, Frontier, Google Fiber, Lumos, MetroNet, GoNetspeed, Starlink, and other high-interest provider searches. We hire and train professional field sales representatives in markets across the country.
               </p>
-              <p className="leading-[1.85] text-[15px]" style={{ color: MUTED }}>
+              <p style={{ fontSize: 14, lineHeight: 1.72, color: MUTED }}>
                 We are an Equal Opportunity Employer.
               </p>
             </div>
 
-            <div className="pt-4">
-              <button onClick={function() { props.go("apply", job.slug); }} className="inline-flex items-center gap-2 px-7 py-4 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: "linear-gradient(135deg, #233447 0%, " + SIGNAL + " 100%)", color: PAPER, border: "none", cursor: "pointer", boxShadow: "0 18px 36px rgba(59,93,124,0.18)" }}>
-                Apply for this Position →
-              </button>
+            <div className="mt-12">
+              <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
+                Apply for this position
+                <span aria-hidden="true">→</span>
+              </a>
             </div>
 
-            <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-4" style={{ ...serif, fontSize: 26 }}>Explore related markets</h2>
-              <p className="text-[15px] leading-[1.85] mb-5" style={{ color: MUTED }}>
-                Applicants often search by city before they search by job title. Use the market pages below to explore local recruiting visibility across North Carolina.
-              </p>
+            <div className="mt-16" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 14 }}>Explore related markets</div>
+              <h2 className="mb-5" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>Applicants often search by city before title.</h2>
               <div className="flex flex-wrap gap-2">
                 {MARKET_PAGES.map(function(market) {
                   return (
-                    <button
+                    <a
                       key={market.slug}
-                      onClick={function() { props.go("market", market.slug); }}
-                      className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold"
-                      style={{ background: "#fff", border: "1px solid " + RULE, color: INK, cursor: "pointer" }}
+                      href={getPathForRoute("market", market.slug)}
+                      onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
+                      className="inline-flex items-center px-4 rounded-full text-sm font-medium transition-colors"
+                      style={{ background: "transparent", border: "1px solid rgba(14,14,12,0.16)", color: INK, cursor: "pointer", minHeight: 40 }}
+                      onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(14,14,12,0.04)"; }}
+                      onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; }}
                     >
                       {market.region}
-                    </button>
+                    </a>
                   );
                 })}
               </div>
             </div>
 
-            <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-4" style={{ ...serif, fontSize: 26 }}>Related reading</h2>
-              <p className="text-[15px] leading-[1.85] mb-5" style={{ color: MUTED }}>
-                These articles answer the questions applicants usually ask before they commit: how the field works, how the money works, and what separates strong reps from everyone else.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {relatedArticles.map(function(article) {
+            <div className="mt-16" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 22 }}>Related reading</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {relatedArticles.map(function(article, i) {
                   return (
-                    <button
+                    <a
                       key={article.slug}
-                      onClick={function() { props.go("article", article.slug); }}
-                      className="p-5 text-left"
-                      style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
+                      href={getPathForRoute("article", article.slug)}
+                      onClick={function(e) { handleNavClick(e, props.go, "article", article.slug); }}
+                      className="block"
+                      style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 16, padding: 22, transition: "transform 360ms ease, border-color 260ms ease" }}
+                      onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(14,14,12,0.18)"; }}
+                      onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = RULE; }}
                     >
-                      <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
-                      <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{article.title}</div>
-                      <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
-                    </button>
+                      <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>{article.eyebrow}</div>
+                      <div style={{ ...serif, fontSize: 19, lineHeight: 1.18, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{article.title}</div>
+                      <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{article.description}</p>
+                    </a>
                   );
                 })}
               </div>
@@ -2541,22 +3125,29 @@ function JobDetailPage(props) {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="lg:sticky lg:top-32 space-y-4">
-              <div className="p-6" style={{ border: "1px solid " + RULE, background: SURF, borderRadius: 20, boxShadow: "0 18px 36px rgba(14,14,12,0.05)" }}>
-                <div className="text-xs uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.15em", fontWeight: 700 }}>Apply Now</div>
-                <h3 className="mb-3 leading-tight" style={{ ...serif, fontSize: 24 }}>Ready to join the team?</h3>
-                <p className="text-sm mb-5 leading-relaxed" style={{ color: MUTED }}>Application takes about 5 minutes. We respond within 48 hours with direct next steps if there is a fit.</p>
-                <button onClick={function() { props.go("apply", job.slug); }} className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
-                  Apply Now →
-                </button>
+            <div className="lg:sticky lg:top-32">
+              <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>Apply</div>
+                <h3 className="mb-4" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>Ready to join the team?</h3>
+                <p style={{ fontSize: 14.5, color: MUTED, lineHeight: 1.68, marginBottom: 24 }}>Application takes about 5 minutes. We respond within 48 hours with direct next steps if there's a fit.</p>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
+                  Begin application
+                  <span aria-hidden="true">→</span>
+                </a>
               </div>
-              <div className="p-6" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
-                <div className="text-xs uppercase mb-3" style={{ color: MUTED, letterSpacing: "0.15em", fontWeight: 700 }}>Before you apply</div>
-                <div className="space-y-3 text-sm leading-[1.75]" style={{ color: INK }}>
-                  <div>Every current role is built around real production, commission upside, and direct field accountability.</div>
-                  <div>Reliable transportation is required for field work.</div>
-                  <div>Top performers move fastest because they communicate clearly and show up consistently.</div>
-                </div>
+              <div className="mt-10" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+                <div style={{ ...monoKicker, color: MUTED, marginBottom: 16 }}>Before you apply</div>
+                <ul className="m-0 p-0" style={{ listStyle: "none" }}>
+                  {[
+                    "Roles are built around real production and direct field accountability.",
+                    "Reliable transportation is required for field work.",
+                    "Top performers move fastest because they show up consistently."
+                  ].map(function(t, i) {
+                    return (
+                      <li key={i} style={{ fontSize: 13.5, color: INK, lineHeight: 1.68, padding: "10px 0", borderBottom: i === 2 ? "none" : "1px solid " + RULE }}>{t}</li>
+                    );
+                  })}
+                </ul>
               </div>
             </div>
           </aside>
@@ -2740,9 +3331,9 @@ function ApplyPage(props) {
 
   return (
     <section className="max-w-[980px] mx-auto px-5 md:px-10 pt-12 md:pt-16 pb-20">
-      <button onClick={function() { props.go("job", props.slug); }} className="text-sm mb-6 inline-flex items-center gap-1.5 hover:opacity-70 transition-opacity" style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+      <a href={getPathForRoute("job", props.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", props.slug); }} className="text-sm mb-6 inline-flex items-center gap-1.5 hover:opacity-70 transition-opacity" style={{ color: MUTED, cursor: "pointer" }}>
         ← Back to job description
-      </button>
+      </a>
 
       <div className="max-w-[760px] mx-auto">
       {/* Clean job summary card at the top */}
@@ -2949,9 +3540,9 @@ function ApplyPage(props) {
         {/* Legal links - using divs not nested buttons inside p tag */}
         <div className="text-xs text-center mt-4" style={{ color: MUTED }}>
           By submitting, you agree to our{" "}
-          <span onClick={function() { props.go("privacy"); }} style={{ cursor: "pointer", color: MUTED, textDecoration: "underline" }}>Privacy Policy</span>
+          <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: MUTED, textDecoration: "underline" }}>Privacy Policy</a>
           {" "}and{" "}
-          <span onClick={function() { props.go("terms"); }} style={{ cursor: "pointer", color: MUTED, textDecoration: "underline" }}>Terms of Service</span>.
+          <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: MUTED, textDecoration: "underline" }}>Terms of Service</a>.
         </div>
       </form>
       </div>
@@ -3019,12 +3610,12 @@ function ThankYouPage(props) {
       </div>
 
       <div className="flex flex-col sm:flex-row justify-center gap-3">
-        <button onClick={function() { props.go("careers"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold" style={{ background: "transparent", color: INK, border: "1px solid " + INK, cursor: "pointer" }}>
+        <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold" style={{ background: "transparent", color: INK, border: "1px solid " + INK, cursor: "pointer" }}>
           View Other Positions
-        </button>
-        <button onClick={function() { props.go("home"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
+        </a>
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-full font-semibold" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", boxShadow: "0 8px 18px rgba(46,109,92,0.28)" }}>
           Back to Home
-        </button>
+        </a>
       </div>
     </section>
   );
@@ -3036,7 +3627,7 @@ function MarketPage(props) {
     return (
       <section className="max-w-[1180px] mx-auto px-5 md:px-10 py-32 text-center">
         <h1 className="mb-4" style={{ ...serif, fontSize: 36 }}>Market page not found</h1>
-        <button onClick={function() { props.go("careers"); }} style={{ color: SIGNAL, background: "none", border: "none", cursor: "pointer" }}>← View careers</button>
+        <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={{ color: SIGNAL, cursor: "pointer" }}>← View careers</a>
       </section>
     );
   }
@@ -3179,12 +3770,12 @@ function MarketPage(props) {
                           <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{job.pitch}</p>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-2">
-                          <button onClick={function() { props.go("job", job.slug); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: "transparent", color: INK, border: "1px solid " + INK, cursor: "pointer" }}>
+                          <a href={getPathForRoute("job", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: "transparent", color: INK, border: "1px solid " + INK, cursor: "pointer" }}>
                             View Role
-                          </button>
-                          <button onClick={function() { props.go("apply", job.slug); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
+                          </a>
+                          <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center justify-center px-5 py-3 rounded-md text-sm font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
                             Apply Now →
-                          </button>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -3198,16 +3789,17 @@ function MarketPage(props) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {relatedArticles.map(function(article) {
                   return (
-                    <button
+                    <a
                       key={article.slug}
-                      onClick={function() { props.go("article", article.slug); }}
-                      className="p-5 text-left"
+                      href={getPathForRoute("article", article.slug)}
+                      onClick={function(e) { handleNavClick(e, props.go, "article", article.slug); }}
+                      className="p-5 text-left block"
                       style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
                     >
                       <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{article.title}</div>
                       <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
-                    </button>
+                    </a>
                   );
                 })}
               </div>
@@ -3245,9 +3837,9 @@ function MarketPage(props) {
                 <p className="text-sm leading-[1.8] mb-5" style={{ color: MUTED }}>
                   Start from the role that best matches your market and experience. The application is short and the recruiting flow moves quickly.
                 </p>
-                <button onClick={function() { props.go("careers"); }} className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-md font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
+                <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="w-full inline-flex items-center justify-center px-5 py-3.5 rounded-md font-semibold" style={{ background: SIGNAL, color: PAPER, border: "none", cursor: "pointer" }}>
                   Browse Open Roles
-                </button>
+                </a>
               </div>
             </div>
           </aside>
@@ -3258,70 +3850,147 @@ function MarketPage(props) {
 }
 
 function InsightsIndexPage(props) {
+  // Topic groupings for SEO hub structure
+  var topicMap = {
+    "Career Stories": "career",
+    "Career Path": "career",
+    "Training": "career",
+    "Mindset": "career",
+    "Rep Development": "career",
+    "Getting Started": "career",
+    "Business Basics": "career",
+    "Sales Psychology": "craft",
+    "Product Advantage": "craft",
+    "Telecom Basics": "craft",
+    "Money & Discipline": "money",
+    "Income Guide": "money",
+    "Income Growth": "money",
+    "Industry Trend": "industry",
+    "Broadband Buildout": "industry",
+    "Provider Search": "industry",
+    "Fiber Expansion": "industry",
+    "Homeowner Comparison": "industry",
+    "Category Comparison": "industry",
+    "Internships": "students",
+    "Student Jobs": "students",
+    "Triangle Students": "students",
+    "Charlotte Internships": "students",
+    "Young Professionals": "students",
+    "Recent Grads": "students",
+    "Charlotte Jobs": "markets",
+    "Raleigh Jobs": "markets",
+    "Greensboro Jobs": "markets",
+    "High Point Jobs": "markets",
+    "Charlotte Career Growth": "markets",
+  };
+  var topics = [
+    { id: "career", name: "Career & Craft", kicker: "Career & Craft", desc: "How the job actually works, how reps grow, and what separates strong closers from everyone else." },
+    { id: "money", name: "Money", kicker: "How the pay works", desc: "Commission, income, 1099 taxes, and how earnings compound as you move up." },
+    { id: "industry", name: "Industry & Products", kicker: "Fiber & ISPs", desc: "BEAD, data centers, provider maps, and why fiber keeps pulling attention." },
+    { id: "students", name: "Students & Grads", kicker: "Students & grads", desc: "Internships, first jobs, and the early-career angle on field sales." },
+    { id: "markets", name: "City Guides", kicker: "Local markets", desc: "Charlotte, Raleigh, Greensboro, High Point — on-the-ground context for each market." },
+    { id: "craft", name: "Craft & Mindset", kicker: "Craft & Mindset", desc: "D2D psychology, rep habits, and what makes a conversation land at the door." },
+  ];
+  var grouped = {};
+  topics.forEach(function(t) { grouped[t.id] = []; });
+  ARTICLE_PAGES.forEach(function(article) {
+    var topicId = topicMap[article.eyebrow] || "craft";
+    if (grouped[topicId]) grouped[topicId].push(article);
+  });
+
   return (
     <>
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-16 md:pt-22 pb-12">
-        <div className="max-w-4xl">
-          <Eyebrow>Insights</Eyebrow>
-          <h1 style={{ ...serif, fontSize: "clamp(2.5rem, 5vw, 4.6rem)", lineHeight: 0.96 }}>
-            D2D sales, field psychology, business basics, and industry know-how.
+      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-12 md:pb-16">
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(900px 440px at 85% -5%, rgba(46,109,92,0.1), transparent 55%)", zIndex: -1 }} />
+        <div className="max-w-4xl reveal">
+          <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Resources &middot; {ARTICLE_PAGES.length} articles</div>
+          <h1 className="display" style={{ fontSize: "clamp(2.9rem, 7vw, 5.4rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
+            Notes from the field.
           </h1>
-          <p className="mt-6 max-w-3xl text-[16px] md:text-[18px] leading-[1.9]" style={{ color: MUTED }}>
-            This section is the content hub for the Home Front Solutions career and recruiting brand. It exists to answer the questions people actually search before they apply: how D2D works, how to handle rejection, how the money side works, how home-service selling fits together, and why field sales can be a real career move.
+          <p className="mt-8 max-w-3xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
+            Written for the people who do their homework before they apply. Pay structure, 1099 taxes, daily reality, which products convert, industry shifts, and the career path from first door to area manager.
           </p>
         </div>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            "sales internship jobs for college students",
-            "summer sales jobs for 18 to 25 year olds",
-            "field sales jobs in Charlotte, Raleigh, Greensboro, and High Point",
-            "door-to-door rep income in North Carolina",
-            "how to start in field sales with no experience",
-            "fiber vs solar sales comparison",
-            "BEAD program fiber expansion opportunity",
-            "fiber optics data center growth"
-          ].map(function(intent) {
+      {/* Topic jump nav */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-10">
+        <nav aria-label="Resource topics" className="reveal flex flex-wrap gap-x-3 gap-y-3" style={{ borderTop: "1px solid " + RULE, paddingTop: 22 }}>
+          {topics.map(function(t) {
+            var count = grouped[t.id].length;
+            if (count === 0) return null;
             return (
-              <div key={intent} className="p-5" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 18 }}>
-                <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>Search Coverage</div>
-                <div className="text-sm font-semibold leading-[1.7]" style={{ color: INK }}>{intent}</div>
-              </div>
+              <a key={t.id} href={"#topic-" + t.id} className="inline-flex items-center gap-2 px-4 py-2 rounded-full transition-all" style={{ border: "1px solid " + RULE, background: SURF, color: INK, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", transition: "background 220ms ease, border-color 220ms ease, color 220ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_SOFTER; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SURF; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
+                {t.name}
+                <span style={{ ...monoKicker, color: MUTED, fontSize: 10 }}>{count}</span>
+              </a>
             );
           })}
-        </div>
+        </nav>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {ARTICLE_PAGES.map(function(article) {
-            return (
-              <div
-                key={article.slug}
-                onClick={function() { props.go("article", article.slug); }}
-                className="group p-6 cursor-pointer"
-                style={{ background: "linear-gradient(180deg, #FFFFFF 0%, " + PAPER + " 100%)", border: "1px solid " + RULE, borderRadius: 20, boxShadow: "0 10px 28px rgba(14,14,12,0.04)" }}
-                role="link"
-                tabIndex={0}
-                onKeyDown={function(e) {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    props.go("article", article.slug);
-                  }
-                }}
-              >
-                <div className="text-[10px] uppercase mb-3" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
-                <h2 style={{ ...serif, fontSize: 28, lineHeight: 1.06, color: INK }}>{article.title}</h2>
-                <p className="mt-4 text-sm leading-[1.85]" style={{ color: MUTED }}>{article.description}</p>
-                <div className="inline-flex items-center gap-2 mt-6 text-sm font-semibold" style={{ color: INK }}>
-                  Read insight
-                  <span style={{ color: SIGNAL }}>→</span>
-                </div>
+      {/* Topic sections */}
+      {topics.map(function(topic) {
+        var articles = grouped[topic.id];
+        if (articles.length === 0) return null;
+        return (
+          <section key={topic.id} id={"topic-" + topic.id} className="max-w-[1280px] mx-auto px-6 md:px-12 pt-14 md:pt-20 pb-4 scroll-mt-24">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-10 reveal">
+              <div className="lg:col-span-7">
+                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>{topic.kicker}</div>
+                <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: INK }}>{topic.name}</h2>
               </div>
-            );
-          })}
+              <div className="lg:col-span-5">
+                <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.7 }}>{topic.desc}</p>
+              </div>
+            </div>
+            <ul className="m-0 p-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-0 reveal" style={{ listStyle: "none", border: "1px solid " + RULE, borderRadius: 18, overflow: "hidden" }}>
+              {articles.map(function(article, i) {
+                return (
+                  <li key={article.slug} style={{
+                    background: SURF,
+                    borderRight: "1px solid " + RULE,
+                    borderBottom: "1px solid " + RULE,
+                  }}>
+                    <a
+                      href={getPathForRoute("article", article.slug)}
+                      onClick={function(e) { handleNavClick(e, props.go, "article", article.slug); }}
+                      className="block"
+                      style={{ padding: "28px 26px 30px", transition: "background 260ms ease, padding-left 260ms ease" }}
+                      onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_SOFTER; e.currentTarget.style.paddingLeft = "34px"; }}
+                      onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "26px"; }}
+                    >
+                      <div className="flex items-center justify-between mb-7">
+                        <span style={{ ...monoKicker, color: SIGNAL }}>{article.eyebrow}</span>
+                        <span aria-hidden="true" style={{ fontSize: 14, color: SIGNAL }}>→</span>
+                      </div>
+                      <h3 style={{ ...serif, fontSize: 21, lineHeight: 1.16, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>{article.title}</h3>
+                      <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{article.description}</p>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
+
+      {/* Bottom CTA */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-28 md:pb-32 reveal">
+        <div className="flex flex-wrap items-center justify-between gap-6" style={{ borderTop: "1px solid " + RULE, paddingTop: 32 }}>
+          <div>
+            <div style={{ ...monoKicker, color: MUTED, marginBottom: 8 }}>Ready for the real thing?</div>
+            <div style={{ ...serif, fontSize: "clamp(1.4rem, 2.2vw, 1.75rem)", letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>See the open roles or book a call.</div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-full font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 48, fontSize: 14.5 }}>
+              See open roles
+            </a>
+            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-6 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 8px 20px rgba(46,109,92,0.28)" }}>
+              Book a call
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
       </section>
     </>
@@ -3334,7 +4003,7 @@ function ArticlePage(props) {
     return (
       <section className="max-w-[1180px] mx-auto px-5 md:px-10 py-32 text-center">
         <h1 className="mb-4" style={{ ...serif, fontSize: 36 }}>Article not found</h1>
-        <button onClick={function() { props.go("home"); }} style={{ color: SIGNAL, background: "none", border: "none", cursor: "pointer" }}>← Back home</button>
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} style={{ color: SIGNAL, cursor: "pointer" }}>← Back home</a>
       </section>
     );
   }
@@ -3343,61 +4012,108 @@ function ArticlePage(props) {
     return ARTICLE_PAGES.find(function(item) { return item.slug === slug; });
   }).filter(Boolean);
 
+  // Article metadata for byline + reading time
+  var publishedDate = article.publishedDate || "2026-04-10";
+  var authorName = article.authorName || "Muizz Muhammad";
+  var bodyText = (article.intro || "") + " " + (article.sections || []).map(function(s) { return (s.heading || "") + " " + (s.body || ""); }).join(" ");
+  var wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
+  var readingTime = Math.max(1, Math.round(wordCount / 220));
+  var formattedDate = new Date(publishedDate + "T00:00:00").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
   return (
     <>
-      <section className="max-w-[980px] mx-auto px-5 md:px-10 pt-14 md:pt-18 pb-10">
-        <div className="inline-flex items-center px-3 py-1.5 rounded-full mb-5" style={{ background: SIGNAL_SOFT }}>
-          <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.15em", fontWeight: 800 }}>{article.eyebrow}</span>
+      <section className="max-w-[1040px] mx-auto px-6 md:px-12 pt-20 md:pt-28 pb-12">
+        <div className="reveal">
+          <div className="flex items-center gap-3 mb-7" style={{ ...monoKicker, color: MUTED }}>
+            <a href="/insights" onClick={function(e) { handleNavClick(e, props.go, "insights"); }} style={{ color: "inherit" }}>Insights</a>
+            <span style={{ opacity: 0.5 }}>/</span>
+            <span style={{ color: SIGNAL }}>{article.eyebrow}</span>
+          </div>
+          <h1 className="display" style={{ fontSize: "clamp(2.6rem, 5.6vw, 4.6rem)", lineHeight: 0.97, letterSpacing: "-0.035em", color: INK }}>{article.title}</h1>
+          <p className="mt-8 max-w-3xl" style={{ fontSize: "clamp(1.1rem, 1.35vw, 1.24rem)", color: MUTED, lineHeight: 1.58 }}>{article.description}</p>
+          <div className="mt-9 pt-7 flex flex-wrap items-center gap-x-6 gap-y-3" style={{ borderTop: "1px solid " + RULE }}>
+            <div className="flex items-center gap-3">
+              <span aria-hidden="true" style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg," + SIGNAL + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 12, fontWeight: 500 }}>MM</span>
+              <span>
+                <span className="block" style={{ fontSize: 13.5, color: INK, fontWeight: 500 }}>{authorName}</span>
+                <span className="block" style={{ fontSize: 12, color: MUTED, marginTop: 1 }}>Founder, Home Front Solutions</span>
+              </span>
+            </div>
+            <span style={{ color: RULE }}>|</span>
+            <time dateTime={publishedDate} style={{ ...monoKicker, color: MUTED }}>{formattedDate}</time>
+            <span style={{ color: RULE }}>|</span>
+            <span style={{ ...monoKicker, color: MUTED }}>{readingTime} min read</span>
+          </div>
         </div>
-        <h1 style={{ ...serif, fontSize: "clamp(2.45rem, 5vw, 4.4rem)", lineHeight: 0.97, color: INK }}>{article.title}</h1>
-        <p className="mt-6 max-w-3xl text-[16px] md:text-[18px] leading-[1.85]" style={{ color: MUTED }}>{article.description}</p>
       </section>
 
-      <section className="max-w-[980px] mx-auto px-5 md:px-10 pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-10">
-          <div className="space-y-8">
-            <div className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <p className="text-[15px] leading-[1.95]" style={{ color: MUTED }}>{article.intro}</p>
+      <section className="max-w-[1040px] mx-auto px-6 md:px-12 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_260px] gap-12 lg:gap-16">
+          <div>
+            <div className="reveal" style={{ borderTop: "1px solid " + RULE, paddingTop: 36, marginBottom: 28 }}>
+              <p className="drop-cap" style={{ fontSize: 18, lineHeight: 1.72, color: INK, fontWeight: 400 }}>{article.intro}</p>
             </div>
-            {article.sections.map(function(section) {
+            {article.sections.map(function(section, i) {
               return (
-                <div key={section.heading} className="p-6 md:p-8" style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20 }}>
-                  <h2 className="mb-4" style={{ ...serif, fontSize: 28, lineHeight: 1.06 }}>{section.heading}</h2>
-                  <p className="text-[15px] leading-[1.95]" style={{ color: MUTED }}>{section.body}</p>
+                <div key={section.heading} className="mt-14 reveal" data-delay={(i % 2) + 1}>
+                  <h2 className="display mb-5" style={{ fontSize: "clamp(1.6rem, 2.8vw, 2rem)", lineHeight: 1.08, letterSpacing: "-0.025em", color: INK }}>{section.heading}</h2>
+                  <p style={{ fontSize: 17, lineHeight: 1.75, color: INK, fontWeight: 400 }}>{section.body}</p>
                 </div>
               );
             })}
 
-            <div className="p-6 md:p-8" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <h2 className="mb-5" style={{ ...serif, fontSize: 28 }}>Keep reading</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-20 reveal" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 22 }}>Keep reading</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {relatedArticles.map(function(item) {
                   return (
-                    <button
+                    <a
                       key={item.slug}
-                      onClick={function() { props.go("article", item.slug); }}
-                      className="p-5 text-left"
-                      style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
+                      href={getPathForRoute("article", item.slug)}
+                      onClick={function(e) { handleNavClick(e, props.go, "article", item.slug); }}
+                      className="block"
+                      style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 16, padding: 22, transition: "transform 360ms ease, border-color 260ms ease" }}
+                      onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(14,14,12,0.18)"; }}
+                      onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = RULE; }}
                     >
-                      <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{item.eyebrow}</div>
-                      <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{item.title}</div>
-                      <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{item.description}</p>
-                    </button>
+                      <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 12 }}>{item.eyebrow}</div>
+                      <div style={{ ...serif, fontSize: 19, lineHeight: 1.18, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{item.title}</div>
+                      <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{item.description}</p>
+                    </a>
                   );
                 })}
               </div>
             </div>
           </div>
-          <aside className="lg:sticky lg:top-28 h-fit space-y-4">
-            <div className="p-6" style={{ background: SURF2, border: "1px solid " + RULE, borderRadius: 20 }}>
-              <div className="text-[10px] uppercase mb-3" style={{ color: MUTED, letterSpacing: "0.15em", fontWeight: 700 }}>Internal paths</div>
-              <div className="space-y-2">
-                <button onClick={function() { props.go("careers"); }} className="w-full text-left p-3 rounded-md" style={{ background: "#fff", border: "1px solid " + RULE, cursor: "pointer", color: INK }}>Open Roles</button>
-                <button onClick={function() { props.go("market", "greensboro-nc"); }} className="w-full text-left p-3 rounded-md" style={{ background: "#fff", border: "1px solid " + RULE, cursor: "pointer", color: INK }}>Greensboro Jobs</button>
-                <button onClick={function() { props.go("market", "high-point-nc"); }} className="w-full text-left p-3 rounded-md" style={{ background: "#fff", border: "1px solid " + RULE, cursor: "pointer", color: INK }}>High Point Jobs</button>
-                <button onClick={function() { props.go("market", "charlotte-nc"); }} className="w-full text-left p-3 rounded-md" style={{ background: "#fff", border: "1px solid " + RULE, cursor: "pointer", color: INK }}>Charlotte Jobs</button>
-                <button onClick={function() { props.go("market", "raleigh-nc"); }} className="w-full text-left p-3 rounded-md" style={{ background: "#fff", border: "1px solid " + RULE, cursor: "pointer", color: INK }}>Raleigh Jobs</button>
-              </div>
+          <aside className="lg:sticky lg:top-28 h-fit">
+            <div style={{ borderTop: "1px solid " + RULE, paddingTop: 32 }}>
+              <div style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Next steps</div>
+              <ul className="m-0 p-0" style={{ listStyle: "none" }}>
+                {[
+                  ["careers", null, "Open roles"],
+                  ["market", "greensboro-nc", "Greensboro"],
+                  ["market", "high-point-nc", "High Point"],
+                  ["market", "charlotte-nc", "Charlotte"],
+                  ["market", "raleigh-nc", "Raleigh"],
+                ].map(function(item, i, arr) {
+                  var path = item[1] ? getPathForRoute(item[0], item[1]) : getPathForRoute(item[0]);
+                  return (
+                    <li key={i} style={{ borderBottom: i === arr.length - 1 ? "none" : "1px solid " + RULE }}>
+                      <a
+                        href={path}
+                        onClick={function(e) { handleNavClick(e, props.go, item[0], item[1]); }}
+                        className="flex items-center justify-between"
+                        style={{ padding: "14px 2px", fontSize: 14, color: INK, transition: "padding 260ms ease" }}
+                        onMouseEnter={function(e) { e.currentTarget.style.paddingLeft = "8px"; }}
+                        onMouseLeave={function(e) { e.currentTarget.style.paddingLeft = "2px"; }}
+                      >
+                        {item[2]}
+                        <span aria-hidden="true" style={{ color: MUTED }}>→</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </aside>
         </div>
@@ -3408,88 +4124,128 @@ function ArticlePage(props) {
 
 function ContactPage(props) {
   var _s = useState(false); var sent = _s[0]; var setSent = _s[1];
-  var inputStyle = { width: "100%", padding: "11px 14px", fontSize: 15, background: "#fff", border: "1px solid " + RULE, borderRadius: 6, outline: "none", fontFamily: "inherit", color: INK };
+  var inputStyle = { width: "100%", padding: "14px 0", fontSize: 15.5, background: "transparent", border: "none", borderBottom: "1px solid " + RULE, outline: "none", fontFamily: "inherit", color: INK, transition: "border-color 200ms ease" };
 
   return (
     <>
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-16">
-        <Eyebrow>Contact Sales</Eyebrow>
-        <h1 className="max-w-4xl" style={{ ...serif, fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1 }}>
-          Tell us about your market.
-        </h1>
-        <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-          For home-service brands looking to add a disciplined door-to-door channel. We respond within 24 hours.
-        </p>
+      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-16 md:pb-20">
+        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(1000px 480px at 90% -10%, rgba(46,109,92,0.1), transparent 55%)", zIndex: -1 }} />
+        <div className="reveal max-w-3xl">
+          <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Contact</div>
+          <h1 className="display" style={{ fontSize: "clamp(2.9rem, 6.6vw, 5.2rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
+            Tell us about the market.
+          </h1>
+          <p className="mt-8 max-w-2xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
+            If your brand needs coverage in a new market, or a better field team in one you're already in, this is the conversation to start. One business day turnaround.
+          </p>
+        </div>
       </section>
 
-      <section className="max-w-[1240px] mx-auto px-5 md:px-10 py-16 md:py-20" style={{ borderTop: "1px solid " + RULE }}>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
-          <div className="md:col-span-5">
-            <h2 className="mb-6" style={{ ...serif, fontSize: 24 }}>Get in touch directly</h2>
-            <div className="space-y-3">
-              <a href="mailto:info@homefrontsolutionsllc.com" className="flex items-center gap-4 p-5 transition-all hover:scale-[1.02]" style={{ background: BLUE_SOFT, borderLeft: "3px solid " + BLUE, textDecoration: "none" }}>
-                <div style={{ width: 40, height: 40, background: BLUE, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 7L12 13L21 7M5 19H19C20.1 19 21 18.1 21 17V7C21 5.9 20.1 5 19 5H5C3.9 5 3 5.9 3 7V17C3 18.1 3.9 19 5 19Z" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase mb-0.5" style={{ color: BLUE, letterSpacing: "0.15em", fontWeight: 700 }}>Email Us</div>
-                  <div className="text-sm font-semibold" style={{ color: INK }}>info@homefrontsolutionsllc.com</div>
-                </div>
-              </a>
-              <a href="tel:3364209379" className="flex items-center gap-4 p-5 transition-all hover:scale-[1.02]" style={{ background: FOREST_SOFT, borderLeft: "3px solid " + FOREST, textDecoration: "none" }}>
-                <div style={{ width: 40, height: 40, background: FOREST, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 16.92V19.92C22 20.52 21.52 21 20.92 21C9.4 21 0 11.6 0 0.08C0 -0.52 0.48 -1 1.08 -1H4.08C4.68 -1 5.16 -0.52 5.16 0.08C5.16 1.6 5.4 3.08 5.84 4.48C5.96 4.84 5.88 5.24 5.6 5.52L3.72 7.4C5.04 10 7 11.96 9.6 13.28L11.48 11.4C11.76 11.12 12.16 11.04 12.52 11.16C13.92 11.6 15.4 11.84 16.92 11.84C17.52 11.84 18 12.32 18 12.92V15.92" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" transform="translate(2 2)" /></svg>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase mb-0.5" style={{ color: FOREST, letterSpacing: "0.15em", fontWeight: 700 }}>Call Us</div>
-                  <div className="text-sm font-semibold" style={{ color: INK }}>(336) 420-9379</div>
-                </div>
-              </a>
-              <div className="flex items-center gap-4 p-5" style={{ background: SIGNAL_SOFT, borderLeft: "3px solid " + SIGNAL }}>
-                <div style={{ width: 40, height: 40, background: SIGNAL, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="#FFFFFF" /></svg>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase mb-0.5" style={{ color: SIGNAL, letterSpacing: "0.15em", fontWeight: 700 }}>Headquarters</div>
-                  <div className="text-sm font-semibold" style={{ color: INK }}>High Point, North Carolina</div>
-                </div>
+      {/* Book a meeting module */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-16 md:pb-20 reveal">
+        <div className="relative overflow-hidden rounded-3xl" style={{ background: SIGNAL_DEEP, color: "#F5F1E7" }}>
+          <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(700px 320px at 15% -10%, rgba(143,176,155,0.22), transparent 60%), radial-gradient(600px 260px at 95% 110%, rgba(217,166,60,0.16), transparent 60%)" }} />
+          <div className="relative grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 p-10 md:p-14 items-center">
+            <div className="md:col-span-7">
+              <div style={{ ...monoKicker, color: SAGE, marginBottom: 16 }}>Fastest way in · 30 minutes</div>
+              <h2 className="display" style={{ fontSize: "clamp(2rem, 3.6vw, 2.6rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: "#F5F1E7", fontWeight: 420 }}>
+                Book a call with our team.
+              </h2>
+              <p className="mt-5 max-w-xl" style={{ fontSize: 15.5, color: "rgba(245,241,231,0.78)", lineHeight: 1.72 }}>
+                Pick a time that works. We'll jump on a 30-minute call to learn about your markets, current field performance, and what you'd need us to run. No decks, no pitch. Straight conversation.
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-4">
+                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(217,166,60,0.34)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                  {BOOKING_URL ? "Pick a time" : "Send a message"}
+                  <span aria-hidden="true">→</span>
+                </a>
+                <a href="mailto:info@homefrontsolutionsllc.com" className="edi-link inline-flex items-center text-sm font-medium" style={{ color: "rgba(245,241,231,0.85)" }}>
+                  Or email us
+                  <span aria-hidden="true" style={{ marginLeft: 4 }}>→</span>
+                </a>
               </div>
             </div>
+            <div className="md:col-span-5">
+              <dl className="m-0 p-0" style={{ listStyle: "none", borderLeft: "1px solid rgba(245,241,231,0.14)", paddingLeft: 28 }}>
+                {[
+                  { k: "30 min", v: "Call length" },
+                  { k: "1 biz day", v: "Response time" },
+                  { k: "No deck", v: "Just a conversation" },
+                ].map(function(row, i, arr) {
+                  return (
+                    <div key={row.v} className="grid items-baseline" style={{ gridTemplateColumns: "auto minmax(0,1fr)", gap: 16, padding: "16px 0", borderBottom: i === arr.length - 1 ? "none" : "1px solid rgba(245,241,231,0.12)" }}>
+                      <dt style={{ ...serif, fontSize: 22, letterSpacing: "-0.02em", color: "#F5F1E7", fontWeight: 440, lineHeight: 1 }}>{row.k}</dt>
+                      <dd className="m-0" style={{ ...monoKicker, color: "rgba(245,241,231,0.7)" }}>{row.v}</dd>
+                    </div>
+                  );
+                })}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-16 md:py-20" style={{ borderTop: "1px solid " + RULE }}>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20">
+          <div className="md:col-span-5 reveal">
+            <div style={{ ...monoKicker, color: MUTED, marginBottom: 24 }}>Direct lines</div>
+            <dl className="m-0 p-0" style={{ listStyle: "none" }}>
+              {[
+                { kicker: "Email", value: "info@homefrontsolutionsllc.com", href: "mailto:info@homefrontsolutionsllc.com" },
+                { kicker: "Phone", value: "(336) 420-9379", href: "tel:3364209379" },
+                { kicker: "Headquarters", value: "High Point, North Carolina", href: null },
+              ].map(function(row, i, arr) {
+                var content = (
+                  <div className="grid items-start" style={{ gridTemplateColumns: "120px minmax(0,1fr)", gap: 24, padding: "22px 0", borderBottom: i === arr.length - 1 ? "none" : "1px solid " + RULE }}>
+                    <dt style={{ ...monoKicker, color: SIGNAL, lineHeight: 1.5 }}>{row.kicker}</dt>
+                    <dd className="m-0" style={{ ...serif, fontSize: 19, lineHeight: 1.3, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{row.value}</dd>
+                  </div>
+                );
+                return row.href ? (
+                  <a key={row.kicker} href={row.href} className="block" style={{ color: INK, transition: "opacity 240ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.opacity = "0.7"; }} onMouseLeave={function(e) { e.currentTarget.style.opacity = "1"; }}>{content}</a>
+                ) : (
+                  <div key={row.kicker}>{content}</div>
+                );
+              })}
+            </dl>
           </div>
 
-          <div className="md:col-span-7">
+          <div className="md:col-span-7 reveal" data-delay="1">
             {!sent ? (
-              <form onSubmit={function(e) { e.preventDefault(); setSent(true); }} className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <form onSubmit={function(e) { e.preventDefault(); setSent(true); }}>
+                <div style={{ ...monoKicker, color: MUTED, marginBottom: 24 }}>Send a message</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                   <div>
-                    <label className="block text-sm font-semibold mb-1.5">Your name</label>
-                    <input type="text" required style={inputStyle} />
+                    <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Your name</label>
+                    <input type="text" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold mb-1.5">Company</label>
-                    <input type="text" required style={inputStyle} />
+                    <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Company</label>
+                    <input type="text" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5">Email</label>
-                  <input type="email" required style={inputStyle} />
+                <div className="mt-6">
+                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Email</label>
+                  <input type="email" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5">Markets of interest</label>
-                  <input type="text" placeholder="e.g. nationwide, southeast, your specific city" style={inputStyle} />
+                <div className="mt-6">
+                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Markets of interest</label>
+                  <input type="text" placeholder="Nationwide, southeast, or a specific city" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5">Tell us more</label>
-                  <textarea rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} />
+                <div className="mt-6">
+                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Tell us more</label>
+                  <textarea rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
-                <button type="submit" className="inline-flex items-center px-7 py-3.5 rounded-md font-semibold hover:opacity-90 transition-opacity" style={{ background: INK, color: PAPER, border: "none", cursor: "pointer" }}>
-                  Send Message
+                <button type="submit" className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
+                  Send message
+                  <span aria-hidden="true">→</span>
                 </button>
               </form>
             ) : (
-              <div className="p-8" style={{ border: "1px solid " + RULE, background: "#fff" }}>
-                <h3 className="mb-2" style={{ ...serif, fontSize: 24 }}>Got it.</h3>
-                <p style={{ color: MUTED }}>We will be in touch within 24 hours.</p>
+              <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 16 }}>Received</div>
+                <h3 style={{ ...serif, fontSize: 28, lineHeight: 1.18, letterSpacing: "-0.025em", color: INK, fontWeight: 440 }}>Thank you.</h3>
+                <p className="mt-4" style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>We'll be in touch within 24 hours.</p>
               </div>
             )}
           </div>
@@ -3603,18 +4359,102 @@ function TermsPage(props) {
   );
 }
 
+// Build-time dates so Google for Jobs sees fresh postings every deploy.
+// datePosted rotates to the most recent Monday (<= 30 days old), validThrough stays 90 days forward.
+function getJobDates() {
+  var now = new Date();
+  var day = now.getDay();
+  var daysBackToMonday = day === 0 ? 6 : day - 1;
+  var posted = new Date(now.getFullYear(), now.getMonth(), now.getDate() - daysBackToMonday);
+  var valid = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 90);
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  return { datePosted: iso(posted), validThrough: iso(valid) + "T23:59" };
+}
+
+// Best-practice JobPosting schema per Google for Jobs requirements.
+// Includes occupationalCategory, workHours, educationRequirements, directApply, identifier,
+// baseSalary, benefits, and jobBenefits — the fields that lift into rich result eligibility.
+function buildJobPostingSchema(job, siteOrigin, options) {
+  options = options || {};
+  var salary = getSalaryRange(job.earningRange);
+  var dates = getJobDates();
+  var url = options.url || (siteOrigin + getPathForRoute("job", job.slug));
+  var employmentType = job.type === "Internship" ? "INTERN" : (job.type === "Contract" ? ["CONTRACTOR", "FULL_TIME"] : "FULL_TIME");
+  var locCity = job.location.split(",")[0].trim();
+  return {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: "<p>" + job.overview + "</p>" +
+      "<h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>" +
+      "<h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>" +
+      "<h3>Benefits</h3><ul>" + job.benefits.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
+    identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug },
+    datePosted: dates.datePosted,
+    validThrough: dates.validThrough,
+    employmentType: employmentType,
+    hiringOrganization: {
+      "@type": "Organization",
+      "@id": "https://www.homefrontsolutionsllc.com/#organization",
+      name: "Home Front Solutions, LLC",
+      sameAs: "https://www.homefrontsolutionsllc.com",
+      logo: "https://www.homefrontsolutionsllc.com/logo.png"
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: locCity,
+        addressLocality: locCity,
+        addressRegion: "NC",
+        postalCode: "27260",
+        addressCountry: "US"
+      }
+    },
+    baseSalary: {
+      "@type": "MonetaryAmount",
+      currency: "USD",
+      value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" }
+    },
+    occupationalCategory: "41-4012 Sales Representatives, Wholesale and Manufacturing",
+    industry: "Telecommunications, Home Services, Door-to-Door Sales",
+    workHours: "Monday to Saturday, flexible daytime and early-evening shifts",
+    educationRequirements: {
+      "@type": "EducationalOccupationalCredential",
+      credentialCategory: "high school"
+    },
+    experienceRequirements: job.title.toLowerCase().indexOf("lead") >= 0
+      ? "Minimum 12 months door-to-door or field sales experience preferred."
+      : { "@type": "OccupationalExperienceRequirements", monthsOfExperience: 0 },
+    qualifications: job.qualifications.join(" "),
+    responsibilities: job.responsibilities.join(" "),
+    jobBenefits: job.benefits.join(" "),
+    incentiveCompensation: "Uncapped commission paid weekly via direct deposit. Performance bonuses for top producers.",
+    salaryCurrency: "USD",
+    skills: "Door-to-door sales, customer acquisition, fiber internet sales, home services sales, cold approach, objection handling, CRM management",
+    directApply: true,
+    url: url,
+    applicationContact: {
+      "@type": "ContactPoint",
+      email: "info@homefrontsolutionsllc.com",
+      telephone: "+13364209379",
+      contactType: "HR"
+    }
+  };
+}
+
 function buildSeoPayload(route) {
   var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
   var titles = {
-    home: "Home Front Solutions | D2D Sales Jobs, Internships, and Home Services Recruiting",
-    "what-we-do": "Home Services Customer Acquisition | Home Front Solutions",
-    "why-us": "Why Home Front Solutions | In-Person Field Growth Team",
-    partners: "Home Service Categories | Home Front Solutions",
-    careers: "Field Sales Jobs in North Carolina | Home Front Solutions Careers",
+    home: "Home Front Solutions | Nationwide Door-to-Door Sales Agency & Field Teams",
+    "what-we-do": "Nationwide D2D Customer Acquisition | Home Front Solutions",
+    "why-us": "Why Home Front Solutions | Nationwide Field Sales Agency",
+    partners: "Home Service Categories We Represent | Home Front Solutions",
+    careers: "Door-to-Door Sales Jobs — Nationwide Hiring | Home Front Solutions Careers",
     market: currentJob ? currentJob.title : "Local Field Sales Markets | Home Front Solutions Careers",
-    insights: "D2D Sales Insights, Money Guides, Industry Basics, and Recruiting Articles | Home Front Solutions",
+    insights: "D2D Sales Resources, Pay Guides, Industry Insights, and Career Articles | Home Front Solutions",
     article: "D2D Sales Insights | Home Front Solutions",
-    contact: "Contact Home Front Solutions | Sales & Recruiting",
+    contact: "Contact Home Front Solutions | Book a Call Nationwide",
     privacy: "Privacy Policy | Home Front Solutions",
     terms: "Terms of Service | Home Front Solutions",
     job: currentJob ? currentJob.title + " in " + currentJob.location + " | Home Front Solutions" : "Sales Jobs | Home Front Solutions",
@@ -3623,15 +4463,15 @@ function buildSeoPayload(route) {
   };
 
   var descriptions = {
-    home: "Earn $100K+ in performance-based door-to-door sales. Home Front Solutions recruits for fiber, solar, security, roofing, and home-service sales internships and field roles.",
-    careers: "Explore field sales and leadership roles at Home Front Solutions in Greensboro, Winston-Salem, High Point, and the Piedmont Triad.",
-    market: "Explore city-specific recruiting pages for Home Front Solutions across Greensboro, High Point, Winston-Salem, Piedmont Triad, Lexington, Charlotte, and Raleigh.",
-    insights: "Explore articles on D2D sales psychology, field success, money management, industry basics, recruiting, and why door-to-door can be a strong career path.",
-    article: "Articles on door-to-door sales, D2D psychology, recruiting, and why field sales can be a strong career path.",
-    "what-we-do": "Door-to-door sales, neighborhood coverage, customer acquisition, and local market expansion for home-service brands.",
-    "why-us": "A serious field team built around clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
-    partners: "See the home-service categories Home Front Solutions supports across active residential markets.",
-    contact: "Talk with Home Front Solutions about field sales coverage, recruiting, partnerships, or open career opportunities.",
+    home: "Nationwide door-to-door sales agency. Home Front Solutions builds professional field teams for fiber, home security, solar, water filtration, roofing, and home-service brands across the United States. Hiring reps nationwide with paid training and six-figure first-year earnings.",
+    careers: "Door-to-door sales jobs nationwide. Home Front Solutions hires field reps across the United States for fiber, security, solar, and home services. Paid certification, weekly commission, and a clear path to team lead and area manager.",
+    market: "Local sales jobs with a national D2D agency. Explore city-specific recruiting pages for Home Front Solutions in North Carolina and across our expanding U.S. markets.",
+    insights: "Resources on door-to-door sales: pay structure, 1099 taxes, first 30 days, industry trends, fiber ISP coverage, and the path from new rep to area manager.",
+    article: "Home Front Solutions insights on door-to-door sales, field careers, industry shifts, and how the money, culture, and career path actually work.",
+    "what-we-do": "Nationwide door-to-door customer acquisition for home-service brands. Fiber internet, home security, solar, water filtration, roofing, and more.",
+    "why-us": "An independent, nationwide field sales agency built for clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
+    partners: "The home-service and telecom brand categories Home Front Solutions supports across our nationwide field network.",
+    contact: "Book a call with Home Front Solutions. Nationwide D2D field teams for fiber, security, solar, and home-service brands. One business day response.",
     privacy: "Read the Home Front Solutions privacy policy covering applicant, customer, and website data collection and use.",
     terms: "Review the Home Front Solutions terms covering website use, communications, applications, and service-related interactions.",
     job: currentJob ? currentJob.pitch + " View compensation, responsibilities, qualifications, and next steps." : "Explore open sales roles at Home Front Solutions.",
@@ -3662,14 +4502,14 @@ function buildSeoPayload(route) {
 
   var localBizSchema = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["LocalBusiness", "ProfessionalService"],
     "@id": "https://www.homefrontsolutionsllc.com/#business",
     name: "Home Front Solutions",
     legalName: "Home Front Solutions, LLC",
     url: siteOrigin,
-    logo: siteOrigin + "/logo.png",
+    logo: siteOrigin + "/logo.jpg",
     image: socialImage,
-    description: "National door-to-door marketing company for home services including fiber internet, home security, solar, water filtration, and roofing. Headquartered in High Point, NC. Serving customers in markets across the United States.",
+    description: "Nationwide door-to-door marketing agency for home-service brands. Fiber internet, home security, solar, water filtration, and roofing customer acquisition across the United States. Headquartered in High Point, NC. Hiring field reps nationally.",
     telephone: "+13364209379",
     email: "info@homefrontsolutionsllc.com",
     priceRange: "$$",
@@ -3709,7 +4549,7 @@ function buildSeoPayload(route) {
     "@id": "https://www.homefrontsolutionsllc.com/#organization",
     name: "Home Front Solutions, LLC",
     url: siteOrigin,
-    logo: siteOrigin + "/logo.png",
+    logo: siteOrigin + "/logo.jpg",
     foundingLocation: {
       "@type": "Place",
       name: "High Point, North Carolina"
@@ -3724,6 +4564,9 @@ function buildSeoPayload(route) {
     "@id": "https://www.homefrontsolutionsllc.com/#muizz-muhammad",
     name: "Muizz Muhammad",
     jobTitle: "Founder",
+    url: "https://www.linkedin.com/in/muizzmuhammad/",
+    sameAs: ["https://www.linkedin.com/in/muizzmuhammad/"],
+    image: "https://www.homefrontsolutionsllc.com/founder.jpg",
     worksFor: { "@id": "https://www.homefrontsolutionsllc.com/#business" }
   };
 
@@ -3797,18 +4640,31 @@ function buildSeoPayload(route) {
   if (route.name === "careers") {
     schemas.push({
       "@context": "https://schema.org",
-      "@type": "ItemList",
-      name: "Home Front Solutions Open Sales Jobs",
-      itemListOrder: "https://schema.org/ItemListOrderAscending",
-      numberOfItems: JOBS.length,
-      itemListElement: JOBS.map(function(job, index) {
-        return {
-          "@type": "ListItem",
-          position: index + 1,
-          url: siteOrigin + getPathForRoute("job", job.slug),
-          name: job.title + " - " + job.location,
-        };
-      }),
+      "@type": "CollectionPage",
+      name: "Open Door-to-Door Sales Jobs — Home Front Solutions",
+      url: pageUrl,
+      description: descriptions.careers,
+      about: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
+      isPartOf: { "@id": "https://www.homefrontsolutionsllc.com/#website" },
+      mainEntity: {
+        "@type": "ItemList",
+        name: "Home Front Solutions Open Sales Jobs",
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+        numberOfItems: JOBS.length,
+        itemListElement: JOBS.map(function(job, index) {
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            url: siteOrigin + getPathForRoute("job", job.slug),
+            name: job.title + " - " + job.location,
+          };
+        })
+      }
+    });
+
+    // Full JobPosting schema for each open role — Google for Jobs indexes the aggregator page itself
+    JOBS.forEach(function(job) {
+      schemas.push(buildJobPostingSchema(job, siteOrigin));
     });
 
     schemas.push({
@@ -3884,39 +4740,7 @@ function buildSeoPayload(route) {
     });
 
     marketJobs.forEach(function(job) {
-      var salary = getSalaryRange(job.earningRange);
-      schemas.push({
-        "@context": "https://schema.org",
-        "@type": "JobPosting",
-        title: job.title,
-        description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
-        identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug + "-market" },
-        datePosted: "2026-04-10",
-        validThrough: "2026-12-31T23:59",
-        employmentType: "CONTRACTOR",
-        hiringOrganization: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
-        jobLocation: {
-          "@type": "Place",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: job.location.split(",")[0].trim(),
-            addressRegion: "NC",
-            addressCountry: "US"
-          }
-        },
-        baseSalary: {
-          "@type": "MonetaryAmount",
-          currency: "USD",
-          value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" }
-        },
-        experienceRequirements: "No prior sales experience required for select roles. Training provided.",
-        applicantLocationRequirements: {
-          "@type": "Country",
-          name: "United States"
-        },
-        directApply: true,
-        url: siteOrigin + getPathForRoute("job", job.slug)
-      });
+      schemas.push(buildJobPostingSchema(job, siteOrigin));
     });
 
     if (MARKET_FAQS[currentMarket.slug] && MARKET_FAQS[currentMarket.slug].length) {
@@ -3955,20 +4779,31 @@ function buildSeoPayload(route) {
   }
 
   if (route.name === "article" && currentArticle) {
+    var publishedDate = currentArticle.publishedDate || "2026-04-10";
+    var modifiedDate = currentArticle.modifiedDate || publishedDate;
+    var authorName = currentArticle.authorName || "Muizz Muhammad";
     schemas.push({
       "@context": "https://schema.org",
       "@type": "Article",
       headline: currentArticle.title,
       description: currentArticle.description,
       image: socialImage,
+      datePublished: publishedDate,
+      dateModified: modifiedDate,
+      articleSection: currentArticle.eyebrow,
       author: {
-        "@type": "Organization",
-        name: "Home Front Solutions"
+        "@type": "Person",
+        "@id": "https://www.homefrontsolutionsllc.com/#founder",
+        name: authorName,
+        jobTitle: "Founder, Home Front Solutions",
+        url: "https://www.linkedin.com/in/muizzmuhammad/",
+        sameAs: ["https://www.linkedin.com/in/muizzmuhammad/"]
       },
       publisher: {
-          "@id": "https://www.homefrontsolutionsllc.com/#business"
+        "@id": "https://www.homefrontsolutionsllc.com/#business"
       },
-      mainEntityOfPage: pageUrl
+      mainEntityOfPage: pageUrl,
+      inLanguage: "en-US"
     });
   }
 
@@ -3987,37 +4822,39 @@ function buildSeoPayload(route) {
     var job = JOBS.find(function(j) { return j.slug === route.slug; });
     if (job) {
       var salary = getSalaryRange(job.earningRange);
+      schemas.push(buildJobPostingSchema(job, siteOrigin, { url: pageUrl }));
+
+      // Job-specific FAQ — applicant questions that search surfaces beautifully
       schemas.push({
         "@context": "https://schema.org",
-        "@type": "JobPosting",
-        title: job.title,
-        description: "<p>" + job.overview + "</p><h3>Responsibilities</h3><ul>" + job.responsibilities.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul><h3>Qualifications</h3><ul>" + job.qualifications.map(function(r) { return "<li>" + r + "</li>"; }).join("") + "</ul>",
-        identifier: { "@type": "PropertyValue", name: "Home Front Solutions", value: job.slug },
-        datePosted: "2026-04-10",
-        validThrough: "2026-12-31T23:59",
-        employmentType: "CONTRACTOR",
-        hiringOrganization: { "@id": "https://www.homefrontsolutionsllc.com/#organization" },
-        jobLocation: {
-          "@type": "Place",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: job.location.split(",")[0].trim(),
-            addressRegion: "NC",
-            addressCountry: "US",
+        "@type": "FAQPage",
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "What does the " + job.title + " role pay?",
+            acceptedAnswer: { "@type": "Answer", text: job.pitch + " Expected first-year earnings range from " + job.earningRange + " per year based on activations. Paid weekly via direct deposit. Uncapped commission." }
           },
-        },
-        baseSalary: {
-          "@type": "MonetaryAmount",
-          currency: "USD",
-          value: { "@type": "QuantitativeValue", minValue: salary.min, maxValue: salary.max, unitText: "YEAR" },
-        },
-        experienceRequirements: "No prior sales experience required for select roles. Training provided.",
-        directApply: true,
-        url: pageUrl,
-        applicantLocationRequirements: {
-          "@type": "Country",
-          name: "United States",
-        },
+          {
+            "@type": "Question",
+            name: "Do I need prior sales experience?",
+            acceptedAnswer: { "@type": "Answer", text: (job.title.toLowerCase().indexOf("lead") >= 0 ? "Yes — 12+ months of door-to-door or field sales experience is required for this leadership role." : "No. We hire for drive and coachability. Most of our top reps started with zero sales experience. Full paid certification before your first real door.") }
+          },
+          {
+            "@type": "Question",
+            name: "How fast can I start?",
+            acceptedAnswer: { "@type": "Answer", text: "Most candidates move from application to a phone screen within 48 hours and can start certification inside two weeks. We respond to every qualified applicant within one business day." }
+          },
+          {
+            "@type": "Question",
+            name: "What's the career path?",
+            acceptedAnswer: { "@type": "Answer", text: "Field Rep → Team Lead (team override + personal pipeline, typically earned in 12 months) → Area Manager ($250K+ range, 12 to 18 months). Promotion is production-based, not time-based. Every manager at Home Front was promoted out of the field." }
+          },
+          {
+            "@type": "Question",
+            name: "Is this a W-2 or 1099 role?",
+            acceptedAnswer: { "@type": "Answer", text: (job.type === "Internship" ? "Internship roles are performance-based with a stipend plus earned commission. Paid as 1099." : "All current field roles are paid as 1099 independent contractor positions with uncapped weekly commission. You're in business for yourself, with our training, territory, and support behind you.") }
+          }
+        ]
       });
     }
   }
@@ -4036,7 +4873,7 @@ function buildSeoPayload(route) {
     { name: "geo.placename", content: "High Point" },
     { name: "geo.position", content: "35.9557;-80.0053" },
     { name: "ICBM", content: "35.9557, -80.0053" },
-    { name: "keywords", content: "home services sales, door to door sales outsourcing, field sales careers, security sales, solar sales, water filtration sales, roofing sales, field marketing company, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, sales internship jobs, summer sales jobs, college student sales jobs, sales rep tax planning, d2d sales psychology, customer acquisition, Home Front Solutions" },
+    { name: "keywords", content: "nationwide door to door sales agency, national D2D agency, field sales outsourcing, fiber sales agency, home security D2D, solar D2D, home services customer acquisition, national field sales company, D2D sales jobs, door to door sales jobs near me, fiber sales rep jobs, six figure sales jobs, paid training sales jobs, sales internship jobs, 1099 sales rep, Charlotte sales jobs, Raleigh sales jobs, Greensboro sales jobs, High Point sales jobs, nationwide hiring, Home Front Solutions" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: route.name === "job" || route.name === "article" ? "article" : "website" },
@@ -4055,6 +4892,18 @@ function buildSeoPayload(route) {
     { name: "twitter:image:alt", content: "Home Front Solutions. National field sales and home services company" },
     { name: "twitter:site", content: "@homefrontllc" },
   ];
+
+  // Article-specific OpenGraph tags (Google + Facebook + LinkedIn freshness signals)
+  if (route.name === "article" && currentArticle) {
+    var articlePublished = currentArticle.publishedDate || "2026-04-10";
+    var articleModified = currentArticle.modifiedDate || articlePublished;
+    var articleAuthor = currentArticle.authorName || "Muizz Muhammad";
+    meta.push({ property: "article:published_time", content: articlePublished });
+    meta.push({ property: "article:modified_time", content: articleModified });
+    meta.push({ property: "article:author", content: articleAuthor });
+    meta.push({ property: "article:section", content: currentArticle.eyebrow });
+    meta.push({ property: "article:publisher", content: "https://www.homefrontsolutionsllc.com/" });
+  }
 
   return {
     title: title,
@@ -4095,6 +4944,7 @@ export function getJobsForAutomation() {
   var siteOrigin = "https://www.homefrontsolutionsllc.com";
   return JOBS.map(function(job) {
     var salary = getSalaryRange(job.earningRange);
+    var dates = getJobDates();
     return {
       id: job.slug,
       title: job.title,
@@ -4102,8 +4952,8 @@ export function getJobsForAutomation() {
       location: job.location,
       employmentType: job.type === "Internship" ? "INTERN" : "CONTRACTOR",
       category: "Field Sales",
-      datePosted: "2026-04-10",
-      validThrough: "2026-12-31T23:59",
+      datePosted: dates.datePosted,
+      validThrough: dates.validThrough,
       description: job.overview,
       shortPitch: job.pitch,
       responsibilities: job.responsibilities.slice(),
@@ -4166,6 +5016,9 @@ export default function App(props) {
       window.clearTimeout(timeoutId);
     };
   }, [route.name, route.slug]);
+
+  useRevealOnScroll([route.name, route.slug]);
+  useHoverPrefetch();
 
   // SEO: Update document title and meta tags per route
   useEffect(function() {
@@ -4243,13 +5096,15 @@ export default function App(props) {
         input:focus, select:focus, textarea:focus { border-color: ${INK} !important; }
         button:focus-visible { outline: 2px solid ${SIGNAL}; outline-offset: 2px; }
         .lift-card {
-          transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 260ms ease, background-position 320ms ease;
+          transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+                      box-shadow 420ms cubic-bezier(0.16, 1, 0.3, 1),
+                      border-color 260ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
           transform-origin: center;
         }
         .lift-card:hover {
-          transform: translateY(-4px) scale(1.008);
-          box-shadow: 0 18px 36px rgba(14,14,12,0.085);
-          border-color: rgba(59,93,124,0.22) !important;
+          transform: translateY(-4px);
+          box-shadow: 0 20px 44px rgba(46,109,92,0.1);
+          border-color: rgba(46,109,92,0.24) !important;
         }
         .interactive-panel {
           position: relative;
@@ -4302,11 +5157,22 @@ export default function App(props) {
           0%, 100% { opacity: 0.4; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.6); }
         }
+        @keyframes pageFadeIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .page-enter {
+          animation: pageFadeIn 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .page-enter { animation: none; }
+        }
       `}</style>
 
+      <ScrollProgress />
       <Header go={go} />
 
-      <main style={{ flex: 1 }}>
+      <main key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1 }}>
         {route.name === "home" && <HomePage go={go} />}
         {route.name === "what-we-do" && <WhatWeDoPage go={go} />}
         {route.name === "why-us" && <WhyUsPage go={go} />}

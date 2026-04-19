@@ -1,12 +1,46 @@
 User-agent: *
 Allow: /
-
-# Keep thin conversion pages out of search indexes while allowing discovery of primary content.
 Disallow: /careers/*/apply
 Disallow: /careers/*/apply/thank-you
 
-# Sitemap
-Sitemap: https://homefrontsolutionsllc.com/sitemap.xml
+# Let Google for Jobs + Googlebot-Image crawl the whole site including job pages
+User-agent: Googlebot
+Allow: /
+Disallow: /careers/*/apply/thank-you
+
+User-agent: Googlebot-Image
+Allow: /
+
+# Let LLM retrieval crawlers access the public marketing, careers, and insights
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Block aggressive archive + scrape bots that offer us no value
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemaps
+Sitemap: https://www.homefrontsolutionsllc.com/sitemap-index.xml
+Sitemap: https://www.homefrontsolutionsllc.com/sitemap.xml
+Sitemap: https://www.homefrontsolutionsllc.com/job-sitemap.xml
 
 # AI and retrieval-friendly note:
 # Public marketing, careers, and market pages may be crawled and summarized.
