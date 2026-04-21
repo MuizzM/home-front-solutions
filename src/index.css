@@ -17,9 +17,9 @@
   --accent: #D9A63C;
   --accent-soft: #F7E9C2;
 
-  --font-sans: "Inter", "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --font-serif: "Fraunces", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --font-serif: "Newsreader", "Instrument Serif", "Fraunces", Georgia, serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   color: var(--ink);
   background: var(--paper);
@@ -125,6 +125,19 @@ img {
 }
 .btn-primary:active, .btn-ghost:active {
   transform: translateY(0) scale(0.98);
+}
+
+/* Activity ticker pulse + item fade */
+@keyframes tickerPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(2.2); opacity: 0; }
+}
+.ticker-item {
+  animation: tickerFade 420ms var(--ease-spring);
+}
+@keyframes tickerFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Marquee — infinite horizontal scroll */
@@ -279,6 +292,59 @@ img {
   width: 100%;
 }
 
+/* Flowing gradient text — subtle color shift across italic accents.
+   Fallback color shows if background-clip isn't supported or during opacity transitions. */
+.flow-text {
+  color: var(--signal);
+  background: linear-gradient(100deg, var(--signal) 0%, var(--accent) 48%, var(--signal-deep) 100%);
+  background-size: 260% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: flowTextShift 8s ease-in-out infinite alternate;
+}
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .flow-text {
+    -webkit-text-fill-color: transparent;
+  }
+}
+@keyframes flowTextShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Performance: browser skips rendering offscreen sections until near viewport.
+   Saves paint/layout work on long pages — big Core Web Vitals win. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
+}
+
+/* Pulse-glow on primary CTA — breathing green aura */
+.glow-pulse {
+  position: relative;
+  isolation: isolate;
+}
+.glow-pulse::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  background: radial-gradient(closest-side, rgba(46,109,92,0.55), transparent 70%);
+  z-index: -1;
+  opacity: 0.5;
+  animation: glowBreath 3.2s var(--ease-out-smooth) infinite;
+  filter: blur(14px);
+}
+@keyframes glowBreath {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%      { opacity: 0.75; transform: scale(1.08); }
+}
+
+/* Scroll-linked aurora hue shift — var driven, updated on scroll */
+.aurora--shift::before {
+  filter: blur(60px) hue-rotate(var(--scroll-hue, 0deg));
+}
+
 /* Cursor-tracking spotlight — pure CSS variables driven by JS */
 .spotlight {
   position: absolute;
@@ -355,15 +421,16 @@ img {
   .tilt-card--mouse { transform: none; }
 }
 
-/* Editorial display headings */
+/* Editorial display headings — Newsreader, variable weight + optical size */
 .display {
   font-family: var(--font-serif);
-  font-weight: 430;
-  letter-spacing: -0.025em;
-  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-weight: 500;
+  letter-spacing: -0.028em;
+  font-variation-settings: "opsz" 72;
+  font-feature-settings: "ss01";
 }
 
-/* Mono eyebrow used for editorial section kickers */
+/* Mono eyebrow used for editorial section kickers — Geist Mono */
 .mono-kicker {
   font-family: var(--font-mono);
   font-size: 11px;
