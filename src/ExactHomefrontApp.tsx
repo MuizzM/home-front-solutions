@@ -31,9 +31,9 @@ var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 // Outlook Bookwithme scheduler. Every Book-a-call CTA site-wide points here.
 var BOOKING_URL = "https://outlook.office.com/bookwithme/user/0ea888e3efef4c00ae2eeb04410d7e15@Homefrontsolutionsllc.com/meetingtype/C4O5zoQ0vUK3IHFUZlU87Q2?bookingcode=62272f10-6dfb-4114-a855-3b596b4fb081&anonymous&ismsaljsauthenabled&ep=mlink";
 
-// Display serif — Fraunces, opsz tuned for display
-var serif = { fontFamily: "'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif", fontWeight: 430, letterSpacing: "-0.025em", fontVariationSettings: "'opsz' 144, 'SOFT' 30" };
-var monoKicker = { fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 11, letterSpacing: "0.02em", textTransform: "uppercase", fontWeight: 500 };
+// Display — Newsreader, variable weight (400-700), optical size tuned for display
+var serif = { fontFamily: "'Newsreader', 'Instrument Serif', 'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.028em", fontVariationSettings: "'opsz' 72" };
+var monoKicker = { fontFamily: "'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 11, letterSpacing: "0.02em", textTransform: "uppercase", fontWeight: 500 };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
 
@@ -1499,6 +1499,40 @@ function useRevealOnScroll(deps) {
   }, deps || []);
 }
 
+// Live activity ticker — small D2D-industry live feel. Rotates through recent wins.
+function ActivityTicker() {
+  var items = [
+    "Greensboro: 4 fiber installs this morning",
+    "New hire onboarding in Charlotte",
+    "High Point: rep promoted to team lead",
+    "Raleigh launch entering week 2",
+    "Winston-Salem: 2 closes on a Monday route",
+    "12 applications received in the last hour",
+    "Piedmont Triad: 8 same-day installs",
+    "Interview scheduled: Lexington"
+  ];
+  var _i = useState(0); var idx = _i[0]; var setIdx = _i[1];
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var id = window.setInterval(function() {
+      setIdx(function(n) { return (n + 1) % items.length; });
+    }, 3400);
+    return function() { window.clearInterval(id); };
+  }, []);
+  return (
+    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", maxWidth: "100%" }}>
+      <span aria-hidden="true" className="relative inline-flex items-center justify-center" style={{ width: 8, height: 8 }}>
+        <span style={{ position: "absolute", inset: 0, borderRadius: "50%", background: SIGNAL }} />
+        <span style={{ position: "absolute", inset: -4, borderRadius: "50%", background: SIGNAL, opacity: 0.3, animation: "tickerPulse 1.8s ease-in-out infinite" }} />
+      </span>
+      <span style={{ ...monoKicker, color: SIGNAL_DEEP, fontSize: 10.5 }}>Live</span>
+      <span style={{ width: 1, height: 12, background: RULE }} />
+      <span key={idx} className="ticker-item" style={{ fontSize: 13, color: INK, letterSpacing: "-0.005em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{items[idx]}</span>
+    </div>
+  );
+}
+
 // Mouse-following spotlight for hero sections — Vercel-signature ambient light.
 function Spotlight(props) {
   var ref = useRef(null);
@@ -1637,6 +1671,31 @@ function useHoverPrefetch() {
     return function() {
       document.removeEventListener("mouseenter", onEnter, true);
       document.removeEventListener("touchstart", onEnter, { capture: true });
+    };
+  }, []);
+}
+
+// Scroll-linked CSS variable updater — drives aurora hue shift smoothly as the reader scrolls.
+function useScrollHue() {
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var raf = 0;
+    function tick() {
+      raf = 0;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? window.scrollY / max : 0;
+      document.documentElement.style.setProperty("--scroll-hue", (pct * 24).toFixed(2) + "deg");
+    }
+    function onScroll() {
+      if (raf) return;
+      raf = window.requestAnimationFrame(tick);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    tick();
+    return function() {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
     };
   }, []);
 }
@@ -1902,7 +1961,7 @@ function HomePage(props) {
     <>
       {/* HERO */}
       <section id="home-hero" className="grain relative max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-20 pb-14 md:pb-24">
-        <div className="aurora" aria-hidden="true" />
+        <div className="aurora aurora--shift" aria-hidden="true" />
         <Spotlight target="#home-hero" />
         {/* Parallax floating shapes — drift with scroll */}
         <ParallaxLayer factor={-0.3} className="hidden md:block" style={{ position: "absolute", top: "14%", right: "6%", zIndex: 0 }}>
@@ -1918,16 +1977,16 @@ function HomePage(props) {
         <div>
           <h1 className="display" style={{ fontSize: "clamp(3rem, 8.4vw, 7rem)", lineHeight: 0.94, letterSpacing: "-0.04em", color: INK, maxWidth: "14ch" }}>
             <span className="word-reveal word-reveal--inline" style={{ animationDelay: "0ms" }}>Doors</span>{" "}
-            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms", fontStyle: "italic", color: GOLD_DEEP, fontVariationSettings: "'opsz' 144, 'SOFT' 40", fontWeight: 430 }}>opened.</span>{" "}
+            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms", fontStyle: "italic", fontWeight: 500, color: INK }}>opened.</span>{" "}
             <span className="word-reveal word-reveal--inline" style={{ animationDelay: "220ms" }}>Deals</span>{" "}
-            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "310ms", fontStyle: "italic", color: SIGNAL, fontVariationSettings: "'opsz' 144, 'SOFT' 40", fontWeight: 430 }}>closed.</span>
+            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "310ms", fontStyle: "italic", fontWeight: 500, color: INK }}>closed.</span>
           </h1>
           <p className="mt-10 md:mt-12 max-w-2xl word-reveal" style={{ animationDelay: "440ms", fontSize: "clamp(1.1rem, 1.4vw, 1.28rem)", color: MUTED, lineHeight: 1.6, fontWeight: 400 }}>
             Nationwide door-to-door teams for fiber, security, solar, and home services. Professional reps, paid certification, and six-figure first-year earnings on straight commission.
           </p>
           <div className="mt-12 md:mt-14 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "560ms" }}>
             <Magnetic strength={0.2}>
-              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="btn-primary inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 56, fontSize: 15, letterSpacing: "-0.005em", boxShadow: "0 10px 24px rgba(46,109,92,0.28), inset 0 1px 0 rgba(255,255,255,0.16)" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }} aria-label="See open field sales roles">
+              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="btn-primary glow-pulse inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 56, fontSize: 15, letterSpacing: "-0.005em", boxShadow: "0 10px 24px rgba(46,109,92,0.28), inset 0 1px 0 rgba(255,255,255,0.16)" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }} aria-label="See open field sales roles">
                 See open roles
                 <span aria-hidden="true" style={{ fontSize: 16, lineHeight: 1, marginLeft: 2 }}>→</span>
               </a>
@@ -1938,12 +1997,13 @@ function HomePage(props) {
               </a>
             </Magnetic>
           </div>
+          {/* Live D2D activity ticker */}
+          <div className="mt-7 word-reveal" style={{ animationDelay: "680ms" }}>
+            <ActivityTicker />
+          </div>
           {/* Micro trust line under CTAs */}
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 word-reveal" style={{ animationDelay: "680ms", ...monoKicker, color: MUTED }}>
-            <span className="inline-flex items-center gap-2">
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: SIGNAL, boxShadow: "0 0 0 3px " + SIGNAL_SOFT }} />
-              Hiring nationwide
-            </span>
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 word-reveal" style={{ animationDelay: "780ms", ...monoKicker, color: MUTED }}>
+            <span>Hiring nationwide</span>
             <span style={{ color: GOLD_DEEP }}>·</span>
             <span>{JOBS.length} open roles</span>
             <span style={{ color: GOLD_DEEP }}>·</span>
@@ -2263,7 +2323,7 @@ function HomePage(props) {
                   <div style={{ ...serif, fontSize: 42, fontStyle: "italic", color: SIGNAL_DEEP, lineHeight: 1, letterSpacing: "-0.02em", fontWeight: 420 }}>Muizz</div>
                   <div className="mt-1" style={{ ...monoKicker, color: MUTED }}>Founder, Home Front Solutions</div>
                 </div>
-                <a href="https://www.linkedin.com/in/muizzmuhammad/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: INK, color: "#F5F1E7", minHeight: 44, fontSize: 14, border: "none", textDecoration: "none" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = INK; }}>
+                <a href="https://www.linkedin.com/in/muizzmuhammad/" target="_blank" rel="noopener noreferrer author me" className="inline-flex items-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: INK, color: "#F5F1E7", minHeight: 44, fontSize: 14, border: "none", textDecoration: "none" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = INK; }}>
                   Connect on LinkedIn
                   <span aria-hidden="true" style={{ fontSize: 11 }}>↗</span>
                 </a>
@@ -2278,7 +2338,7 @@ function HomePage(props) {
       </section>
 
       {/* Path to leadership */}
-      <section style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
+      <section className="cv-auto" style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16 reveal">
             <div className="lg:col-span-7">
@@ -2409,7 +2469,7 @@ function HomePage(props) {
       </section>
 
       {/* Closer — two paths */}
-      <section className="relative overflow-hidden" style={{ background: SIGNAL_DEEP, color: "#F5F1E7" }}>
+      <section className="relative overflow-hidden cv-auto" style={{ background: SIGNAL_DEEP, color: "#F5F1E7" }}>
         <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(900px 500px at 12% -10%, rgba(143,176,155,0.18), transparent 55%), radial-gradient(800px 380px at 88% 110%, rgba(217,166,60,0.12), transparent 60%)" }} />
         <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-36">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
@@ -4598,8 +4658,17 @@ function buildSeoPayload(route) {
     "@id": "https://www.homefrontsolutionsllc.com/#website",
     url: siteOrigin,
     name: "Home Front Solutions",
+    alternateName: ["Home Front Solutions, LLC", "HFS"],
     publisher: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
     inLanguage: "en-US",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: siteOrigin + "/insights?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
   };
 
   var breadcrumbSchema = {
@@ -4803,7 +4872,11 @@ function buildSeoPayload(route) {
         "@id": "https://www.homefrontsolutionsllc.com/#business"
       },
       mainEntityOfPage: pageUrl,
-      inLanguage: "en-US"
+      inLanguage: "en-US",
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["h1", "h1 + p", ".drop-cap"]
+      }
     });
   }
 
@@ -5019,6 +5092,7 @@ export default function App(props) {
 
   useRevealOnScroll([route.name, route.slug]);
   useHoverPrefetch();
+  useScrollHue();
 
   // SEO: Update document title and meta tags per route
   useEffect(function() {
