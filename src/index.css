@@ -975,65 +975,86 @@ main button[class*="btn-ghost"] {
   line-height: 1.35;
 }
 
-/* 3-step How It Works connector */
-.step-flow {
+/* 3-card How It Works grid */
+.step-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
-  align-items: start;
+  gap: 18px;
 }
 @media (min-width: 900px) {
-  .step-flow {
-    grid-template-columns: 1fr auto 1fr auto 1fr;
-    gap: 12px;
-    align-items: start;
-  }
+  .step-grid { grid-template-columns: repeat(3, 1fr); gap: 22px; }
 }
-.step-flow__arrow {
-  display: none;
-  color: #C9D3DD;
-  font-size: 24px;
-  align-self: center;
-  justify-self: center;
-}
-@media (min-width: 900px) { .step-flow__arrow { display: inline-flex; } }
-.step-item {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: 10px;
-  align-items: start;
-}
-.step-item__num {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--signal);
-  color: #FFFFFF;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 13px;
-  flex-shrink: 0;
-  box-shadow: 0 6px 16px rgba(30,109,107,0.28);
-  margin-top: 12px;
-}
-.step-item__icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+.step-card {
   background: #FFFFFF;
-  border: 1.5px solid var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 32px 30px 30px;
+  transition: transform 360ms var(--ease-spring),
+              border-color 220ms var(--ease-out-smooth),
+              box-shadow 360ms var(--ease-spring);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.step-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--signal));
+  transition: width 420ms var(--ease-spring);
+}
+.step-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(30,109,107,0.28);
+  box-shadow: 0 18px 40px rgba(11,37,64,0.08);
+}
+.step-card:hover::before { width: 100%; }
+.step-card__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.step-card__num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--accent-deep);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(224,164,42,0.35);
+  line-height: 1;
+}
+.step-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--signal-soft);
+  border: 1px solid rgba(30,109,107,0.22);
   color: var(--signal);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-right: 6px;
 }
-.step-item__icon svg { width: 26px; height: 26px; }
-.step-item h3 { font-size: 15px !important; line-height: 1.25 !important; }
-.step-item p { font-size: 12.5px !important; line-height: 1.5 !important; }
+.step-card__title {
+  font-size: 20px;
+  line-height: 1.22;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.step-card__body {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+}
 
 /* HFS Coach dashboard mockup (inside dark section) */
 .coach-mock {
@@ -1522,3 +1543,134 @@ section[style*="background:#0B2540"] {
 
 /* Smooth scroll for anchor nav, but respect reduced motion (already set in base) */
 html { scroll-padding-top: 96px; }
+
+/* ────────────────────────────────────────────────────────────
+   MOBILE POLISH — 768px and below
+   Tightens spacing, scales type, reorganizes the coach mock,
+   and makes every section breathable on phones.
+   ──────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Pull tighter edges on phones */
+  main section { padding-left: 20px; padding-right: 20px; }
+  main section > div { padding-left: 0; padding-right: 0; }
+
+  /* Hero — lighter vertical rhythm */
+  .hero-navy .page-hero__title,
+  section#home-hero h1 {
+    font-size: clamp(2.1rem, 10vw, 2.75rem) !important;
+    line-height: 1.08 !important;
+  }
+  .hero-navy .page-hero__subtitle,
+  section#home-hero p { font-size: 14.5px !important; }
+
+  /* Hero portrait — slightly tighter, keeps aspect */
+  .hero-portrait { max-width: 320px; margin: 0 auto; }
+
+  /* Stat bar — 2-up on phones, compact */
+  .stat-bar {
+    grid-template-columns: 1fr 1fr !important;
+    padding: 20px 18px !important;
+    gap: 14px 18px !important;
+    border-radius: 16px !important;
+  }
+  .stat-bar__cell { gap: 12px; }
+  .stat-bar__icon { width: 44px; height: 44px; }
+  .stat-bar__value { font-size: 20px; }
+  .stat-bar__label { font-size: 11px; }
+
+  /* Section headings — all sized for phones */
+  main h2 { font-size: clamp(1.55rem, 6.6vw, 1.95rem) !important; line-height: 1.1 !important; }
+
+  /* Service cards — shorter, tighter padding */
+  .svc-card {
+    min-height: 128px !important;
+    padding: 20px 14px 18px !important;
+    gap: 10px;
+    border-radius: 14px;
+  }
+  .svc-card__icon { width: 44px; height: 44px; }
+  .svc-card__icon svg { width: 24px; height: 24px; }
+  .svc-card__label { font-size: 13.5px; }
+  .svc-card::after { bottom: 14px; }
+
+  /* How-it-works cards — tighter padding */
+  .step-card { padding: 22px 20px 20px; border-radius: 16px; }
+  .step-card__head { gap: 12px; margin-bottom: 16px; }
+  .step-card__icon { width: 46px; height: 46px; }
+  .step-card__title { font-size: 17px; margin-bottom: 8px; }
+  .step-card__body  { font-size: 13.5px; }
+
+  /* Training block — drop side-by-side, stack cleanly */
+  section[style*="background: rgb(11, 37, 64)"] > div,
+  section[style*="background:#0B2540"] > div {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
+  }
+
+  /* HFS Coach dashboard — hide sidebar, stack the stats, keep it legible */
+  .coach-mock {
+    grid-template-columns: 1fr !important;
+    min-height: 0;
+    border-radius: 14px;
+  }
+  .coach-mock__side { display: none; }
+  .coach-mock__main { padding: 16px; }
+  .coach-mock__top { margin-bottom: 12px; }
+  .coach-mock__hello { font-size: 13px; }
+  .coach-mock__stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .coach-mock__stat { padding: 10px; }
+  .coach-mock__stat-label { font-size: 9.5px; letter-spacing: 0.02em; }
+  .coach-mock__stat-value { font-size: 16px; }
+  .coach-mock__grid2 { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .coach-mock__grid2:last-child { grid-template-columns: 1fr 1fr !important; }
+  .coach-mock__card { padding: 10px; min-height: 70px; }
+  .coach-mock__card-title { font-size: 9.5px; }
+  .coach-mock__circle { width: 34px; height: 34px; }
+  .coach-mock__note { font-size: 10px; }
+  .coach-mock__sub  { font-size: 9px; }
+  .coach-mock__lb-row { font-size: 10.5px; padding: 4px 0; }
+
+  /* City cards — a touch shorter */
+  .city-card { aspect-ratio: 1 / 1.05; border-radius: 12px; }
+  .city-card__label { font-size: 14px; left: 12px; bottom: 12px; }
+  .city-card__pin { width: 26px; height: 26px; top: 10px; left: 10px; }
+
+  /* Value cards */
+  .val-card { padding: 20px 18px; border-radius: 14px; }
+  .val-card__icon { width: 40px; height: 40px; margin-bottom: 12px; }
+
+  /* FAQ */
+  .faq-item__trigger { font-size: 14.5px; padding: 18px 0; gap: 16px; }
+  .faq-item__body { font-size: 13.5px; }
+
+  /* Dual-CTA band — full-width panels, tighter padding */
+  .dual-cta { border-radius: 16px; }
+  .dual-cta__panel { padding: 30px 24px; }
+  .dual-cta__icon { width: 44px; height: 44px; left: 24px; top: 30px; }
+  .dual-cta__body { padding-left: 60px; }
+  .dual-cta__body h3 { font-size: 1.2rem !important; line-height: 1.2 !important; }
+
+  /* Footer — stacked columns with tighter rhythm */
+  .footer-navy { padding-left: 4px; padding-right: 4px; }
+  .footer-navy .max-w-\[1280px\] { padding-top: 48px !important; }
+
+  /* Ensure CTAs are tappable (44px min) */
+  .btn-primary, .btn-gold, .btn-ghost, a.inline-flex, button.inline-flex {
+    min-height: 46px !important;
+  }
+
+  /* Container tightening for PageHero on small screens */
+  .page-hero__title { max-width: 14ch; }
+
+  /* Fiber wifi-icon inside gold CTA — a touch smaller on phones */
+  .btn-gold svg { width: 14px; height: 14px; }
+
+  /* Kill any leftover horizontal scroll */
+  body, html { overflow-x: hidden; }
+}
+
+/* Extra-small phones (iPhone SE, 360px) */
+@media (max-width: 390px) {
+  main h1, .page-hero__title { font-size: clamp(1.95rem, 9.4vw, 2.4rem) !important; }
+  .hero-portrait { max-width: 280px; }
+}
