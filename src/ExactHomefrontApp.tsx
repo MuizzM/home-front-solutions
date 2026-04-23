@@ -2290,6 +2290,268 @@ function KnockOverlay(props) {
   );
 }
 
+// Animated count-up — tween to `target` over `duration` ms whenever target changes
+function useCountUp(target, duration) {
+  var _v = useState(0); var val = _v[0]; var setVal = _v[1];
+  useEffect(function() {
+    var start = 0;
+    var from = 0;
+    var to = typeof target === "number" ? target : 0;
+    var d = duration || 900;
+    var raf;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / d);
+      var eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      setVal(Math.round(from + (to - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+    return function() { if (raf) cancelAnimationFrame(raf); };
+  }, [target, duration]);
+  return val;
+}
+
+// ── HFS Coach — interactive dashboard mockup ──────────────────────────────
+// Clickable sidebar tabs switch panels; time-period chip swaps stat values
+// with an animated count-up; mini roleplay/leaderboard views are live too.
+function CoachMock() {
+  var _t = useState("dashboard"); var tab = _t[0]; var setTab = _t[1];
+  var _p = useState("week"); var period = _p[0]; var setPeriod = _p[1];
+  var _o = useState(false); var periodOpen = _o[0]; var setPeriodOpen = _o[1];
+
+  var navItems = [
+    { id: "dashboard", label: "Dashboard" },
+    { id: "reps",      label: "Reps" },
+    { id: "coaching",  label: "Coaching" },
+    { id: "roleplays", label: "Roleplays" },
+    { id: "reports",   label: "Reports" },
+    { id: "tools",     label: "Tools" },
+    { id: "leader",    label: "Leaderboard" },
+    { id: "settings",  label: "Settings" }
+  ];
+
+  // Stats per period — the numbers genuinely change when you click the chip.
+  var statsByPeriod = {
+    today: { calls: 12, conv: 8,  close: 62, sales: 3250 },
+    week:  { calls: 18, conv: 12, close: 67, sales: 14250 },
+    month: { calls: 74, conv: 56, close: 71, sales: 58200 }
+  };
+  var stats = statsByPeriod[period];
+
+  // Animated counters driven by the active period
+  var callsAnim = useCountUp(stats.calls, 700);
+  var convAnim  = useCountUp(stats.conv,  700);
+  var closeAnim = useCountUp(stats.close, 700);
+  var salesAnim = useCountUp(stats.sales, 900);
+
+  var periodLabel = { today: "Today", week: "This Week", month: "This Month" };
+
+  function pickPeriod(p) { setPeriod(p); setPeriodOpen(false); }
+
+  return (
+    <div className="coach-mock">
+      <aside className="coach-mock__side">
+        <div className="coach-mock__brand">HFS COACH</div>
+        <ul className="coach-mock__nav">
+          {navItems.map(function(item) {
+            return (
+              <li
+                key={item.id}
+                className={tab === item.id ? "is-active" : ""}
+                onClick={function() { setTab(item.id); }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setTab(item.id); } }}
+                aria-current={tab === item.id ? "page" : undefined}
+              >
+                {item.label}
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+      <div className="coach-mock__main">
+        <div className="coach-mock__top">
+          <span className="coach-mock__hello">
+            {tab === "dashboard" && "Welcome back, John!"}
+            {tab === "reps" && "Team — 32 reps"}
+            {tab === "coaching" && "Coaching — Week 16"}
+            {tab === "roleplays" && "Roleplays — Recent"}
+            {tab === "reports" && "Reports — Summary"}
+            {tab === "tools" && "Tools & CRM"}
+            {tab === "leader" && "Leaderboard"}
+            {tab === "settings" && "Settings"}
+          </span>
+          {tab === "dashboard" && (
+            <span className="coach-mock__period-wrap" style={{ position: "relative" }}>
+              <button
+                type="button"
+                className="coach-mock__week"
+                onClick={function() { setPeriodOpen(!periodOpen); }}
+                aria-haspopup="listbox"
+                aria-expanded={periodOpen}
+              >
+                {periodLabel[period]} <span aria-hidden="true">▾</span>
+              </button>
+              {periodOpen && (
+                <ul className="coach-mock__period-menu" role="listbox">
+                  {["today","week","month"].map(function(p) {
+                    return (
+                      <li
+                        key={p}
+                        role="option"
+                        aria-selected={period === p}
+                        className={period === p ? "is-active" : ""}
+                        onClick={function() { pickPeriod(p); }}
+                      >
+                        {periodLabel[p]}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </span>
+          )}
+        </div>
+
+        {/* Dashboard view */}
+        {tab === "dashboard" && (
+          <>
+            <div className="coach-mock__stats">
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Calls Today</div><div className="coach-mock__stat-value">{callsAnim}</div></div>
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Conversations</div><div className="coach-mock__stat-value">{convAnim}</div></div>
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Close Rate</div><div className="coach-mock__stat-value">{closeAnim}%</div></div>
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Total Sales</div><div className="coach-mock__stat-value">${salesAnim.toLocaleString()}</div></div>
+            </div>
+            <div className="coach-mock__grid2">
+              <div className="coach-mock__card" title="Overall coaching score across pitch, tone, and follow-through">
+                <div className="coach-mock__card-title">Coaching Score</div>
+                <div className="coach-mock__score">
+                  <span className="coach-mock__circle" data-value="92" style={{ ["--p"]: "92%" }} />
+                  <div><div className="coach-mock__note">Great</div><div className="coach-mock__sub">Great work!</div></div>
+                </div>
+                <div className="coach-mock__spark" />
+              </div>
+              <div className="coach-mock__card" title="How well reps handle common pushbacks">
+                <div className="coach-mock__card-title">Objection Handling</div>
+                <div className="coach-mock__score">
+                  <span className="coach-mock__circle" data-value="87" style={{ ["--p"]: "87%" }} />
+                  <div><div className="coach-mock__note">Strong</div><div className="coach-mock__sub">Above team avg</div></div>
+                </div>
+              </div>
+              <div className="coach-mock__card" title="Pitch clarity, pacing, and benefits framing">
+                <div className="coach-mock__card-title">Pitch Score</div>
+                <div className="coach-mock__score">
+                  <span className="coach-mock__circle" data-value="90" style={{ ["--p"]: "90%" }} />
+                  <div><div className="coach-mock__note">Excellent</div><div className="coach-mock__sub">Top 10%</div></div>
+                </div>
+              </div>
+            </div>
+            <div className="coach-mock__grid2" style={{ gridTemplateColumns: "1.2fr 1fr" }}>
+              <div className="coach-mock__card">
+                <div className="coach-mock__card-title">Recent Roleplay</div>
+                <div className="flex items-center justify-between" style={{ gap: 8, marginTop: 6 }}>
+                  <span style={{ fontSize: 11.5, color: INK }}>Solar Presentation</span>
+                  <span style={{ fontSize: 11, color: MUTED }}>Score</span>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: INK, marginTop: 2 }}>91%</div>
+                <button type="button" className="coach-mock__link" onClick={function() { setTab("roleplays"); }}>View ▸</button>
+              </div>
+              <div className="coach-mock__card">
+                <div className="coach-mock__card-title flex items-center justify-between"><span>Leaderboard</span><button type="button" className="coach-mock__link" onClick={function() { setTab("leader"); }}>View All</button></div>
+                <div className="coach-mock__lb" style={{ gridTemplateColumns: "1fr", marginTop: 4 }}>
+                  <div className="coach-mock__lb-row"><span>1. Alex P.</span><span style={{ fontWeight: 600 }}>95%</span></div>
+                  <div className="coach-mock__lb-row"><span>2. Jordan R.</span><span style={{ fontWeight: 600 }}>92%</span></div>
+                  <div className="coach-mock__lb-row"><span>3. You</span><span style={{ fontWeight: 600, color: SIGNAL }}>91%</span></div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Reps view */}
+        {tab === "reps" && (
+          <div className="coach-mock__panel">
+            {[
+              { n: "Alex P.",   market: "Greensboro",    deals: 9, score: 95 },
+              { n: "Jordan R.", market: "High Point",    deals: 8, score: 92 },
+              { n: "Maya C.",   market: "Winston-Salem", deals: 7, score: 89 },
+              { n: "You",       market: "Charlotte",     deals: 6, score: 91 },
+              { n: "Devin B.",  market: "Raleigh",       deals: 5, score: 86 }
+            ].map(function(r, i) {
+              return (
+                <div key={r.n} className="coach-mock__rep-row">
+                  <span className="coach-mock__rep-rank">{i + 1}</span>
+                  <span className="coach-mock__rep-name">{r.n}</span>
+                  <span className="coach-mock__rep-meta">{r.market}</span>
+                  <span className="coach-mock__rep-meta">{r.deals} deals</span>
+                  <span className="coach-mock__rep-score">{r.score}%</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Coaching view */}
+        {tab === "coaching" && (
+          <div className="coach-mock__panel">
+            <div className="coach-mock__card" style={{ marginBottom: 10 }}>
+              <div className="coach-mock__card-title">Weekly Trend</div>
+              <div className="coach-mock__spark" style={{ height: 56, marginTop: 8 }} />
+              <div className="coach-mock__sub" style={{ marginTop: 6 }}>Coaching score: 87 → 92 over 6 weeks</div>
+            </div>
+            <div className="coach-mock__grid2">
+              <div className="coach-mock__card"><div className="coach-mock__card-title">Sessions</div><div className="coach-mock__stat-value">14</div></div>
+              <div className="coach-mock__card"><div className="coach-mock__card-title">Avg Score</div><div className="coach-mock__stat-value">92</div></div>
+            </div>
+          </div>
+        )}
+
+        {/* Roleplays view */}
+        {tab === "roleplays" && (
+          <div className="coach-mock__panel">
+            {[
+              { t: "Solar Presentation",    d: "Today",      s: 91 },
+              { t: "Objection · Price",     d: "Yesterday",  s: 84 },
+              { t: "Fiber Close",           d: "2 days ago", s: 88 },
+              { t: "Security · Trial Close",d: "3 days ago", s: 79 }
+            ].map(function(rp) {
+              return (
+                <div key={rp.t} className="coach-mock__rep-row">
+                  <span className="coach-mock__rep-name">{rp.t}</span>
+                  <span className="coach-mock__rep-meta">{rp.d}</span>
+                  <span className="coach-mock__rep-score" style={{ color: rp.s >= 85 ? SIGNAL : INK }}>{rp.s}%</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Reports, Tools, Leaderboard, Settings — light placeholders */}
+        {(tab === "reports" || tab === "tools" || tab === "leader" || tab === "settings") && (
+          <div className="coach-mock__panel coach-mock__panel--soft">
+            <div className="coach-mock__card">
+              <div className="coach-mock__card-title">
+                {tab === "reports"  && "Weekly Rollup"}
+                {tab === "tools"    && "Connected Tools"}
+                {tab === "leader"   && "Top Markets"}
+                {tab === "settings" && "Account"}
+              </div>
+              <div className="coach-mock__sub" style={{ marginTop: 8 }}>
+                {tab === "reports"  && "Knocks · Conversations · Closes · Installs, exported daily."}
+                {tab === "tools"    && "CRM · Routing · Messaging · Pay — all wired."}
+                {tab === "leader"   && "Greensboro, High Point, Charlotte."}
+                {tab === "settings" && "Territory, notifications, payout method."}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Small inline toolkit icons used inside the HFS Coach dashboard mockup
 function CheckDot() {
   return (
@@ -2599,87 +2861,9 @@ function HomePage(props) {
             </div>
           </div>
 
-          {/* HFS Coach dashboard mockup */}
+          {/* HFS Coach dashboard — interactive mockup */}
           <div className="lg:col-span-7 reveal" data-delay="1">
-            <div className="coach-mock">
-              <aside className="coach-mock__side" aria-hidden="true">
-                <div className="coach-mock__brand">HFS COACH</div>
-                <ul className="coach-mock__nav">
-                  <li className="is-active">Dashboard</li>
-                  <li>Reps</li>
-                  <li>Coaching</li>
-                  <li>Roleplays</li>
-                  <li>Reports</li>
-                  <li>Tools</li>
-                  <li>Leaderboard</li>
-                  <li>Settings</li>
-                </ul>
-              </aside>
-              <div className="coach-mock__main">
-                <div className="coach-mock__top">
-                  <span className="coach-mock__hello">Welcome back, John!</span>
-                  <span className="coach-mock__week">This Week ▾</span>
-                </div>
-                <div className="coach-mock__stats">
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Calls Today</div><div className="coach-mock__stat-value">18</div></div>
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Conversations</div><div className="coach-mock__stat-value">12</div></div>
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Close Rate</div><div className="coach-mock__stat-value">67%</div></div>
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Total Sales</div><div className="coach-mock__stat-value">$14,250</div></div>
-                </div>
-                <div className="coach-mock__grid2">
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Coaching Score</div>
-                    <div className="coach-mock__score">
-                      <span className="coach-mock__circle" data-value="92" style={{ ["--p"]: "92%" }} />
-                      <div>
-                        <div className="coach-mock__note">Great</div>
-                        <div className="coach-mock__sub">Great work!</div>
-                      </div>
-                    </div>
-                    <div className="coach-mock__spark" />
-                  </div>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Objection Handling</div>
-                    <div className="coach-mock__score">
-                      <span className="coach-mock__circle" data-value="87" style={{ ["--p"]: "87%" }} />
-                      <div>
-                        <div className="coach-mock__note">Strong</div>
-                        <div className="coach-mock__sub">Above team avg</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Pitch Score</div>
-                    <div className="coach-mock__score">
-                      <span className="coach-mock__circle" data-value="90" style={{ ["--p"]: "90%" }} />
-                      <div>
-                        <div className="coach-mock__note">90X Alarm</div>
-                        <div className="coach-mock__sub">Excellent</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="coach-mock__grid2" style={{ gridTemplateColumns: "1.2fr 1fr" }}>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Recent Roleplay</div>
-                    <div className="flex items-center justify-between" style={{ gap: 8, marginTop: 6 }}>
-                      <span style={{ fontSize: 11.5, color: INK }}>Solar Presentation</span>
-                      <span style={{ fontSize: 11, color: MUTED }}>Score</span>
-                    </div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: INK, marginTop: 2 }}>91%</div>
-                    <div style={{ fontSize: 10, color: SIGNAL, fontWeight: 600, marginTop: 3 }}>View ▸</div>
-                  </div>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title flex items-center justify-between"><span>Leaderboard</span><span style={{ color: SIGNAL }}>View All</span></div>
-                    <div className="coach-mock__lb" style={{ gridTemplateColumns: "1fr", marginTop: 4 }}>
-                      <div className="coach-mock__lb-row"><span>1. Alex P.</span><span style={{ fontWeight: 600 }}>95%</span></div>
-                      <div className="coach-mock__lb-row"><span>2. Jordan R.</span><span style={{ fontWeight: 600 }}>92%</span></div>
-                      <div className="coach-mock__lb-row"><span>3. You</span><span style={{ fontWeight: 600, color: SIGNAL }}>91%</span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CoachMock />
           </div>
         </div>
       </section>
