@@ -2090,13 +2090,52 @@ function StatIcon(props) {
   return null;
 }
 
-// Step-flow icons — door, handshake, bar chart (inside outlined circles)
+// Step-flow icons — door-with-knock, two-handed handshake, dashboard chart
 function StepIcon(props) {
   var kind = props.kind;
-  var common = { width: 32, height: 32, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
-  if (kind === "door") return <svg {...common}><rect x="6" y="3" width="12" height="18" rx="0.5"/><circle cx="14.5" cy="12.5" r="0.8" fill="currentColor" stroke="none"/><path d="M6 21 H18" /></svg>;
-  if (kind === "shake") return <svg {...common}><path d="M3 14 L8 9 L10.5 11 L13 9 L16 12 L21 10" /><path d="M8 15 L10 17 L12 15" /><path d="M11 17 L13 19 L15 17" /></svg>;
-  if (kind === "bar") return <svg {...common}><path d="M4 19 H20"/><rect x="6" y="12" width="3" height="7" rx="0.5"/><rect x="11" y="8" width="3" height="11" rx="0.5"/><rect x="16" y="5" width="3" height="14" rx="0.5"/></svg>;
+  var common = { width: 34, height: 34, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "door") {
+    // Door with glass pane + raised fist + sound ripples
+    return (
+      <svg {...common}>
+        <rect x="8.5" y="3" width="11.5" height="18" rx="0.5" />
+        <rect x="10.5" y="5" width="7.5" height="6.5" rx="0.3" opacity="0.55" />
+        <circle cx="17.5" cy="13.5" r="0.8" fill="currentColor" stroke="none" />
+        {/* fist */}
+        <path d="M5.5 10.8 C 4.6 10.8, 4 11.4, 4 12.2 C 4 13, 4.6 13.6, 5.4 13.6 L 7.8 13.6 L 7.8 10.2 L 5.4 10.2 Z" fill="currentColor" stroke="none" opacity="0.9" />
+        {/* knock ripples */}
+        <path d="M2.5 9.5 L 3.5 9.8" opacity="0.7" />
+        <path d="M2 12 L 3.2 12" opacity="0.9" />
+        <path d="M2.5 14.5 L 3.5 14.2" opacity="0.7" />
+      </svg>
+    );
+  }
+  if (kind === "shake") {
+    // Two-handed handshake with cuff detail
+    return (
+      <svg {...common}>
+        <path d="M2 13 L 5 10 L 8 12 L 11 10 L 13 12 L 11 14 L 9 13 L 7 15 L 4 15 Z" fill="currentColor" stroke="none" opacity="0.88" />
+        <path d="M22 13 L 19 10 L 16 12 L 13 10 L 11 12 L 13 14 L 15 13 L 17 15 L 20 15 Z" fill="currentColor" stroke="none" opacity="0.55" />
+        <path d="M11 12 L 13 10" />
+        <path d="M2 15 L 4 15" />
+        <path d="M22 15 L 20 15" />
+      </svg>
+    );
+  }
+  if (kind === "bar") {
+    // Dashboard frame with rising line-chart + bar baseline + arrow up
+    return (
+      <svg {...common}>
+        <rect x="3" y="4.5" width="18" height="14" rx="1.2" />
+        <path d="M3 16 L 21 16" opacity="0.35" />
+        <path d="M6 13 L 10 9.2 L 13 11.2 L 17.5 7" />
+        <path d="M16 7 L 17.5 7 L 17.5 8.5" />
+        <circle cx="17.5" cy="7" r="1" fill="currentColor" stroke="none" />
+        <path d="M7 21 L 17 21" />
+        <path d="M12 18.5 L 12 21" />
+      </svg>
+    );
+  }
   return null;
 }
 
@@ -2238,9 +2277,9 @@ function HomePage(props) {
     { icon: "chart", label: "Performance Reporting", value: "Real-Time" }
   ];
   var steps = [
-    { num: "1", icon: "door",  title: "We knock the doors.", body: "Our reps get in front of homeowners every day." },
-    { num: "2", icon: "shake", title: "We close the customer.", body: "Trained to present, qualify, and close with confidence." },
-    { num: "3", icon: "bar",   title: "You see every metric.",  body: "Real-time reporting so you can scale what works." }
+    { num: "01", icon: "door",  title: "We knock every door.",       body: "Branded, badged reps cover your territory — face-to-face conversations at every home on the route." },
+    { num: "02", icon: "shake", title: "We close with confidence.",  body: "Trained to present, handle objections, and convert right at the doorstep — installs, not just signatures." },
+    { num: "03", icon: "bar",   title: "You own the numbers.",        body: "Live dashboards track knocks, conversations, closes, and activations in real time — no black box." }
   ];
   var trainingPerks = [
     "Product Knowledge", "Compliance",
@@ -2274,8 +2313,7 @@ function HomePage(props) {
       <section id="home-hero" className="hero-navy">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-24 md:pb-32 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-7">
-            <div className="page-hero__eyebrow word-reveal" style={{ animationDelay: "0ms" }}>D2D Field Execution · Nationwide</div>
-            <h1 className="display mt-3" style={{ fontSize: "clamp(2.6rem, 6.2vw, 4.75rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+            <h1 className="display" style={{ fontSize: "clamp(2.6rem, 6.2vw, 4.75rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
               <span className="word-reveal word-reveal--inline">Home services</span>{" "}
               <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms" }}>growth, built</span>{" "}
               <span className="word-reveal word-reveal--inline" style={{ animationDelay: "200ms", color: GOLD, fontStyle: "italic", fontWeight: 500, ...serif }}>face to face.</span>
@@ -2287,37 +2325,14 @@ function HomePage(props) {
             <div className="mt-8 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "500ms" }}>
               <Magnetic strength={0.2}>
                 <a
-                  href={BOOKING_URL || "/contact"}
-                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
-                  target={BOOKING_URL ? "_blank" : undefined}
-                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                  className="btn-gold inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
-                  style={{ cursor: "pointer", minHeight: 54, fontSize: 15, letterSpacing: "-0.005em" }}
-                  aria-label="Launch a fiber sales campaign in your market"
-                >
-                  <span aria-hidden="true" style={{ marginRight: 4, display: "inline-flex", alignItems: "center" }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 10.2 Q 12 1, 21 10.2" />
-                      <path d="M6 13 Q 12 6.2, 18 13" opacity="0.82" />
-                      <path d="M9 15.6 Q 12 11.4, 15 15.6" opacity="0.65" />
-                      <circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none" />
-                    </svg>
-                  </span>
-                  Launch Fiber in Your Market
-                  <span aria-hidden="true">→</span>
-                </a>
-              </Magnetic>
-              <Magnetic strength={0.2}>
-                <a
                   href="/careers"
                   onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-ghost inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
-                  style={{ background: "transparent", color: "#F5F7FA", border: "1px solid rgba(245,247,250,0.32)", cursor: "pointer", minHeight: 54, fontSize: 15, letterSpacing: "-0.005em" }}
-                  onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,247,250,0.08)"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.6)"; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.32)"; }}
-                  aria-label="Join the fiber field sales team"
+                  className="btn-gold inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium"
+                  style={{ cursor: "pointer", minHeight: 56, fontSize: 15.5, letterSpacing: "-0.005em" }}
+                  aria-label="Join the Home Front Solutions team"
                 >
-                  Join the Fiber Team
+                  Join the Team
+                  <span aria-hidden="true">→</span>
                 </a>
               </Magnetic>
             </div>
@@ -2430,41 +2445,31 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS (light gray band) ────────────────────── */}
+      {/* ── HOW IT WORKS (light gray band, 3-card layout) ────── */}
       <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          <div className="lg:col-span-4 reveal">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12 md:mb-16">
             <div className="eyebrow-teal mb-3">How It Works</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.1, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+            <h2 className="display" style={{ fontSize: "clamp(1.95rem, 3.6vw, 2.75rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
               Simple. Disciplined. Scalable.
             </h2>
+            <p className="mt-5" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7 }}>
+              Three disciplines that run every market the same way — and show up in the numbers every day.
+            </p>
           </div>
-          <div className="lg:col-span-8 reveal" data-delay="1">
-            <div className="step-flow">
-              {(function() {
-                var out = [];
-                steps.forEach(function(step, i) {
-                  out.push(
-                    <div key={"step-" + step.num} className="step-item">
-                      <span className="step-item__num" aria-hidden="true">{step.num}</span>
-                      <span className="step-item__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
-                      <div style={{ minWidth: 0 }}>
-                        <h3 style={{ ...serif, fontSize: 18, color: INK, letterSpacing: "-0.015em", lineHeight: 1.2, fontWeight: 500 }}>{step.title}</h3>
-                        <p className="mt-1.5" style={{ fontSize: 13, color: MUTED, lineHeight: 1.55 }}>{step.body}</p>
-                      </div>
-                    </div>
-                  );
-                  if (i < steps.length - 1) {
-                    out.push(
-                      <span key={"arrow-" + i} className="step-flow__arrow" aria-hidden="true">
-                        <svg width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><path d="M2 10 H26"/><path d="M20 4 L26 10 L20 16"/></svg>
-                      </span>
-                    );
-                  }
-                });
-                return out;
-              })()}
-            </div>
+          <div className="step-grid reveal" data-delay="1">
+            {steps.map(function(step) {
+              return (
+                <article key={step.num} className="step-card">
+                  <div className="step-card__head">
+                    <span className="step-card__num" aria-hidden="true">{step.num}</span>
+                    <span className="step-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
+                  </div>
+                  <h3 className="step-card__title" style={{ fontFamily: "Geist, Inter, sans-serif" }}>{step.title}</h3>
+                  <p className="step-card__body">{step.body}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
