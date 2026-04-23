@@ -1783,6 +1783,73 @@ function LogoMark(props) {
   );
 }
 
+// Floating "back to top" chip — gold, fades in after 600 px of scroll,
+// click smooth-scrolls to the top. Pure CSS transitions, prefers-reduced-motion safe.
+function ScrollTop() {
+  var _v = useState(false); var visible = _v[0]; var setVisible = _v[1];
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    function onScroll() { setVisible(window.scrollY > 600); }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return function() { window.removeEventListener("scroll", onScroll); };
+  }, []);
+  function up() {
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+  }
+  return (
+    <button
+      type="button"
+      onClick={up}
+      className="scroll-top"
+      data-visible={visible ? "true" : "false"}
+      aria-label="Back to top"
+      title="Back to top"
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M12 19 V5" />
+        <path d="M5 12 L12 5 L19 12" />
+      </svg>
+    </button>
+  );
+}
+
+// Sticky mobile CTA dock — always-visible "Join the Team" + "Book a Call" on phones.
+// Hidden on desktop, hidden within the mobile nav menu, hides until the first scroll
+// so it doesn't steal attention on initial paint.
+function MobileStickyCTA(props) {
+  var _s = useState(false); var shown = _s[0]; var setShown = _s[1];
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    function onScroll() { setShown(window.scrollY > 240); }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return function() { window.removeEventListener("scroll", onScroll); };
+  }, []);
+  return (
+    <div className="sticky-cta" data-visible={shown ? "true" : "false"} aria-hidden={!shown}>
+      <a
+        href={BOOKING_URL || "/contact"}
+        onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+        target={BOOKING_URL ? "_blank" : undefined}
+        rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+        className="sticky-cta__btn sticky-cta__btn--ghost"
+      >
+        Book a Call
+      </a>
+      <a
+        href="/careers"
+        onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+        className="sticky-cta__btn sticky-cta__btn--gold"
+      >
+        Join the Team
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  );
+}
+
 // Brand lockup — uses the real Home Front Solutions logo artwork.
 // On dark surfaces we use a dark-theme PNG (cream ink, transparent bg) that blends into navy.
 // On light surfaces we use the full-color PNG directly.
@@ -1819,6 +1886,14 @@ function Header(props) {
   var _m = useState(false); var open = _m[0]; var setOpen = _m[1];
   var _s = useState(false); var scrolled = _s[0]; var setScrolled = _s[1];
   var onDark = !!(props && props.onDark);
+  var currentRoute = props && props.route ? props.route.name : null;
+  // Prevent body scroll while mobile menu is open (better UX)
+  useEffect(function() {
+    if (typeof document === "undefined") return;
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return function() { document.body.style.overflow = ""; };
+  }, [open]);
   useEffect(function() {
     if (typeof window === "undefined") return;
     function onScroll() { setScrolled(window.scrollY > 8); }
@@ -1866,8 +1941,16 @@ function Header(props) {
         </a>
         <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
           {nav.map(function(item) {
+            var active = currentRoute === item.route;
             return (
-              <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { handleNavClick(e, props.go, item.route); }} className="edi-link relative" style={{ color: linkColor, padding: "6px 0", fontSize: 14, fontWeight: 500, letterSpacing: "-0.005em" }}>
+              <a
+                key={item.route}
+                href={getPathForRoute(item.route)}
+                onClick={function(e) { handleNavClick(e, props.go, item.route); }}
+                className={"nav-link" + (active ? " is-active" : "")}
+                aria-current={active ? "page" : undefined}
+                style={{ color: linkColor, padding: "6px 0", fontSize: 14, fontWeight: 500, letterSpacing: "-0.005em" }}
+              >
                 {item.label}
               </a>
             );
@@ -1884,10 +1967,16 @@ function Header(props) {
             <span aria-hidden="true">→</span>
           </a>
         </nav>
-        <button onClick={function() { setOpen(!open); }} className="md:hidden p-1" style={{ background: "none", border: "none" }} aria-label={open ? "Close navigation menu" : "Open navigation menu"} aria-expanded={open}>
-          {open
-            ? <svg width="22" height="22" viewBox="0 0 24 24"><path d="M7 7L17 17M17 7L7 17" stroke={linkColor} strokeWidth="1.5" strokeLinecap="round" /></svg>
-            : <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 8H20M4 14H14" stroke={linkColor} strokeWidth="1.5" strokeLinecap="round" /></svg>}
+        <button
+          onClick={function() { setOpen(!open); }}
+          className={"burger md:hidden" + (open ? " is-open" : "")}
+          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={open}
+          style={{ color: linkColor }}
+        >
+          <span className="burger__line burger__line--1" aria-hidden="true" />
+          <span className="burger__line burger__line--2" aria-hidden="true" />
+          <span className="burger__line burger__line--3" aria-hidden="true" />
         </button>
       </div>
 
@@ -5493,10 +5582,17 @@ export default function App(props) {
         }
       `}</style>
 
-      <ScrollProgress />
-      <Header go={go} onDark={["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
+      {/* a11y: skip to main content for keyboard + screen reader users */}
+      <a href="#main" className="skip-link" onClick={function(e) {
+        e.preventDefault();
+        var m = document.getElementById("main");
+        if (m) { m.setAttribute("tabindex", "-1"); m.focus(); m.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      }}>Skip to main content</a>
 
-      <main key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER }}>
+      <ScrollProgress />
+      <Header go={go} route={route} onDark={["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
+
+      <main id="main" key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER, outline: "none" }}>
         {route.name === "home" && <HomePage go={go} />}
         {route.name === "what-we-do" && <WhatWeDoPage go={go} />}
         {route.name === "why-us" && <WhyUsPage go={go} />}
@@ -5514,6 +5610,12 @@ export default function App(props) {
       </main>
 
       <Footer go={go} />
+
+      {/* Floating scroll-to-top — fades in after ~600 px of scroll */}
+      <ScrollTop />
+
+      {/* Sticky mobile CTA dock — phones only, hides when native nav menu is open */}
+      <MobileStickyCTA go={go} route={route} />
     </div>
   );
 }
