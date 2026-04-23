@@ -1,30 +1,33 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
 
-// ── Design tokens (derived from logo) ───────────────────────────
-var PAPER = "#F5F1E7";           // warm cream from the logo background
-var PAPER_DEEP = "#EEE8D8";       // slightly deeper cream for banded sections
+// ── Design tokens (navy + gold system) ───────────────────────────
+var PAPER = "#FFFFFF";            // primary page background (white)
+var PAPER_DEEP = "#F5F7FA";       // banded light-gray section (FAQ, How-it-works)
 var SURF = "#FFFFFF";
-var SURF2 = "#EFEADB";
-var INK = "#1B2E3B";              // deep navy-teal from the logo wordmark
-var INK_SOFT = "#2A3F4E";
-var RULE = "#DCD3BF";             // warm hairline
-var MUTED = "#5E6C74";
+var SURF2 = "#F9FAFB";
+var INK = "#0F2A44";              // deep navy headline ink
+var INK_SOFT = "#1F3D5C";
+var RULE = "#E3E8ED";             // hairline on white
+var MUTED = "#5A6B76";            // body text
 var MUTED2 = "#8A96A0";
-var SIGNAL = "#2E6D5C";           // primary teal-green (logo walls)
-var SIGNAL_DEEP = "#1F4E42";      // deeper hover / dark surfaces
-var SIGNAL_SOFT = "#DEEBE3";      // soft mint tint for section accents
-var SIGNAL_SOFTER = "#EDF4EF";
-var SAGE = "#8FB09B";             // light sage from the logo base
-var GOLD = "#D9A63C";             // warm gold (logo door/window)
-var GOLD_DEEP = "#B8862B";
-var GOLD_SOFT = "#F7E9C2";
-var CLAY = "#C25A3D";             // warm accent for emphasis (rare use)
+var NAVY = "#0B2540";             // hero + dark section background
+var NAVY_DEEP = "#081A2E";        // footer/deeper navy
+var NAVY_SOFT = "#163A5A";        // navy-on-navy border/elevated surface
+var SIGNAL = "#1E6D6B";           // primary teal (accent italic, service icons)
+var SIGNAL_DEEP = "#155159";      // hover / deeper teal
+var SIGNAL_SOFT = "#DDEEEE";      // soft teal tint
+var SIGNAL_SOFTER = "#EEF6F6";
+var SAGE = "#8FB09B";
+var GOLD = "#F5B942";             // primary CTA gold (Book a Call)
+var GOLD_DEEP = "#E0A42A";
+var GOLD_SOFT = "#FCEAC0";
+var CLAY = "#C25A3D";
 var FOREST = SIGNAL;
 var FOREST_SOFT = SIGNAL_SOFT;
 var BLUE = INK;
 var BLUE_SOFT = SIGNAL_SOFT;
-var LOGO = "/logo-128.png";
+var LOGO = "/logo-transparent.png";
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
 var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
@@ -1780,9 +1783,42 @@ function LogoMark(props) {
   );
 }
 
+// Brand lockup — uses the real Home Front Solutions logo artwork.
+// On dark surfaces we use a dark-theme PNG (cream ink, transparent bg) that blends into navy.
+// On light surfaces we use the full-color PNG directly.
+function BrandLockup(props) {
+  var onDark = !!(props && props.onDark);
+  var small = !!(props && props.small);
+  var size = small ? 56 : 70;
+  var src = onDark ? "/logo-dark-theme.png" : "/logo-transparent.png";
+  return (
+    <span
+      className="inline-flex items-center"
+      style={{ padding: 0, lineHeight: 0, transition: "transform 300ms var(--ease-spring), filter 300ms var(--ease-out-smooth)" }}
+      onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.filter = onDark ? "drop-shadow(0 0 18px rgba(245,185,66,0.25))" : "none"; }}
+      onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.filter = "none"; }}
+    >
+      <img
+        src={src}
+        alt="Home Front Solutions"
+        width={size}
+        height={size}
+        style={{
+          height: size,
+          width: "auto",
+          display: "block",
+          objectFit: "contain",
+          filter: onDark ? "drop-shadow(0 2px 8px rgba(0,0,0,0.4))" : "none"
+        }}
+      />
+    </span>
+  );
+}
+
 function Header(props) {
   var _m = useState(false); var open = _m[0]; var setOpen = _m[1];
   var _s = useState(false); var scrolled = _s[0]; var setScrolled = _s[1];
+  var onDark = !!(props && props.onDark);
   useEffect(function() {
     if (typeof window === "undefined") return;
     function onScroll() { setScrolled(window.scrollY > 8); }
@@ -1796,61 +1832,78 @@ function Header(props) {
     { route: "partners", label: "Partners" },
     { route: "careers", label: "Careers" },
     { route: "insights", label: "Insights" },
+    { route: "contact", label: "Contact" },
   ];
+  var barBg;
+  var borderBottomColor;
+  var linkColor;
+  if (onDark) {
+    // On the home page the header sits on top of the navy hero.
+    // Use a transparent bar that gains a subtle blurred navy surface after scroll.
+    barBg = scrolled ? "rgba(11,37,64,0.82)" : "transparent";
+    borderBottomColor = scrolled ? "rgba(255,255,255,0.06)" : "transparent";
+    linkColor = "#E7ECF2";
+  } else {
+    barBg = scrolled ? "rgba(255,255,255,0.86)" : "#FFFFFF";
+    borderBottomColor = scrolled ? "transparent" : RULE;
+    linkColor = INK;
+  }
   return (
     <header style={{
-      background: scrolled ? "rgba(250,250,247,0.82)" : PAPER,
-      backdropFilter: scrolled ? "saturate(180%) blur(12px)" : "none",
-      WebkitBackdropFilter: scrolled ? "saturate(180%) blur(12px)" : "none",
+      background: barBg,
+      backdropFilter: scrolled ? "saturate(180%) blur(14px)" : "none",
+      WebkitBackdropFilter: scrolled ? "saturate(180%) blur(14px)" : "none",
       position: "sticky",
       top: 0,
       zIndex: 50,
-      transition: "background 240ms ease, box-shadow 240ms ease",
-      boxShadow: scrolled ? "0 1px 0 rgba(14,14,12,0.06), 0 10px 30px rgba(14,14,12,0.04)" : "none"
+      transition: "background 240ms ease, box-shadow 240ms ease, border-color 240ms ease",
+      boxShadow: scrolled && !onDark ? "0 1px 0 rgba(14,14,12,0.06), 0 10px 30px rgba(14,14,12,0.04)" : "none",
+      borderBottom: "1px solid " + borderBottomColor
     }}>
-      <div style={{ borderBottom: scrolled ? "none" : "1px solid " + RULE }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 h-[74px] md:h-[84px] flex items-center justify-between">
-          <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="flex items-center" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} aria-label="Home Front Solutions home">
-            <img src={LOGO} alt="Home Front Solutions" width="56" height="56" style={{ width: "auto", height: 56, objectFit: "contain", display: "block", mixBlendMode: "multiply" }} />
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 h-[80px] md:h-[92px] flex items-center justify-between">
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="flex items-center" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} aria-label="Home Front Solutions home">
+          <BrandLockup onDark={onDark} />
+        </a>
+        <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+          {nav.map(function(item) {
+            return (
+              <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { handleNavClick(e, props.go, item.route); }} className="edi-link relative" style={{ color: linkColor, padding: "6px 0", fontSize: 14, fontWeight: 500, letterSpacing: "-0.005em" }}>
+                {item.label}
+              </a>
+            );
+          })}
+          <a
+            href={BOOKING_URL || "/contact"}
+            onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+            target={BOOKING_URL ? "_blank" : undefined}
+            rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+            className="btn-gold inline-flex items-center gap-2 px-5 rounded-full"
+            style={{ cursor: "pointer", minHeight: 42, fontSize: 13.5, letterSpacing: "-0.005em" }}
+          >
+            Book a Call
+            <span aria-hidden="true">→</span>
           </a>
-          <nav className="hidden md:flex items-center gap-9" aria-label="Primary">
-            {nav.map(function(item) {
-              return (
-                <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { handleNavClick(e, props.go, item.route); }} className="edi-link relative" style={{ color: INK, padding: "6px 0", fontSize: 14, fontWeight: 500, letterSpacing: "-0.005em" }}>
-                  {item.label}
-                </a>
-              );
-            })}
-            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-1.5 px-5 rounded-full transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 40, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", boxShadow: "0 8px 18px rgba(46,109,92,0.32)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = SIGNAL; }}>
-              Book a call
-              <span aria-hidden="true">→</span>
-            </a>
-          </nav>
-          <button onClick={function() { setOpen(!open); }} className="md:hidden p-1" style={{ background: "none", border: "none" }} aria-label={open ? "Close navigation menu" : "Open navigation menu"} aria-expanded={open}>
-            {open
-              ? <svg width="22" height="22" viewBox="0 0 24 24"><path d="M7 7L17 17M17 7L7 17" stroke={INK} strokeWidth="1.5" strokeLinecap="round" /></svg>
-              : <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 8H20M4 14H14" stroke={INK} strokeWidth="1.5" strokeLinecap="round" /></svg>}
-          </button>
-        </div>
+        </nav>
+        <button onClick={function() { setOpen(!open); }} className="md:hidden p-1" style={{ background: "none", border: "none" }} aria-label={open ? "Close navigation menu" : "Open navigation menu"} aria-expanded={open}>
+          {open
+            ? <svg width="22" height="22" viewBox="0 0 24 24"><path d="M7 7L17 17M17 7L7 17" stroke={linkColor} strokeWidth="1.5" strokeLinecap="round" /></svg>
+            : <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 8H20M4 14H14" stroke={linkColor} strokeWidth="1.5" strokeLinecap="round" /></svg>}
+        </button>
       </div>
 
       {open && (
-        <div className="md:hidden" style={{ borderTop: "1px solid " + RULE }}>
+        <div className="md:hidden" style={{ background: onDark ? NAVY_DEEP : "#FFFFFF", borderTop: "1px solid " + (onDark ? "rgba(255,255,255,0.08)" : RULE) }}>
           <div className="px-6 py-6 flex flex-col">
             {nav.map(function(item) {
               return (
-                <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go(item.route); } }} className="text-left text-lg block" style={{ borderBottom: "1px solid " + RULE, color: INK, background: "none", padding: "14px 0", cursor: "pointer", fontWeight: 500 }}>
+                <a key={item.route} href={getPathForRoute(item.route)} onClick={function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go(item.route); } }} className="text-left text-lg block" style={{ borderBottom: "1px solid " + (onDark ? "rgba(255,255,255,0.08)" : RULE), color: linkColor, background: "none", padding: "14px 0", cursor: "pointer", fontWeight: 500 }}>
                   {item.label}
                 </a>
               );
             })}
-            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="mt-6 text-center font-semibold py-3.5 rounded-md block" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer" }}>
-              Book a call
+            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="btn-gold mt-6 text-center py-3.5 rounded-full block">
+              Book a Call →
             </a>
-            <div className="mt-6 flex items-center gap-4 text-sm">
-              <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={{ color: SIGNAL, fontWeight: 600 }}>Instagram</a>
-              <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" style={{ color: SIGNAL, fontWeight: 600 }}>LinkedIn</a>
-            </div>
           </div>
         </div>
       )}
@@ -1859,79 +1912,103 @@ function Header(props) {
 }
 
 function Footer(props) {
-  var linkStyle = { color: MUTED, cursor: "pointer", fontSize: 14, lineHeight: 1.5, transition: "color 200ms ease" };
-  var linkHoverIn = function(e) { e.currentTarget.style.color = INK; };
-  var linkHoverOut = function(e) { e.currentTarget.style.color = MUTED; };
+  var linkStyle = { color: "#CBD4DD", cursor: "pointer", fontSize: 13.5, lineHeight: 1.65, transition: "color 200ms ease", display: "block", padding: "2px 0" };
+  var linkHoverIn = function(e) { e.currentTarget.style.color = "#FFFFFF"; };
+  var linkHoverOut = function(e) { e.currentTarget.style.color = "#CBD4DD"; };
+  var socialItem = {
+    width: 36, height: 36, borderRadius: "50%",
+    background: "rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.14)",
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    color: "#E7ECF2", transition: "background 200ms ease, border-color 200ms ease, color 200ms ease"
+  };
+  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(245,185,66,0.15)"; e.currentTarget.style.borderColor = "#F5B942"; e.currentTarget.style.color = "#F5B942"; };
+  var socialHoverOut = function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; e.currentTarget.style.color = "#E7ECF2"; };
   return (
-    <footer style={{ borderTop: "1px solid " + RULE, background: PAPER, marginTop: 0 }}>
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-16">
-          <div className="md:col-span-5">
-            <div className="mb-6">
-              <img src={LOGO} alt="Home Front Solutions" width="76" height="76" style={{ width: "auto", height: 76, objectFit: "contain", display: "block", mixBlendMode: "multiply" }} />
-            </div>
-            <p className="max-w-sm" style={{ fontSize: 14.5, lineHeight: 1.68, color: MUTED }}>
-              A door-to-door marketing company helping homeowners buy better essential services, from fiber and security to solar, water filtration, and roofing.
+    <footer className="footer-navy">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-10 mb-10">
+          {/* Brand + tagline + social */}
+          <div className="md:col-span-4">
+            <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="inline-block" style={{ padding: 0 }} aria-label="Home Front Solutions home">
+              <BrandLockup onDark={true} />
+            </a>
+            <p className="max-w-sm mt-5" style={{ fontSize: 13.5, lineHeight: 1.6, color: "#9BA7B2" }}>
+              Home services growth, built face to face.
             </p>
-            <div className="flex flex-wrap items-center gap-4 mt-7">
-              {[
-                ["Instagram", INSTAGRAM_URL],
-                ["LinkedIn", LINKEDIN_URL],
-                ["Facebook", FACEBOOK_URL]
-              ].map(function(item) {
-                return (
-                  <a key={item[0]} href={item[1]} target="_blank" rel="noreferrer" className="edi-link" style={{ color: INK, fontSize: 13, fontWeight: 500 }}>
-                    {item[0]}
-                  </a>
-                );
-              })}
+            <div className="flex items-center gap-3 mt-6">
+              <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" style={socialItem} onMouseEnter={socialHoverIn} onMouseLeave={socialHoverOut} aria-label="Facebook">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.2-1.5 1.5-1.5h1.6V4.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.3H7.5V14h2.7v8h3.3z"/></svg>
+              </a>
+              <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={socialItem} onMouseEnter={socialHoverIn} onMouseLeave={socialHoverOut} aria-label="Instagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.9" fill="currentColor"/></svg>
+              </a>
+              <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" style={socialItem} onMouseEnter={socialHoverIn} onMouseLeave={socialHoverOut} aria-label="LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 8.2H3.7V21h2.8V8.2zM5.1 3.5A1.7 1.7 0 1 0 5.1 6.9 1.7 1.7 0 0 0 5.1 3.5zM21 14.1c0-3-1.6-4.4-3.8-4.4-1.7 0-2.5 1-2.9 1.6V8.2h-2.8c0 .8 0 12.8 0 12.8h2.8v-7.1c0-.3 0-.5.1-.7.2-.5.7-1.1 1.6-1.1 1.1 0 1.6.9 1.6 2.1V21H21v-6.9z"/></svg>
+              </a>
+              <a href="https://www.youtube.com/@homefrontsolutions" target="_blank" rel="noreferrer" style={socialItem} onMouseEnter={socialHoverIn} onMouseLeave={socialHoverOut} aria-label="YouTube">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8c.3 1 1 1.5 1.8 1.8 1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5 3-5 3z"/></svg>
+              </a>
             </div>
           </div>
 
+          {/* Quick Links */}
           <div className="md:col-span-2">
-            <p style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Company</p>
-            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Quick Links</p>
+            <ul className="space-y-0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Services</a></li>
               <li><a href="/why-us" onClick={function(e) { handleNavClick(e, props.go, "why-us"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Why Us</a></li>
               <li><a href="/partners" onClick={function(e) { handleNavClick(e, props.go, "partners"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Partners</a></li>
+              <li><a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Careers</a></li>
+              <li><a href="/insights" onClick={function(e) { handleNavClick(e, props.go, "insights"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Insights</a></li>
+              <li><a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Contact</a></li>
             </ul>
           </div>
 
+          {/* For Partners */}
           <div className="md:col-span-2">
-            <p style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Careers</p>
-            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              <li><a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Open positions</a></li>
-              <li><a href="/why-us" onClick={function(e) { handleNavClick(e, props.go, "why-us"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>How we hire</a></li>
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>For Partners</p>
+            <ul className="space-y-0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li><a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Become a Partner</a></li>
+              <li><a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Partner Login</a></li>
+              <li><a href="/insights" onClick={function(e) { handleNavClick(e, props.go, "insights"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Resources</a></li>
             </ul>
           </div>
 
-          <div className="md:col-span-3">
-            <p style={{ ...monoKicker, color: MUTED, marginBottom: 18 }}>Markets</p>
-            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              {MARKET_PAGES.slice(0, 6).map(function(market) {
-                return (
-                  <li key={market.slug}>
-                    <a href={getPathForRoute("market", market.slug)} onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>
-                      {market.region}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-            <p style={{ ...monoKicker, color: MUTED, marginTop: 28, marginBottom: 18 }}>Contact</p>
-            <ul className="space-y-3" style={{ listStyle: "none", margin: 0, padding: 0, color: MUTED }}>
-              <li><a href="mailto:info@homefrontsolutionsllc.com" style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a></li>
-              <li><a href="tel:3364209379" style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>(336) 420-9379</a></li>
+          {/* Let's Connect */}
+          <div className="md:col-span-4">
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Let's Connect</p>
+            <ul className="space-y-2.5" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li className="flex items-start gap-2.5">
+                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></svg>
+                </span>
+                <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4 H9 L11 9 L8 11 C 9 14, 10 15, 13 16 L15 13 L20 15 V19 A2 2 0 0 1 18 21 C 10 21, 3 14, 3 6 A 2 2 0 0 1 5 4 Z"/></svg>
+                </span>
+                <a href="tel:3364209379" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>(336) 420-9379</a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+                </span>
+                <span style={{ color: "#CBD4DD", fontSize: 13.5, lineHeight: 1.55 }}>
+                  High Point, NC<br/>Serving markets nationwide
+                </span>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3" style={{ borderTop: "1px solid " + RULE }}>
-          <div style={{ ...monoKicker, color: MUTED }}>© 2026 Home Front Solutions, LLC</div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ ...monoKicker, color: MUTED }}>
-            <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: MUTED }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Privacy</a>
-            <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: MUTED }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Terms</a>
-            <span>Equal Opportunity Employer</span>
+        <div className="pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2026 Home Front Solutions, LLC. All rights reserved.</div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ fontSize: 12.5 }}>
+            <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Privacy Policy</a>
+            <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Terms of Service</a>
+            <span style={{ color: "#8A96A0" }}>Equal Opportunity Employer</span>
           </div>
         </div>
       </div>
@@ -1939,528 +2016,643 @@ function Footer(props) {
   );
 }
 
+// ── Service-category icons — lean teal line icons ─────────────────────
+function SvcIcon(props) {
+  var kind = props.kind;
+  var common = { width: 30, height: 30, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "fiber") {
+    // Wi-Fi signal — 3 expanding arcs + a signal dot at the base
+    return (
+      <svg {...common}>
+        <path d="M3 10.2 Q 12 1, 21 10.2"  />
+        <path d="M6 13 Q 12 6.2, 18 13"     opacity="0.82" />
+        <path d="M9 15.6 Q 12 11.4, 15 15.6" opacity="0.65" />
+        <circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+  if (kind === "security") {
+    return (
+      <svg {...common}>
+        <path d="M12 3 L20 6 V12 C 20 16.5, 16.5 19.5, 12 21 C 7.5 19.5, 4 16.5, 4 12 V6 Z" />
+        <path d="M9 12 L11 14 L15 10" />
+      </svg>
+    );
+  }
+  if (kind === "solar") {
+    return (
+      <svg {...common}>
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 3 V5" /><path d="M12 19 V21" />
+        <path d="M3 12 H5" /><path d="M19 12 H21" />
+        <path d="M5.5 5.5 L7 7" /><path d="M17 17 L18.5 18.5" />
+        <path d="M5.5 18.5 L7 17" /><path d="M17 7 L18.5 5.5" />
+      </svg>
+    );
+  }
+  if (kind === "water") {
+    return (
+      <svg {...common}>
+        <path d="M12 3.5 C 12 3.5, 5.5 11, 5.5 15.5 C 5.5 19, 8.5 21, 12 21 C 15.5 21, 18.5 19, 18.5 15.5 C 18.5 11, 12 3.5, 12 3.5 Z" />
+      </svg>
+    );
+  }
+  if (kind === "roofing") {
+    return (
+      <svg {...common}>
+        <path d="M3 13 L12 5 L21 13" />
+        <path d="M6 12 L6 20 H 18 L 18 12" />
+        <path d="M10 20 V15 H14 V20" opacity="0.6" />
+      </svg>
+    );
+  }
+  if (kind === "home") {
+    return (
+      <svg {...common}>
+        <rect x="5" y="6" width="14" height="12" rx="1.5" />
+        <path d="M5 10 H19" />
+        <path d="M9 14 H15" opacity="0.6" />
+        <path d="M9 3 V6" /><path d="M15 3 V6" />
+      </svg>
+    );
+  }
+  return null;
+}
+
+// Small stat-bar icons — navy-teal circle badges on the white card
+function StatIcon(props) {
+  var kind = props.kind;
+  var common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "globe") return <svg {...common}><circle cx="12" cy="12" r="9"/><path d="M3 12 H21"/><path d="M12 3 C 15 6.5, 15 17.5, 12 21"/><path d="M12 3 C 9 6.5, 9 17.5, 12 21"/></svg>;
+  if (kind === "cats")   return <svg {...common}><rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/></svg>;
+  if (kind === "brain")  return <svg {...common}><path d="M8 5 C 5 5, 4 8, 5 10 C 3.5 11.5, 4 14, 6 14.5 C 6 17, 8.5 18.5, 11 18 V 6 C 10 5, 9 5, 8 5 Z"/><path d="M16 5 C 19 5, 20 8, 19 10 C 20.5 11.5, 20 14, 18 14.5 C 18 17, 15.5 18.5, 13 18 V 6 C 14 5, 15 5, 16 5 Z"/></svg>;
+  if (kind === "chart")  return <svg {...common}><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>;
+  return null;
+}
+
+// Step-flow icons — door, handshake, bar chart (inside outlined circles)
+function StepIcon(props) {
+  var kind = props.kind;
+  var common = { width: 32, height: 32, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "door") return <svg {...common}><rect x="6" y="3" width="12" height="18" rx="0.5"/><circle cx="14.5" cy="12.5" r="0.8" fill="currentColor" stroke="none"/><path d="M6 21 H18" /></svg>;
+  if (kind === "shake") return <svg {...common}><path d="M3 14 L8 9 L10.5 11 L13 9 L16 12 L21 10" /><path d="M8 15 L10 17 L12 15" /><path d="M11 17 L13 19 L15 17" /></svg>;
+  if (kind === "bar") return <svg {...common}><path d="M4 19 H20"/><rect x="6" y="12" width="3" height="7" rx="0.5"/><rect x="11" y="8" width="3" height="11" rx="0.5"/><rect x="16" y="5" width="3" height="14" rx="0.5"/></svg>;
+  return null;
+}
+
+// Value-card icons (bottom "Built on people" section)
+function ValIcon(props) {
+  var kind = props.kind;
+  var common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "user") return <svg {...common}><circle cx="12" cy="8" r="4"/><path d="M4 20 C 5 16, 8 14.5, 12 14.5 C 16 14.5, 19 16, 20 20"/></svg>;
+  if (kind === "house") return <svg {...common}><path d="M4 11 L12 4 L20 11 V19 A1 1 0 0 1 19 20 H5 A1 1 0 0 1 4 19 Z"/><path d="M10 20 V14 H14 V20"/></svg>;
+  if (kind === "pin") return <svg {...common}><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>;
+  if (kind === "badge") return <svg {...common}><circle cx="12" cy="9" r="5"/><path d="M7 14 L5 22 L12 18 L19 22 L17 14"/></svg>;
+  return null;
+}
+
+// Illustrated "knocking a door" badge — animated, on-brand, sits over hero photo so
+// the "we knock doors" action reads clearly even if a photo fails.
+function KnockOverlay(props) {
+  var size = (props && props.size) || 88;
+  var position = (props && props.position) || "bottom-right";
+  var posStyle = {};
+  if (position === "bottom-right") { posStyle = { right: 12, bottom: 12 }; }
+  if (position === "top-right")    { posStyle = { right: 12, top: 12 }; }
+  if (position === "bottom-left")  { posStyle = { left: 12, bottom: 12 }; }
+  return (
+    <span
+      className="knock-overlay"
+      style={{ position: "absolute", width: size, height: size, ...posStyle, zIndex: 4, pointerEvents: "none" }}
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 100 100" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="knockDoor" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stopColor="#F5B942" />
+            <stop offset="100%" stopColor="#E0A42A" />
+          </linearGradient>
+          <linearGradient id="knockDoorFrame" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stopColor="#163A5A" />
+            <stop offset="100%" stopColor="#0B2540" />
+          </linearGradient>
+        </defs>
+        {/* Pedestal/background ring */}
+        <circle cx="50" cy="50" r="46" fill="rgba(8,26,46,0.82)" stroke="rgba(245,185,66,0.4)" strokeWidth="1.5" />
+        {/* Sound ripple rings — animated to feel like knock-knock */}
+        <circle className="knock-ripple" cx="32" cy="46" r="4"  fill="none" stroke="#F5B942" strokeWidth="1.4" opacity="0.85" />
+        <circle className="knock-ripple knock-ripple--2" cx="32" cy="46" r="8"  fill="none" stroke="#F5B942" strokeWidth="1.2" opacity="0.55" />
+        <circle className="knock-ripple knock-ripple--3" cx="32" cy="46" r="12" fill="none" stroke="#F5B942" strokeWidth="1"   opacity="0.35" />
+        {/* Door — navy frame + gold panel, gold handle */}
+        <rect x="48" y="24" width="34" height="56" rx="3" fill="url(#knockDoorFrame)" />
+        <rect x="52" y="28" width="26" height="48" rx="2" fill="url(#knockDoor)" />
+        <rect x="56" y="34" width="18" height="14" rx="1" fill="rgba(0,0,0,0.12)" />
+        <rect x="56" y="52" width="18" height="14" rx="1" fill="rgba(0,0,0,0.12)" />
+        <circle cx="72" cy="54" r="1.6" fill="#0B2540" />
+        {/* Knocking hand/fist — animated tap */}
+        <g className="knock-fist">
+          <ellipse cx="42" cy="50" rx="8" ry="6" fill="#F5F1E7" stroke="#0B2540" strokeWidth="0.8" />
+          <path d="M36 52 C 34 52, 32 53, 32 55 L 34 56 Z" fill="#F5F1E7" stroke="#0B2540" strokeWidth="0.6" />
+          {/* Wrist/forearm fading off the left edge */}
+          <rect x="30" y="46" width="10" height="10" fill="#1E6D6B" rx="2" />
+          <rect x="26" y="44" width="12" height="14" fill="#155159" rx="3" />
+        </g>
+      </svg>
+    </span>
+  );
+}
+
+// Small inline toolkit icons used inside the HFS Coach dashboard mockup
+function CheckDot() {
+  return (
+    <span style={{ width: 18, height: 18, borderRadius: "50%", background: SIGNAL_SOFT, color: SIGNAL, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>
+    </span>
+  );
+}
+
+// Shared navy hero band for every non-home page so the whole site carries the
+// same premium navy + gold energy as the landing page.
+function PageHero(props) {
+  var eyebrow = props.eyebrow;
+  var title = props.title;
+  var subtitle = props.subtitle;
+  var accentWord = props.accentWord;     // optional — renders in italic gold if provided
+  var actions = props.actions;           // optional ReactNode for CTAs
+  return (
+    <section className="hero-navy page-hero">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-16 md:pb-20">
+        {eyebrow && (
+          <div className="page-hero__eyebrow" aria-label={eyebrow}>{eyebrow}</div>
+        )}
+        <h1 className="page-hero__title" style={{ fontFamily: "Geist, Inter, sans-serif" }}>
+          {title}
+          {accentWord ? (
+            <>
+              {" "}
+              <span className="page-hero__accent" style={{ ...serif }}>{accentWord}</span>
+            </>
+          ) : null}
+        </h1>
+        {subtitle && (
+          <p className="page-hero__subtitle">{subtitle}</p>
+        )}
+        {actions && (
+          <div className="page-hero__actions">{actions}</div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+// Collapsible FAQ row — mockup style with + toggle
+function FaqRow(props) {
+  var _o = useState(!!props.defaultOpen); var open = _o[0]; var setOpen = _o[1];
+  return (
+    <div className="faq-item" data-open={open ? "true" : "false"}>
+      <button type="button" className="faq-item__trigger" onClick={function() { setOpen(!open); }} aria-expanded={open}>
+        <span>{props.q}</span>
+        <span className="faq-item__toggle" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5 V19"/><path d="M5 12 H19"/></svg>
+        </span>
+      </button>
+      <div className="faq-item__body">{props.a}</div>
+    </div>
+  );
+}
+
+// ── Homepage ───────────────────────────────────────────────────────────
 function HomePage(props) {
-  var learningTracks = [
-    {
-      slug: "why-sales-and-marketing-are-the-backbone-of-business",
-      kicker: "Business Basics",
-      blurb: "A cleaner explanation of why sales and marketing sit underneath growth in almost every serious company."
-    },
-    {
-      slug: "raleigh-sales-jobs-for-nc-state-unc-duke-and-triangle-students",
-      kicker: "Triangle Students",
-      blurb: "A Raleigh and North Carolina university angle for students comparing internships, sales jobs, and early-career paths."
-    },
-    {
-      slug: "fiber-internet-gold-rush",
-      kicker: "Industry Trend",
-      blurb: "A sharper read on BEAD, data centers, AI infrastructure, and why fiber keeps pulling attention."
-    }
+  var services = [
+    { kind: "fiber",    label: "Fiber Internet" },
+    { kind: "security", label: "Home Security" },
+    { kind: "solar",    label: "Solar" },
+    { kind: "water",    label: "Water Filtration" },
+    { kind: "roofing",  label: "Roofing" },
+    { kind: "home",     label: "Home Services" }
   ];
+  var stats = [
+    { icon: "globe", label: "Markets Launched",     value: "28+" },
+    { icon: "cats",  label: "Service Categories",   value: "6+" },
+    { icon: "brain", label: "AI-Powered Training",  value: "100%" },
+    { icon: "chart", label: "Performance Reporting", value: "Real-Time" }
+  ];
+  var steps = [
+    { num: "1", icon: "door",  title: "We knock the doors.", body: "Our reps get in front of homeowners every day." },
+    { num: "2", icon: "shake", title: "We close the customer.", body: "Trained to present, qualify, and close with confidence." },
+    { num: "3", icon: "bar",   title: "You see every metric.",  body: "Real-time reporting so you can scale what works." }
+  ];
+  var trainingPerks = [
+    "Product Knowledge", "Compliance",
+    "Pitch Mastery",     "Field Simulation",
+    "Objection Handling", "Tools / CRM"
+  ];
+  var cities = [
+    { region: "Greensboro",     slug: "greensboro-nc",     img: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=700&q=80" },
+    { region: "High Point",     slug: "high-point-nc",     img: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=700&q=80" },
+    { region: "Winston-Salem",  slug: "winston-salem-nc",  img: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=700&q=80" },
+    { region: "Charlotte",      slug: "charlotte-nc",      img: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=700&q=80" },
+    { region: "Raleigh",        slug: "raleigh-nc",        img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=700&q=80" },
+    { region: "Piedmont Triad", slug: "piedmont-triad-nc", img: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=80" }
+  ];
+  var values = [
+    { icon: "user",  title: "Honest\nin-person service",   body: "We treat every homeowner with respect and integrity." },
+    { icon: "house", title: "Strong\nhome-service offers", body: "Top brands. High value. Solutions that help." },
+    { icon: "pin",   title: "Locally rooted,\nnationally trusted", body: "We know the neighborhoods. We deliver national results." },
+    { icon: "badge", title: "Trained,\ncertified reps", body: "We invest in our team so they can build a real career." }
+  ];
+  var faqs = [
+    { q: "Do I need prior sales experience?", a: "No. Most of our top reps started with zero sales experience. Our paid training covers product knowledge, pitch delivery, objection handling, compliance, and live field simulation before your first real door." },
+    { q: "How does pay and commission work?",  a: "All field roles are commission-based with weekly payouts. First-year reps typically earn $100K–$185K depending on market, product line, and production. Commission is uncapped." },
+    { q: "What products and services will I sell?", a: "You will represent one or more of: fiber internet, home security, solar, water filtration, roofing, and other home services. Product mix depends on the market you are hired into." },
+    { q: "What does a typical day look like?", a: "Morning training and route planning, 4 to 6 hours of door-to-door field activity in a defined neighborhood territory, and CRM wrap-up at end of shift. Most reps are in the field Monday through Saturday on a flexible schedule." }
+  ];
+
   return (
     <>
-      {/* HERO */}
-      <section id="home-hero" className="grain relative max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-20 pb-14 md:pb-24">
-        <div className="aurora aurora--shift" aria-hidden="true" />
-        <Spotlight target="#home-hero" />
-        {/* Parallax floating shapes — drift with scroll */}
-        <ParallaxLayer factor={-0.3} className="hidden md:block" style={{ position: "absolute", top: "14%", right: "6%", zIndex: 0 }}>
-          <div className="float-shape" style={{ width: 72, height: 72, borderRadius: "50%", border: "1px solid " + SIGNAL_SOFT, animation: "floatA 9s infinite" }} />
-        </ParallaxLayer>
-        <ParallaxLayer factor={-0.18} className="hidden md:block" style={{ position: "absolute", top: "62%", right: "22%", zIndex: 0 }}>
-          <div className="float-shape" style={{ width: 28, height: 28, borderRadius: "50%", background: GOLD_SOFT, animation: "floatB 11s infinite" }} />
-        </ParallaxLayer>
-        <ParallaxLayer factor={-0.22} className="hidden md:block" style={{ position: "absolute", top: "30%", right: "38%", zIndex: 0 }}>
-          <div className="float-shape" style={{ width: 10, height: 10, borderRadius: "50%", background: SIGNAL, opacity: 0.5, animation: "floatC 7s infinite" }} />
-        </ParallaxLayer>
-
-        <div>
-          <h1 className="display" style={{ fontSize: "clamp(3rem, 8.4vw, 7rem)", lineHeight: 0.94, letterSpacing: "-0.04em", color: INK, maxWidth: "14ch" }}>
-            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "0ms" }}>Doors</span>{" "}
-            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms", fontStyle: "italic", fontWeight: 500, color: INK }}>opened.</span>{" "}
-            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "220ms" }}>Deals</span>{" "}
-            <span className="word-reveal word-reveal--inline" style={{ animationDelay: "310ms", fontStyle: "italic", fontWeight: 500, color: INK }}>closed.</span>
-          </h1>
-          <p className="mt-10 md:mt-12 max-w-2xl word-reveal" style={{ animationDelay: "440ms", fontSize: "clamp(1.1rem, 1.4vw, 1.28rem)", color: MUTED, lineHeight: 1.6, fontWeight: 400 }}>
-            Nationwide door-to-door teams for fiber, security, solar, and home services. Professional reps, paid certification, and six-figure first-year earnings on straight commission.
-          </p>
-          <div className="mt-12 md:mt-14 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "560ms" }}>
-            <Magnetic strength={0.2}>
-              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="btn-primary glow-pulse inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 56, fontSize: 15, letterSpacing: "-0.005em", boxShadow: "0 10px 24px rgba(46,109,92,0.28), inset 0 1px 0 rgba(255,255,255,0.16)" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }} aria-label="See open field sales roles">
-                See open roles
-                <span aria-hidden="true" style={{ fontSize: 16, lineHeight: 1, marginLeft: 2 }}>→</span>
-              </a>
-            </Magnetic>
-            <Magnetic strength={0.2}>
-              <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-ghost inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium" style={{ background: "rgba(255,255,255,0.55)", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 56, fontSize: 15, letterSpacing: "-0.005em", backdropFilter: "blur(8px)" }} onMouseEnter={function(e) { e.currentTarget.style.background = "#FFFFFF"; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.55)"; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }} aria-label="For brands that need a field sales partner">
-                For brands
-              </a>
-            </Magnetic>
-          </div>
-          {/* Live D2D activity ticker */}
-          <div className="mt-7 word-reveal" style={{ animationDelay: "680ms" }}>
-            <ActivityTicker />
-          </div>
-          {/* Micro trust line under CTAs */}
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 word-reveal" style={{ animationDelay: "780ms", ...monoKicker, color: MUTED }}>
-            <span>Hiring nationwide</span>
-            <span style={{ color: GOLD_DEEP }}>·</span>
-            <span>{JOBS.length} open roles</span>
-            <span style={{ color: GOLD_DEEP }}>·</span>
-            <span>Paid training</span>
-            <span style={{ color: GOLD_DEEP }}>·</span>
-            <span>Apply in 5 min</span>
-          </div>
-        </div>
-
-        {/* Stats strip — separated, breathing room */}
-        <div className="reveal mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-x-10 gap-y-10" data-delay="2" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
-          {[
-            { suffix: "+", prefix: "", to: 25, label: "U.S. markets live" },
-            { suffix: "K+", prefix: "$", to: 100, label: "First-year earnings" },
-            { suffix: "+", prefix: "", to: 12, label: "Brand partnerships" },
-            { suffix: "h", prefix: "", to: 48, label: "Recruiter response" },
-          ].map(function(item) {
-            return (
-              <div key={item.label}>
-                <div className="display" style={{ fontSize: "clamp(2.2rem, 3.4vw, 2.8rem)", lineHeight: 1, color: INK, fontWeight: 500, letterSpacing: "-0.03em" }}>
-                  <CountUp to={item.to} prefix={item.prefix} suffix={item.suffix} duration={1600} />
-                </div>
-                <div className="mt-3" style={{ ...monoKicker, color: MUTED }}>{item.label}</div>
-              </div>
-            );
-          })}
-        </div>
-
-      </section>
-
-      {/* Open Positions preview — reps-first funnel */}
-      <section className="relative" style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="flex flex-wrap items-end justify-between gap-6 mb-10 reveal">
-            <div>
-              <div className="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full" style={{ background: SIGNAL_SOFT, border: "1px solid rgba(46,109,92,0.2)" }}>
-                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: SIGNAL }} />
-                <span style={{ ...monoKicker, color: SIGNAL_DEEP }}>Hiring now &middot; {JOBS.length} open roles</span>
-              </div>
-              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
-                Pick your role. Apply in five minutes.
-              </h2>
-              <p className="mt-4 max-w-2xl" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.72 }}>
-                Weekly commission, paid certification, and a clear path to leadership. Below are the roles we're actively hiring for right now.
-              </p>
-            </div>
-            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="edi-link inline-flex items-center text-sm font-medium" style={{ color: SIGNAL_DEEP }}>
-              See all {JOBS.length} roles
-              <span aria-hidden="true" style={{ marginLeft: 6 }}>→</span>
-            </a>
-          </div>
-
-          <ol className="reveal m-0 p-0" data-delay="1" style={{ listStyle: "none", borderTop: "1px solid " + RULE }}>
-            {JOBS.slice(0, 4).map(function(job, i) {
-              return (
-                <li key={job.slug} className="job-row-home" style={{ borderBottom: "1px solid " + RULE, transition: "background-color 260ms ease, padding-left 260ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.backgroundColor = SIGNAL_SOFTER; e.currentTarget.style.paddingLeft = "12px"; }} onMouseLeave={function(e) { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.paddingLeft = "0"; }}>
-                  <div className="grid items-center gap-6 md:gap-10" style={{ gridTemplateColumns: "44px minmax(0,1fr) auto", padding: "24px 8px" }}>
-                    <span style={{ ...monoKicker, color: MUTED }}>{String(i + 1).padStart(2, "0")}</span>
-                    <div className="min-w-0">
-                      <h3 className="mb-1" style={{ ...serif, fontSize: "clamp(1.25rem, 2vw, 1.55rem)", lineHeight: 1.14, color: INK, letterSpacing: "-0.02em", fontWeight: 440 }}>
-                        <a href={getPathForRoute("job", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }} style={{ color: INK }}>{job.title}</a>
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1" style={{ fontSize: 13, color: MUTED }}>
-                        <span>{job.location}</span>
-                        <span>·</span>
-                        <span>{job.type}</span>
-                        <span>·</span>
-                        <span style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <a href={getPathForRoute("job", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }} className="hidden sm:inline-flex items-center justify-center px-5 rounded-full text-sm font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 42, whiteSpace: "nowrap" }}>
-                        Details
-                      </a>
-                      <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center justify-center gap-1.5 px-5 rounded-full text-sm font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 42, whiteSpace: "nowrap", boxShadow: "0 6px 16px rgba(46,109,92,0.3)" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}>
-                        Apply
-                        <span aria-hidden="true">→</span>
-                      </a>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
-
-          {JOBS.length > 4 && (
-            <div className="mt-8 text-center">
-              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-full text-sm font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 46 }} onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
-                See all {JOBS.length} roles
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ISP & Home-Service Partners */}
-      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-20 md:pb-28 reveal">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-12">
-          <div className="lg:col-span-6">
-            <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 16 }}>Brands we represent</div>
-            <h2 className="display reveal-blur" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.028em", color: INK }}>
-              The names homeowners already trust.
-            </h2>
-          </div>
-          <div className="lg:col-span-6">
-            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
-              Fiber internet, home security, solar, water filtration, roofing, and home services. We only run campaigns with strong products, real coverage, and pricing that holds up at the door.
-            </p>
-          </div>
-        </div>
-        <div className="marquee" style={{ borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE, padding: "40px 0" }}>
-          <div className="marquee__track">
-            {[0, 1].map(function(dupe) {
-              return (
-                <div key={dupe} aria-hidden={dupe === 1} className="flex items-center shrink-0" style={{ gap: 64 }}>
-                  {[
-                    "AT&T Fiber", "T-Mobile", "Brightspeed", "Kinetic", "Ripple Fiber", "Frontier",
-                    "Google Fiber", "Lumos", "MetroNet", "GoNetspeed", "Starlink", "Vivint"
-                  ].map(function(name) {
-                    return (
-                      <span key={name + "-" + dupe} style={{ ...serif, fontSize: "clamp(1.25rem, 1.8vw, 1.65rem)", color: INK, fontWeight: 440, letterSpacing: "-0.02em", lineHeight: 1.2, whiteSpace: "nowrap" }}>
-                        {name}
-                      </span>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* States marquee — nationwide coverage ticker */}
-      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-4 pb-20 md:pb-24 reveal">
-        <div className="flex flex-wrap items-baseline justify-between gap-4 mb-6" style={{ borderTop: "1px solid " + RULE, paddingTop: 22 }}>
-          <span style={{ ...monoKicker, color: SIGNAL }}>Coverage</span>
-          <span style={{ ...monoKicker, color: MUTED }}>Active + launching states</span>
-        </div>
-        <div className="marquee" style={{ paddingTop: 12, paddingBottom: 12 }}>
-          <div className="marquee__track">
-            {[0, 1].map(function(dupe) {
-              return (
-                <div key={dupe} aria-hidden={dupe === 1} className="flex items-center shrink-0" style={{ gap: 56 }}>
-                  {[
-                    "North Carolina", "South Carolina", "Georgia", "Florida", "Tennessee",
-                    "Virginia", "Texas", "Arizona", "Colorado", "Ohio",
-                    "Indiana", "Michigan", "Pennsylvania", "New York", "Nevada",
-                    "Utah", "Missouri", "Kentucky", "Alabama", "Oklahoma"
-                  ].map(function(state) {
-                    return (
-                      <span key={state + "-" + dupe} className="inline-flex items-center gap-2" style={{ whiteSpace: "nowrap" }}>
-                        <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: SIGNAL, opacity: 0.55 }} />
-                        <span style={{ ...serif, fontSize: "clamp(1.125rem, 1.5vw, 1.35rem)", color: INK, fontWeight: 440, letterSpacing: "-0.015em" }}>{state}</span>
-                      </span>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Local Markets — large editorial link list */}
-      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24 md:pb-32 reveal">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-12 md:mb-16">
+      {/* ── HERO (navy) ─────────────────────────────────────────── */}
+      <section id="home-hero" className="hero-navy">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-24 md:pb-32 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-7">
-            <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 16 }}>Featured markets</div>
-            <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
-              Running teams coast to coast.
-            </h2>
-          </div>
-          <div className="lg:col-span-6">
-            <p style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
-              Headquartered in High Point, North Carolina. Running teams across the Southeast, Midwest, Mountain West, and Sunbelt. The North Carolina markets below are where we started and where our recruiting engine is sharpest. Book a call for a custom plan in any U.S. market.
+            <div className="page-hero__eyebrow word-reveal" style={{ animationDelay: "0ms" }}>D2D Field Execution · Nationwide</div>
+            <h1 className="display mt-3" style={{ fontSize: "clamp(2.6rem, 6.2vw, 4.75rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              <span className="word-reveal word-reveal--inline">Home services</span>{" "}
+              <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms" }}>growth, built</span>{" "}
+              <span className="word-reveal word-reveal--inline" style={{ animationDelay: "200ms", color: GOLD, fontStyle: "italic", fontWeight: 500, ...serif }}>face to face.</span>
+            </h1>
+            <p className="mt-7 max-w-xl word-reveal" style={{ animationDelay: "380ms", fontSize: 16, lineHeight: 1.7, color: "rgba(245,247,250,0.78)" }}>
+              Nationwide door-to-door teams built for fiber internet — plus security, solar, and home services. Six-figure first-year earnings, paid certification, trained reps at your homeowners' doors.
             </p>
-          </div>
-        </div>
 
-        <ul className="m-0 p-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-0" style={{ listStyle: "none", borderTop: "1px solid " + RULE }}>
-          {MARKET_PAGES.map(function(market) {
-            return (
-              <li key={market.slug} style={{ borderBottom: "1px solid " + RULE }}>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "500ms" }}>
+              <Magnetic strength={0.2}>
                 <a
-                  href={getPathForRoute("market", market.slug)}
-                  onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
-                  className="market-city group flex items-baseline justify-between"
-                  style={{
-                    padding: "22px 4px",
-                    color: INK,
-                    transition: "padding 320ms cubic-bezier(0.16, 1, 0.3, 1), color 220ms ease"
-                  }}
-                  onMouseEnter={function(e) { e.currentTarget.style.paddingLeft = "14px"; e.currentTarget.style.color = SIGNAL_DEEP; e.currentTarget.querySelector('.arrow').style.opacity = "1"; e.currentTarget.querySelector('.arrow').style.transform = "translateX(0)"; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.paddingLeft = "4px"; e.currentTarget.style.color = INK; e.currentTarget.querySelector('.arrow').style.opacity = "0"; e.currentTarget.querySelector('.arrow').style.transform = "translateX(-6px)"; }}
+                  href={BOOKING_URL || "/contact"}
+                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                  target={BOOKING_URL ? "_blank" : undefined}
+                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                  className="btn-gold inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                  style={{ cursor: "pointer", minHeight: 54, fontSize: 15, letterSpacing: "-0.005em" }}
+                  aria-label="Launch a fiber sales campaign in your market"
                 >
-                  <span style={{ ...serif, fontSize: "clamp(1.5rem, 2.4vw, 1.85rem)", letterSpacing: "-0.022em", fontWeight: 440, lineHeight: 1.15 }}>{market.region}</span>
-                  <span className="arrow" aria-hidden="true" style={{ color: SIGNAL, fontSize: 18, opacity: 0, transform: "translateX(-6px)", transition: "opacity 260ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1)" }}>→</span>
+                  <span aria-hidden="true" style={{ marginRight: 4, display: "inline-flex", alignItems: "center" }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 10.2 Q 12 1, 21 10.2" />
+                      <path d="M6 13 Q 12 6.2, 18 13" opacity="0.82" />
+                      <path d="M9 15.6 Q 12 11.4, 15 15.6" opacity="0.65" />
+                      <circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none" />
+                    </svg>
+                  </span>
+                  Launch Fiber in Your Market
+                  <span aria-hidden="true">→</span>
                 </a>
-              </li>
-            );
-          })}
-        </ul>
-
-        <div className="mt-10 flex items-center justify-between flex-wrap gap-4">
-          <p style={{ ...monoKicker, color: MUTED }}>{MARKET_PAGES.length} active markets</p>
-          <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="edi-link inline-flex items-center text-sm font-medium" style={{ color: SIGNAL_DEEP }}>
-            See open roles by market
-            <span aria-hidden="true" style={{ marginLeft: 6 }}>→</span>
-          </a>
-        </div>
-      </section>
-
-      {/* How we work — 3 steps */}
-      <section className="relative" style={{ background: SIGNAL_SOFTER, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16 reveal">
-            <div className="lg:col-span-7">
-              <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 18 }}>How we work</div>
-              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
-                Three steps. One business day to start.
-              </h2>
+              </Magnetic>
+              <Magnetic strength={0.2}>
+                <a
+                  href="/careers"
+                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                  className="btn-ghost inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                  style={{ background: "transparent", color: "#F5F7FA", border: "1px solid rgba(245,247,250,0.32)", cursor: "pointer", minHeight: 54, fontSize: 15, letterSpacing: "-0.005em" }}
+                  onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,247,250,0.08)"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.6)"; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.32)"; }}
+                  aria-label="Join the fiber field sales team"
+                >
+                  Join the Fiber Team
+                </a>
+              </Magnetic>
             </div>
-            <div className="lg:col-span-5">
-              <p style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.72 }}>
-                No drawn-out sales cycle. A call, a plan, and boots on the street. Here's how every new partnership actually unfolds.
-              </p>
+
+            <div className="trust-row mt-8 word-reveal" style={{ animationDelay: "640ms" }}>
+              {["Proven Field Execution", "AI-Powered Training", "Real-Time Reporting"].map(function(item) {
+                return (
+                  <span key={item} className="trust-row__item">
+                    <span className="trust-check" aria-hidden="true">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+                    </span>
+                    {item}
+                  </span>
+                );
+              })}
             </div>
           </div>
 
-          <ol className="m-0 p-0 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 reveal" data-delay="1" style={{ listStyle: "none" }}>
-            {[
-              { step: "01", title: "Discovery call", time: "30 minutes", body: "We learn your markets, current field performance, and what you'd need us to run. Straight conversation, no deck." },
-              { step: "02", title: "Deploy the team", time: "2 to 3 weeks", body: "We recruit, certify, badge, and route reps locally. You get a launch plan, territory maps, and a single point of contact." },
-              { step: "03", title: "Drive results", time: "Week one onward", body: "Reps start knocking. You see daily dashboards for activity, close rate, and activated installs. Scale when the unit economics hold." },
-            ].map(function(s) {
-              return (
-                <li key={s.step} style={{ listStyle: "none" }}>
-                  <TiltCard strength={5} className="relative p-8 md:p-9 rounded-2xl block" style={{
-                    background: SURF,
-                    border: "1px solid " + RULE
-                  }}
-                  onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; }}>
-                    <div className="flex items-baseline justify-between mb-10">
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{s.step}</span>
-                      <span style={{ ...monoKicker, color: MUTED }}>{s.time}</span>
-                    </div>
-                    <h3 style={{ ...serif, fontSize: 26, lineHeight: 1.12, letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>{s.title}</h3>
-                    <p className="mt-5 pt-5" style={{ fontSize: 15, color: MUTED, lineHeight: 1.7, borderTop: "1px solid " + RULE }}>{s.body}</p>
-                  </TiltCard>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      </section>
+          {/* Hero portrait — single rep knocking a door (lead action shot) */}
+          <div className="lg:col-span-5 word-reveal" style={{ animationDelay: "260ms" }}>
+            <div className="hero-portrait">
+              {/* Soft residential silhouette behind the portrait */}
+              <svg
+                className="hero-collage__house"
+                viewBox="0 0 400 400"
+                preserveAspectRatio="xMidYMid meet"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id="houseLine" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"  stopColor="rgba(245,185,66,0.35)" />
+                    <stop offset="100%" stopColor="rgba(245,185,66,0)" />
+                  </linearGradient>
+                </defs>
+                <path d="M60 230 L200 100 L340 230 L340 360 L60 360 Z" fill="none" stroke="url(#houseLine)" strokeWidth="1.4" />
+                <rect x="180" y="250" width="40" height="110" fill="none" stroke="url(#houseLine)" strokeWidth="1.4" />
+                <circle cx="212" cy="305" r="2" fill="rgba(245,185,66,0.7)" />
+                <rect x="95"  y="260" width="55" height="55" fill="none" stroke="url(#houseLine)" strokeWidth="1.2" />
+                <rect x="250" y="260" width="55" height="55" fill="none" stroke="url(#houseLine)" strokeWidth="1.2" />
+                <path d="M200 400 C 200 380, 200 370, 200 360" fill="none" stroke="rgba(245,185,66,0.3)" strokeWidth="6" strokeLinecap="round" />
+              </svg>
 
-      {/* Founder — editorial profile */}
-      <section className="relative overflow-hidden" style={{ background: PAPER_DEEP, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div aria-hidden="true" style={{ position: "absolute", top: -160, right: -120, width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle, rgba(46,109,92,0.11), transparent 65%)" }} />
-        <div aria-hidden="true" style={{ position: "absolute", bottom: -180, left: -100, width: 480, height: 480, borderRadius: "50%", background: "radial-gradient(circle, rgba(217,166,60,0.09), transparent 65%)" }} />
-        <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-36">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-            <div className="lg:col-span-5 reveal">
-              <figure className="m-0">
-                {/* Gradient frame — green → sage → gold, mirroring the logo palette */}
-                <div style={{
-                  position: "relative",
-                  padding: 3,
-                  borderRadius: 24,
-                  background: "linear-gradient(145deg, " + SIGNAL + " 0%, " + SAGE + " 52%, " + GOLD + " 100%)",
-                  boxShadow: "0 30px 80px rgba(14,14,12,0.12), 0 2px 0 rgba(14,14,12,0.03)",
-                  transition: "transform 560ms var(--ease-spring), box-shadow 560ms var(--ease-spring)"
-                }}
-                onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 40px 100px rgba(14,14,12,0.16), 0 2px 0 rgba(14,14,12,0.03)"; }}
-                onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 30px 80px rgba(14,14,12,0.12), 0 2px 0 rgba(14,14,12,0.03)"; }}>
-                  <div style={{
-                    aspectRatio: "4 / 5",
-                    borderRadius: 21,
-                    overflow: "hidden",
-                    background: SURF,
-                    position: "relative"
-                  }}>
-                    <img
-                      src="/founder.jpg"
-                      alt="Muizz Muhammad, founder of Home Front Solutions"
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
-                    />
-                  </div>
-                </div>
-                {/* Clean editorial caption below */}
-                <figcaption className="mt-5 flex items-center justify-between gap-4" style={{ borderTop: "1px solid " + RULE, paddingTop: 14 }}>
-                  <span style={{ ...monoKicker, color: SIGNAL }}>Founder &middot; Est. 2023</span>
-                  <span style={{ ...monoKicker, color: MUTED }}>High Point, NC</span>
-                </figcaption>
+              <div className="hero-portrait__blob" aria-hidden="true" />
+              <div className="hero-portrait__dot" aria-hidden="true" />
+
+              <figure className="hero-portrait__frame m-0">
+                <img
+                  src="/rep-knock-1.jpg"
+                  alt="Home Front Solutions rep in navy polo knocking on a homeowner's front door"
+                  loading="eager"
+                  decoding="async"
+                  onError={function(e) {
+                    /* No founder fallback — go straight to the illustrated rep-at-door placeholder */
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.parentElement.classList.add("hero-portrait__frame--fallback");
+                  }}
+                />
+                {/* Illustrated knock overlay sits on the photo */}
+                <KnockOverlay size={104} position="bottom-right" />
               </figure>
             </div>
-            <div className="lg:col-span-7 reveal" data-delay="1">
-              <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 18 }}>The founder</div>
-              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.2rem, 4.6vw, 3.4rem)", lineHeight: 1, letterSpacing: "-0.034em", color: INK }}>
-                Built by someone who still walks the streets.
-              </h2>
-              <p className="mt-8 max-w-2xl" style={{ fontSize: 17, color: INK, lineHeight: 1.68 }}>
-                <span style={{ ...serif, fontSize: 19, color: INK }}>I'm Muizz Muhammad.</span> I started Home Front Solutions in North Carolina after years in the field. Not behind a strategy deck. Knocking doors, closing customers, and building the teams that do the same.
-              </p>
-              <p className="mt-5 max-w-2xl" style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
-                Our culture is simple. If you produce, you move. No politics, no favorites, no layer between the reps and the people running the company. Every manager was promoted out of the field, which keeps the standard honest. I still ride along. I still pick up at 8pm when a rep calls.
-              </p>
-              <p className="mt-5 max-w-2xl" style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
-                Home Front runs field teams nationwide. We ship the same disciplined playbook into every city we launch — headquartered in High Point, NC, working across the Southeast, Midwest, Mountain West, and Sunbelt. If you're a brand that needs door-to-door done right, or a driven rep looking for a place that invests in its people, you're in the right place.
-              </p>
+          </div>
+        </div>
+      </section>
 
-              <div className="mt-10 pt-8 flex flex-wrap items-center gap-x-8 gap-y-4" style={{ borderTop: "1px solid " + RULE }}>
-                <div>
-                  <div style={{ ...serif, fontSize: 42, fontStyle: "italic", color: SIGNAL_DEEP, lineHeight: 1, letterSpacing: "-0.02em", fontWeight: 420 }}>Muizz</div>
-                  <div className="mt-1" style={{ ...monoKicker, color: MUTED }}>Founder, Home Front Solutions</div>
+      {/* ── STAT BAR (white card overlaps the hero/white divide) ──── */}
+      <section className="relative" style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12" style={{ marginTop: "-48px" }}>
+          <div className="stat-bar reveal">
+            {stats.map(function(s) {
+              return (
+                <div key={s.label} className="stat-bar__cell">
+                  <span className="stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
+                  <div>
+                    <div className="stat-bar__label">{s.label}</div>
+                    <div className="stat-bar__value">{s.value}</div>
+                  </div>
                 </div>
-                <a href="https://www.linkedin.com/in/muizzmuhammad/" target="_blank" rel="noopener noreferrer author me" className="inline-flex items-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: INK, color: "#F5F1E7", minHeight: 44, fontSize: 14, border: "none", textDecoration: "none" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = INK; }}>
-                  Connect on LinkedIn
-                  <span aria-hidden="true" style={{ fontSize: 11 }}>↗</span>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SERVICE CATEGORIES ─────────────────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-28 pb-16 md:pb-20">
+          <div className="reveal">
+            <div className="eyebrow-teal mb-3">Our Service Categories</div>
+            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              Home solutions people trust.
+            </h2>
+          </div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 reveal" data-delay="1">
+            {services.map(function(s) {
+              return (
+                <a
+                  key={s.kind}
+                  href="/what-we-do"
+                  onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}
+                  className="svc-card"
+                  aria-label={s.label + " — explore service"}
+                >
+                  <span className="svc-card__icon"><SvcIcon kind={s.kind} /></span>
+                  <span className="svc-card__label">{s.label}</span>
                 </a>
-                <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="edi-link inline-flex items-center text-sm font-medium" style={{ color: SIGNAL_DEEP, fontWeight: 500 }}>
-                  Send a direct note
-                  <span aria-hidden="true" style={{ marginLeft: 4 }}>→</span>
-                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS (light gray band) ────────────────────── */}
+      <section style={{ background: PAPER_DEEP }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          <div className="lg:col-span-4 reveal">
+            <div className="eyebrow-teal mb-3">How It Works</div>
+            <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.1, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              Simple. Disciplined. Scalable.
+            </h2>
+          </div>
+          <div className="lg:col-span-8 reveal" data-delay="1">
+            <div className="step-flow">
+              {(function() {
+                var out = [];
+                steps.forEach(function(step, i) {
+                  out.push(
+                    <div key={"step-" + step.num} className="step-item">
+                      <span className="step-item__num" aria-hidden="true">{step.num}</span>
+                      <span className="step-item__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
+                      <div style={{ minWidth: 0 }}>
+                        <h3 style={{ ...serif, fontSize: 18, color: INK, letterSpacing: "-0.015em", lineHeight: 1.2, fontWeight: 500 }}>{step.title}</h3>
+                        <p className="mt-1.5" style={{ fontSize: 13, color: MUTED, lineHeight: 1.55 }}>{step.body}</p>
+                      </div>
+                    </div>
+                  );
+                  if (i < steps.length - 1) {
+                    out.push(
+                      <span key={"arrow-" + i} className="step-flow__arrow" aria-hidden="true">
+                        <svg width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><path d="M2 10 H26"/><path d="M20 4 L26 10 L20 16"/></svg>
+                      </span>
+                    );
+                  }
+                });
+                return out;
+              })()}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRAINING (navy bg, left copy + right HFS Coach mockup) ─ */}
+      <section style={{ background: NAVY, color: "#F5F7FA" }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="lg:col-span-5 reveal">
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#2FA39E", fontWeight: 600, marginBottom: 14 }}>AI-Powered Coaching</div>
+            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.05, letterSpacing: "-0.028em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              Training that creates closers.
+            </h2>
+            <p className="mt-5 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.7 }}>
+              Our AI-powered platform coaches reps in real time, so they perform better in the field — faster.
+            </p>
+            <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3.5">
+              {trainingPerks.map(function(t) {
+                return (
+                  <div key={t} className="flex items-center gap-2.5" style={{ color: "rgba(245,247,250,0.88)", fontSize: 14 }}>
+                    <CheckDot />
+                    <span>{t}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-9">
+              <a
+                href="/why-us"
+                onClick={function(e) { handleNavClick(e, props.go, "why-us"); }}
+                className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ background: SIGNAL, color: "#FFFFFF", minHeight: 48, fontSize: 14, border: "none", boxShadow: "0 10px 22px rgba(30,109,107,0.4)" }}
+                onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
+                onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
+              >
+                Learn More About Our Training
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+
+          {/* HFS Coach dashboard mockup */}
+          <div className="lg:col-span-7 reveal" data-delay="1">
+            <div className="coach-mock">
+              <aside className="coach-mock__side" aria-hidden="true">
+                <div className="coach-mock__brand">HFS COACH</div>
+                <ul className="coach-mock__nav">
+                  <li className="is-active">Dashboard</li>
+                  <li>Reps</li>
+                  <li>Coaching</li>
+                  <li>Roleplays</li>
+                  <li>Reports</li>
+                  <li>Tools</li>
+                  <li>Leaderboard</li>
+                  <li>Settings</li>
+                </ul>
+              </aside>
+              <div className="coach-mock__main">
+                <div className="coach-mock__top">
+                  <span className="coach-mock__hello">Welcome back, John!</span>
+                  <span className="coach-mock__week">This Week ▾</span>
+                </div>
+                <div className="coach-mock__stats">
+                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Calls Today</div><div className="coach-mock__stat-value">18</div></div>
+                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Conversations</div><div className="coach-mock__stat-value">12</div></div>
+                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Close Rate</div><div className="coach-mock__stat-value">67%</div></div>
+                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Total Sales</div><div className="coach-mock__stat-value">$14,250</div></div>
+                </div>
+                <div className="coach-mock__grid2">
+                  <div className="coach-mock__card">
+                    <div className="coach-mock__card-title">Coaching Score</div>
+                    <div className="coach-mock__score">
+                      <span className="coach-mock__circle" data-value="92" style={{ ["--p"]: "92%" }} />
+                      <div>
+                        <div className="coach-mock__note">Great</div>
+                        <div className="coach-mock__sub">Great work!</div>
+                      </div>
+                    </div>
+                    <div className="coach-mock__spark" />
+                  </div>
+                  <div className="coach-mock__card">
+                    <div className="coach-mock__card-title">Objection Handling</div>
+                    <div className="coach-mock__score">
+                      <span className="coach-mock__circle" data-value="87" style={{ ["--p"]: "87%" }} />
+                      <div>
+                        <div className="coach-mock__note">Strong</div>
+                        <div className="coach-mock__sub">Above team avg</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="coach-mock__card">
+                    <div className="coach-mock__card-title">Pitch Score</div>
+                    <div className="coach-mock__score">
+                      <span className="coach-mock__circle" data-value="90" style={{ ["--p"]: "90%" }} />
+                      <div>
+                        <div className="coach-mock__note">90X Alarm</div>
+                        <div className="coach-mock__sub">Excellent</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="coach-mock__grid2" style={{ gridTemplateColumns: "1.2fr 1fr" }}>
+                  <div className="coach-mock__card">
+                    <div className="coach-mock__card-title">Recent Roleplay</div>
+                    <div className="flex items-center justify-between" style={{ gap: 8, marginTop: 6 }}>
+                      <span style={{ fontSize: 11.5, color: INK }}>Solar Presentation</span>
+                      <span style={{ fontSize: 11, color: MUTED }}>Score</span>
+                    </div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: INK, marginTop: 2 }}>91%</div>
+                    <div style={{ fontSize: 10, color: SIGNAL, fontWeight: 600, marginTop: 3 }}>View ▸</div>
+                  </div>
+                  <div className="coach-mock__card">
+                    <div className="coach-mock__card-title flex items-center justify-between"><span>Leaderboard</span><span style={{ color: SIGNAL }}>View All</span></div>
+                    <div className="coach-mock__lb" style={{ gridTemplateColumns: "1fr", marginTop: 4 }}>
+                      <div className="coach-mock__lb-row"><span>1. Alex P.</span><span style={{ fontWeight: 600 }}>95%</span></div>
+                      <div className="coach-mock__lb-row"><span>2. Jordan R.</span><span style={{ fontWeight: 600 }}>92%</span></div>
+                      <div className="coach-mock__lb-row"><span>3. You</span><span style={{ fontWeight: 600, color: SIGNAL }}>91%</span></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Path to leadership */}
-      <section className="cv-auto" style={{ background: SURF, borderTop: "1px solid " + RULE, borderBottom: "1px solid " + RULE }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 md:mb-16 reveal">
-            <div className="lg:col-span-7">
-              <div className="kicker-sweep" style={{ ...monoKicker, marginBottom: 18 }}>Path to leadership</div>
-              <h2 className="display reveal-blur" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
-                Start at a door. End up running a market.
-              </h2>
-            </div>
-            <div className="lg:col-span-5">
-              <p style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.72 }}>
-                Promotion isn't a performance review or a line on a future OKR. It's a production standard. Hit the numbers, coach the next rep, and the next role opens.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 reveal" data-delay="1">
-            {[
-              {
-                step: "01",
-                role: "Field Rep",
-                range: "$100K – $185K",
-                timeline: "Months 1 – 12",
-                duties: "Own a territory. Hit daily activity targets. Get sharper at the doorstep every week.",
-              },
-              {
-                step: "02",
-                role: "Team Lead",
-                range: "$150K – $250K",
-                timeline: "Earned, not assigned",
-                duties: "Run a four-to-six-person team. Ride-alongs, morning meetings, personal pipeline on the side.",
-              },
-              {
-                step: "03",
-                role: "Area Manager",
-                range: "$250K+",
-                timeline: "12 – 18 months",
-                duties: "Own the market. Build the team. Own the P&L. Report directly to ownership.",
-              },
-            ].map(function(item) {
-              return (
-                <TiltCard key={item.role} strength={5} className="p-9 md:p-10 rounded-2xl" style={{
-                  background: SURF,
-                  border: "1px solid " + RULE
-                }}
-                onMouseEnter={function(e) { e.currentTarget.style.borderColor = "rgba(46,109,92,0.28)"; }}
-                onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; }}>
-                  <div className="flex items-baseline justify-between mb-10">
-                    <span style={{ ...monoKicker, color: MUTED }}>{item.step}</span>
-                    <span style={{ ...monoKicker, color: MUTED }}>{item.timeline}</span>
-                  </div>
-                  <h3 style={{ ...serif, fontSize: 28, lineHeight: 1.1, letterSpacing: "-0.025em", color: INK, fontWeight: 440 }}>{item.role}</h3>
-                  <div className="mt-4" style={{ ...serif, fontSize: 18, color: SIGNAL_DEEP, fontWeight: 440, letterSpacing: "-0.015em" }}>{item.range}</div>
-                  <p className="mt-6 pt-6" style={{ fontSize: 15, color: MUTED, lineHeight: 1.7, borderTop: "1px solid " + RULE }}>{item.duties}</p>
-                </TiltCard>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* WHY HOME FRONT — kept at bottom for SEO but hidden visually */}
-      <section aria-hidden="true" style={{ display: "none" }}>
-        <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 reveal">
-            <div className="lg:col-span-5">
-              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Why Home Front</div>
-              <h2 className="display" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
-                A serious company doing the work the right way.
-              </h2>
-              <p className="mt-6" style={{ fontSize: 16, color: MUTED, lineHeight: 1.72 }}>
-                We're independently owned, focused on one thing, and comfortable being held to a higher bar than the industry average. No pressure tactics. No hidden fees. No chasing easy signatures that cancel a week later.
-              </p>
-            </div>
-            <div className="lg:col-span-7">
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-12" style={{ borderTop: "1px solid " + RULE, paddingTop: 32 }}>
-                {[
-                  { t: "Honest, in-person service", d: "Every conversation is face-to-face, with a rep in branded attire and a photo ID. We're there to answer questions clearly, not push anyone into anything." },
-                  { t: "Focused categories only", d: "Fiber internet. Home security. Solar. Water filtration. Roofing. Home services where clarity and trust actually matter at the doorstep." },
-                  { t: "Locally rooted teams", d: "Independent ownership, local reps, real territories. Leadership stays close to the field so standards don't drift between markets." },
-                  { t: "Trained before they knock", d: "Every rep finishes certification before their first real door. We coach listening first, explanation second, and the close when it's genuinely earned." },
-                ].map(function(item, i) {
-                  return (
-                    <div key={item.t} className="reveal" data-delay={((i % 2) + 1)}>
-                      <dt style={{ ...monoKicker, color: MUTED, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</dt>
-                      <dd className="m-0">
-                        <div style={{ ...serif, fontSize: 22, lineHeight: 1.2, letterSpacing: "-0.022em", color: INK, fontWeight: 440, marginBottom: 12 }}>{item.t}</div>
-                        <p style={{ fontSize: 15, lineHeight: 1.75, color: MUTED }}>{item.d}</p>
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section aria-hidden="true" style={{ display: "none" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+      {/* ── WHERE WE HIRE (city grid) ──────────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           <div className="lg:col-span-4 reveal">
-            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Frequently asked</div>
-            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
-              The things people actually ask before applying.
+            <div className="eyebrow-teal mb-3">Where We Hire</div>
+            <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              Local opportunities.<br/>Real communities.
             </h2>
-            <p className="mt-5" style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>
-              Straight answers about pay, structure, and the day-to-day work. If something's missing, ask when we talk.
-            </p>
           </div>
-          <div className="lg:col-span-8 reveal" data-delay="1" style={{ borderTop: "1px solid " + RULE }}>
-            {HOME_FAQS.map(function(item, i) {
+          <div className="lg:col-span-8 reveal" data-delay="1">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {cities.map(function(c) {
+                return (
+                  <a
+                    key={c.slug}
+                    href={getPathForRoute("market", c.slug)}
+                    onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
+                    className="city-card"
+                    aria-label={c.region + " — view market"}
+                  >
+                    <div className="city-card__img" style={{ backgroundImage: "url(" + c.img + ")" }} />
+                    <div className="city-card__overlay" aria-hidden="true" />
+                    <span className="city-card__pin" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/></svg>
+                    </span>
+                    <span className="city-card__label">{c.region}</span>
+                  </a>
+                );
+              })}
+            </div>
+            <div className="mt-8 text-center">
+              <a
+                href="/careers"
+                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ background: "#FFFFFF", color: INK, border: "1px solid " + RULE, minHeight: 46, fontSize: 14 }}
+                onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }}
+                onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}
+              >
+                View All Open Positions
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHY HOME FRONT (4 value cards) ─────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-6 pb-20 md:pb-28">
+          <div className="reveal">
+            <div className="eyebrow-teal mb-3">Why Home Front</div>
+            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              Built on people. Driven by results.
+            </h2>
+          </div>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
+            {values.map(function(v) {
               return (
-                <div key={item.q} className="grid items-start" style={{
-                  gridTemplateColumns: "44px minmax(0,1fr)",
-                  gap: 24,
-                  padding: "28px 0",
-                  borderBottom: "1px solid " + RULE
-                }}>
-                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
-                  <div>
-                    <h3 className="mb-3" style={{ ...serif, fontSize: "clamp(1.225rem, 2vw, 1.5rem)", lineHeight: 1.18, color: INK, letterSpacing: "-0.018em", fontWeight: 440 }}>{item.q}</h3>
-                    <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>{item.a}</p>
-                  </div>
+                <div key={v.title} className="val-card">
+                  <span className="val-card__icon" aria-hidden="true"><ValIcon kind={v.icon} /></span>
+                  <h3 style={{ fontSize: 16.5, fontWeight: 600, color: INK, lineHeight: 1.25, letterSpacing: "-0.012em", whiteSpace: "pre-line" }}>{v.title}</h3>
+                  <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.6 }}>{v.body}</p>
                 </div>
               );
             })}
@@ -2468,36 +2660,76 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* Closer — two paths */}
-      <section className="relative overflow-hidden cv-auto" style={{ background: SIGNAL_DEEP, color: "#F5F1E7" }}>
-        <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(900px 500px at 12% -10%, rgba(143,176,155,0.18), transparent 55%), radial-gradient(800px 380px at 88% 110%, rgba(217,166,60,0.12), transparent 60%)" }} />
-        <div className="relative max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-36">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
-            <div className="reveal">
-              <div style={{ ...monoKicker, color: "rgba(245,241,231,0.65)", marginBottom: 22 }}>For brands</div>
-              <h3 className="display mb-5" style={{ fontSize: "clamp(1.95rem, 3.2vw, 2.6rem)", lineHeight: 1.04, color: "#F5F1E7", letterSpacing: "-0.032em", fontWeight: 420 }}>
-                A field team in your next market, ready to knock.
-              </h3>
-              <p className="mb-10 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,241,231,0.74)", lineHeight: 1.72 }}>
-                Fiber, security, solar, home services. Tell us the ZIP codes and the launch window. One business day back with honest numbers and a realistic start date — in any U.S. market.
-              </p>
-              <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(217,166,60,0.34)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
-                Book a 30-min call
-                <span aria-hidden="true">→</span>
-              </a>
+      {/* ── FAQ (light gray band) ─────────────────────────────── */}
+      <section style={{ background: PAPER_DEEP }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="lg:col-span-4 reveal">
+            <div className="eyebrow-teal mb-3">FAQ</div>
+            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
+              Questions? We've got answers.
+            </h2>
+          </div>
+          <div className="lg:col-span-8 reveal" data-delay="1">
+            <div style={{ borderTop: "1px solid " + RULE }}>
+              {faqs.map(function(f) {
+                return <FaqRow key={f.q} q={f.q} a={f.a} />;
+              })}
             </div>
-            <div className="reveal" data-delay="1" style={{ borderTop: "1px solid rgba(245,241,231,0.16)", paddingTop: 40 }}>
-              <div style={{ ...monoKicker, color: "rgba(245,241,231,0.65)", marginBottom: 22 }}>For applicants</div>
-              <h3 className="display mb-5" style={{ fontSize: "clamp(1.95rem, 3.2vw, 2.6rem)", lineHeight: 1.04, color: "#F5F1E7", letterSpacing: "-0.032em", fontWeight: 420 }}>
-                Show up coachable. We'll handle the rest.
-              </h3>
-              <p className="mb-10 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,241,231,0.74)", lineHeight: 1.72 }}>
-                Open roles across the country. Paid training before day one. First-year reps routinely clear $100K. Most started with zero experience.
-              </p>
-              <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: "transparent", color: "#F5F1E7", border: "1px solid rgba(245,241,231,0.42)", cursor: "pointer", minHeight: 54, fontSize: 15 }} onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,241,231,0.1)"; e.currentTarget.style.borderColor = "rgba(245,241,231,0.7)"; }} onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,241,231,0.42)"; }}>
-                See open roles
-                <span aria-hidden="true">→</span>
-              </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── DUAL CTA BAND (Brands / People) ───────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-28">
+          <div className="dual-cta reveal">
+            <div className="dual-cta__panel dual-cta__panel--left">
+              <span className="dual-cta__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
+              </span>
+              <div className="dual-cta__body">
+                <h3 style={{ ...serif, fontSize: "clamp(1.35rem, 2vw, 1.65rem)", fontWeight: 500, color: "#F5F7FA", letterSpacing: "-0.018em", lineHeight: 1.2 }}>
+                  For Brands That<br/>Need Field Growth
+                </h3>
+                <p className="mt-3" style={{ fontSize: 13.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.65 }}>
+                  Scale customer acquisition with disciplined field execution, real-time data, and results you can measure.
+                </p>
+                <a
+                  href={BOOKING_URL || "/contact"}
+                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                  target={BOOKING_URL ? "_blank" : undefined}
+                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                  className="mt-4 inline-flex items-center gap-2 px-5 rounded-full font-medium"
+                  style={{ background: SIGNAL, color: "#FFFFFF", minHeight: 44, fontSize: 13.5, border: "none", boxShadow: "0 10px 22px rgba(30,109,107,0.36)" }}
+                  onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
+                >
+                  Schedule a Discovery Call
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+            <div className="dual-cta__panel dual-cta__panel--right">
+              <span className="dual-cta__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20 C 5 16, 8 14.5, 12 14.5 C 16 14.5, 19 16, 20 20"/></svg>
+              </span>
+              <div className="dual-cta__body">
+                <h3 style={{ ...serif, fontSize: "clamp(1.35rem, 2vw, 1.65rem)", fontWeight: 500, color: "#F5F7FA", letterSpacing: "-0.018em", lineHeight: 1.2 }}>
+                  For People Who<br/>Want To Work
+                </h3>
+                <p className="mt-3" style={{ fontSize: 13.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.65 }}>
+                  Join a team, get elite training, and build real income and leadership opportunities.
+                </p>
+                <a
+                  href="/careers"
+                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                  className="btn-gold mt-4 inline-flex items-center gap-2 px-5 rounded-full"
+                  style={{ minHeight: 44, fontSize: 13.5 }}
+                >
+                  View Open Positions
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -2508,32 +2740,32 @@ function HomePage(props) {
 
 function WhatWeDoPage(props) {
   return (
-    <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-20">
-      <Eyebrow>Services</Eyebrow>
-      <h1 className="max-w-4xl" style={{ ...serif, fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1 }}>
-        Last-mile customer acquisition.
-      </h1>
-      <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-        Whether the category is fiber internet, home security, solar, water filtration, or roofing, none of it grows without disciplined customer acquisition. That is the work we do, in the field, market by market.
-      </p>
-
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-        {[
-          { n: "01", t: "Territory mapping", d: "We build coverage plans by neighborhood, route, day, and rep so field activity is disciplined and measurable." },
-          { n: "02", t: "Rep deployment", d: "Trained, badged, branded reps in your colors. Every rep finishes a six-module AI-powered certification before touching a door." },
-          { n: "03", t: "Daily reporting", d: "Knocks, conversations, sits, closes, installs scheduled, installs activated. You see it every day. No black box." },
-          { n: "04", t: "Install accountability", d: "Anyone can sell a deal. We are paid when the install happens. That keeps us focused on real customers, not signature counts." },
-        ].map(function(item) {
-          return (
-            <div key={item.n}>
-              <span className="text-xs" style={{ color: SIGNAL, fontWeight: 700 }}>{item.n}</span>
-              <h2 className="mt-2 mb-3" style={{ ...serif, fontSize: 24 }}>{item.t}</h2>
-              <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{item.d}</p>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+    <>
+      <PageHero
+        eyebrow="Services"
+        title="Last-mile customer"
+        accentWord="acquisition."
+        subtitle="Whether the category is fiber internet, home security, solar, water filtration, or roofing — none of it grows without disciplined customer acquisition. That is the work we do, in the field, market by market."
+      />
+      <section className="max-w-[1240px] mx-auto px-6 md:px-12 py-20 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+          {[
+            { n: "01", t: "Territory mapping", d: "We build coverage plans by neighborhood, route, day, and rep so field activity is disciplined and measurable." },
+            { n: "02", t: "Rep deployment", d: "Trained, badged, branded reps in your colors. Every rep finishes a six-module AI-powered certification before touching a door." },
+            { n: "03", t: "Daily reporting", d: "Knocks, conversations, sits, closes, installs scheduled, installs activated. You see it every day. No black box." },
+            { n: "04", t: "Install accountability", d: "Anyone can sell a deal. We are paid when the install happens. That keeps us focused on real customers, not signature counts." },
+          ].map(function(item) {
+            return (
+              <div key={item.n}>
+                <span className="text-xs" style={{ color: GOLD_DEEP, fontWeight: 700, letterSpacing: "0.1em" }}>{item.n}</span>
+                <h2 className="mt-2 mb-3" style={{ ...serif, fontSize: 24, color: INK, letterSpacing: "-0.02em" }}>{item.t}</h2>
+                <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{item.d}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -2549,21 +2781,15 @@ function WhyUsPage(props) {
 
   return (
     <>
-      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-16 md:pb-20">
-        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(900px 440px at 90% -5%, rgba(46,109,92,0.12), transparent 55%)", zIndex: -1 }} />
-        <div className="reveal max-w-4xl">
-          <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Why Home Front</div>
-          <h1 className="display" style={{ fontSize: "clamp(2.9rem, 6.6vw, 5.2rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
-            The case for doing this work <span style={{ fontStyle: "italic", color: SIGNAL, fontWeight: 420 }}>properly</span>.
-          </h1>
-          <p className="mt-8 max-w-3xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
-            Door-to-door has a reputation problem. Most of it is earned. This is how we run the work differently, and why that shows up in the numbers, the reps, and the customer experience.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Why Home Front"
+        title="The case for doing this work"
+        accentWord="properly."
+        subtitle="Door-to-door has a reputation problem. Most of it is earned. This is how we run the work differently — and why that shows up in the numbers, the reps, and the customer experience."
+      />
 
-      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-24 md:pb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-14" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-20 pb-24 md:pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-14">
           {principles.map(function(r, i) {
             return (
               <div key={r.t}>
@@ -2693,26 +2919,26 @@ function PartnersPage(props) {
   ];
 
   return (
-    <section className="max-w-[1240px] mx-auto px-5 md:px-10 pt-20 md:pt-28 pb-20">
-      <Eyebrow>Partners</Eyebrow>
-      <h1 className="max-w-4xl" style={{ ...serif, fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1 }}>
-        Built for home-service categories that win with trust.
-      </h1>
-      <p className="mt-8 text-lg md:text-xl max-w-2xl leading-relaxed" style={{ color: MUTED }}>
-        We are selective about the categories and campaigns we support. Every offer has to be clear, defensible, and strong enough for a professional field team to stand behind.
-      </p>
-
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2" style={{ border: "1px solid " + RULE }}>
-        {partnerData.map(function(p, i) {
-          return (
-            <div key={p.name} className="p-8 md:p-10" style={{ borderRight: (i % 2 === 0) ? "1px solid " + RULE : "none", borderBottom: i < partnerData.length - 2 ? "1px solid " + RULE : "none" }}>
-              <h2 className="mb-3" style={{ ...serif, fontSize: 24 }}>{p.name}</h2>
-              <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{p.desc}</p>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+    <>
+      <PageHero
+        eyebrow="Partners"
+        title="Built for home-service"
+        accentWord="categories that win."
+        subtitle="We are selective about the categories and campaigns we support. Every offer has to be clear, defensible, and strong enough for a professional field team to stand behind."
+      />
+      <section className="max-w-[1240px] mx-auto px-6 md:px-12 py-20 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ border: "1px solid " + RULE, borderRadius: 16, overflow: "hidden" }}>
+          {partnerData.map(function(p, i) {
+            return (
+              <div key={p.name} className="p-8 md:p-10" style={{ borderRight: (i % 2 === 0) ? "1px solid " + RULE : "none", borderBottom: i < partnerData.length - 2 ? "1px solid " + RULE : "none", background: SURF }}>
+                <h2 className="mb-3" style={{ ...serif, fontSize: 24, color: INK, letterSpacing: "-0.02em" }}>{p.name}</h2>
+                <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{p.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -2720,22 +2946,43 @@ function PartnersPage(props) {
 function CareersIndexPage(props) {
   return (
     <>
-      {/* Careers hero */}
-      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-16 md:pb-24">
-        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(1000px 480px at 15% -10%, rgba(46,109,92,0.14), transparent 55%)", zIndex: -1 }} />
-        <div className="reveal inline-flex items-center px-4 py-1.5 rounded-full mb-10" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)" }}>
-          <span style={{ ...monoKicker, color: SIGNAL_DEEP }}>Careers · {JOBS.length} open roles</span>
-        </div>
+      <PageHero
+        eyebrow={"Careers · " + JOBS.length + " open roles"}
+        title="A real career in field sales."
+        accentWord="Built in, not bolted on."
+        subtitle="Uncapped commission. Paid certification before your first door. A clear path from rep to team lead to area manager. Experience helps — we hire for drive."
+        actions={
+          <>
+            <a
+              href="#open-positions"
+              onClick={function(e) { e.preventDefault(); var el = document.getElementById("open-positions"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+              className="btn-gold inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ minHeight: 48, fontSize: 14 }}
+            >
+              See open roles
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href={BOOKING_URL || "/contact"}
+              onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+              target={BOOKING_URL ? "_blank" : undefined}
+              rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+              className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ background: "transparent", color: "#F5F7FA", border: "1px solid rgba(245,247,250,0.32)", minHeight: 48, fontSize: 14 }}
+              onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,247,250,0.08)"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.6)"; }}
+              onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.32)"; }}
+            >
+              Talk to us
+            </a>
+          </>
+        }
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-          <div className="lg:col-span-8 reveal">
-            <h1 className="display" style={{ fontSize: "clamp(2.8rem, 6.6vw, 5.2rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
-              A real career in field sales. <span style={{ fontStyle: "italic", color: SIGNAL, fontWeight: 420 }}>Built in</span>, not bolted on.
-            </h1>
-            <p className="mt-8 md:mt-10 max-w-2xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
-              Uncapped commission. Paid certification before your first door. A clear path from rep to team lead to area manager. Experience helps, but we hire for drive. Most of our top reps started with none.
-            </p>
-            <div className="mt-12 grid grid-cols-3 gap-x-10" style={{ borderTop: "1px solid " + RULE, paddingTop: 32, maxWidth: 680 }}>
+      {/* Stats strip + founder quote (below navy hero) */}
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-20 pb-16 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <div className="lg:col-span-7 reveal">
+            <div className="grid grid-cols-3 gap-x-10" style={{ borderTop: "1px solid " + RULE, paddingTop: 32, maxWidth: 680 }}>
               {[
                 { k: "$100K+", label: "First-year earnings" },
                 { k: "Paid", label: "Six-module training" },
@@ -2750,14 +2997,14 @@ function CareersIndexPage(props) {
               })}
             </div>
           </div>
-          <aside className="lg:col-span-4 reveal" data-delay="1">
+          <aside className="lg:col-span-5 reveal" data-delay="1">
             <figure style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20, padding: 32 }}>
-              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 22 }}>From the founder</div>
+              <div style={{ ...monoKicker, color: GOLD_DEEP, marginBottom: 22 }}>From the founder</div>
               <blockquote style={{ ...serif, fontSize: 19, lineHeight: 1.4, color: INK, letterSpacing: "-0.015em", fontWeight: 420, margin: 0 }}>
                 We hire for character first, experience second. Show up, stay coachable, treat people with respect. We'll handle the training, the territory, and the support.
               </blockquote>
               <figcaption className="mt-6 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid " + RULE }}>
-                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + SIGNAL + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
+                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + GOLD + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
                 <span>
                   <span className="block" style={{ fontSize: 13, color: INK, fontWeight: 600 }}>Muizz Muhammad</span>
                   <span className="block" style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Founder</span>
@@ -3960,22 +4207,16 @@ function InsightsIndexPage(props) {
 
   return (
     <>
-      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-12 md:pb-16">
-        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(900px 440px at 85% -5%, rgba(46,109,92,0.1), transparent 55%)", zIndex: -1 }} />
-        <div className="max-w-4xl reveal">
-          <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Resources &middot; {ARTICLE_PAGES.length} articles</div>
-          <h1 className="display" style={{ fontSize: "clamp(2.9rem, 7vw, 5.4rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
-            Notes from the field.
-          </h1>
-          <p className="mt-8 max-w-3xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
-            Written for the people who do their homework before they apply. Pay structure, 1099 taxes, daily reality, which products convert, industry shifts, and the career path from first door to area manager.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={"Resources · " + ARTICLE_PAGES.length + " articles"}
+        title="Notes from the"
+        accentWord="field."
+        subtitle="Written for the people who do their homework before they apply. Pay structure, 1099 taxes, daily reality, which products convert, industry shifts, and the career path from first door to area manager."
+      />
 
       {/* Topic jump nav */}
-      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-10">
-        <nav aria-label="Resource topics" className="reveal flex flex-wrap gap-x-3 gap-y-3" style={{ borderTop: "1px solid " + RULE, paddingTop: 22 }}>
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-14 md:pt-16 pb-10">
+        <nav aria-label="Resource topics" className="reveal flex flex-wrap gap-x-3 gap-y-3">
           {topics.map(function(t) {
             var count = grouped[t.id].length;
             if (count === 0) return null;
@@ -4188,21 +4429,15 @@ function ContactPage(props) {
 
   return (
     <>
-      <section className="relative max-w-[1280px] mx-auto px-6 md:px-12 pt-24 md:pt-32 pb-16 md:pb-20">
-        <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(1000px 480px at 90% -10%, rgba(46,109,92,0.1), transparent 55%)", zIndex: -1 }} />
-        <div className="reveal max-w-3xl">
-          <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Contact</div>
-          <h1 className="display" style={{ fontSize: "clamp(2.9rem, 6.6vw, 5.2rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>
-            Tell us about the market.
-          </h1>
-          <p className="mt-8 max-w-2xl" style={{ fontSize: "clamp(1.075rem, 1.35vw, 1.22rem)", color: MUTED, lineHeight: 1.58 }}>
-            If your brand needs coverage in a new market, or a better field team in one you're already in, this is the conversation to start. One business day turnaround.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Contact"
+        title="Tell us about the"
+        accentWord="market."
+        subtitle="If your brand needs coverage in a new market, or a better field team in one you're already in, this is the conversation to start. One business day turnaround."
+      />
 
       {/* Book a meeting module */}
-      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pb-16 md:pb-20 reveal">
+      <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-14 md:pt-16 pb-16 md:pb-20 reveal">
         <div className="relative overflow-hidden rounded-3xl" style={{ background: SIGNAL_DEEP, color: "#F5F1E7" }}>
           <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(700px 320px at 15% -10%, rgba(143,176,155,0.22), transparent 60%), radial-gradient(600px 260px at 95% 110%, rgba(217,166,60,0.16), transparent 60%)" }} />
           <div className="relative grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 p-10 md:p-14 items-center">
@@ -4317,12 +4552,15 @@ function ContactPage(props) {
 
 function PrivacyPage(props) {
   return (
-    <section className="max-w-[800px] mx-auto px-5 md:px-10 pt-16 md:pt-24 pb-20">
-      <Eyebrow>Privacy Policy</Eyebrow>
-      <h1 style={{ ...serif, fontSize: "clamp(2.25rem, 5vw, 3.25rem)", lineHeight: 1.05 }}>Privacy Policy</h1>
-      <p className="mt-3 text-sm" style={{ color: MUTED }}>Last updated: April 10, 2026</p>
-
-      <div className="mt-12 space-y-8 text-[15px] leading-[1.85]" style={{ color: INK }}>
+    <>
+      <PageHero
+        eyebrow="Privacy Policy"
+        title="Privacy"
+        accentWord="Policy."
+        subtitle="Last updated: April 10, 2026"
+      />
+    <section className="max-w-[800px] mx-auto px-5 md:px-10 pt-12 md:pt-14 pb-20">
+      <div className="mt-4 space-y-8 text-[15px] leading-[1.85]" style={{ color: INK }}>
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>Who We Are</h2>
           <p style={{ color: MUTED }}>Home Front Solutions, LLC ("Home Front Solutions," "we," "us," or "our") is a door-to-door marketing company headquartered in High Point, North Carolina. We support residential customer acquisition across categories including fiber internet, home security, solar, water filtration, roofing, and related home-service campaigns. This Privacy Policy explains how we collect, use, and protect information you provide to us through our website and in person.</p>
@@ -4359,17 +4597,21 @@ function PrivacyPage(props) {
         </div>
       </div>
     </section>
+    </>
   );
 }
 
 function TermsPage(props) {
   return (
-    <section className="max-w-[800px] mx-auto px-5 md:px-10 pt-16 md:pt-24 pb-20">
-      <Eyebrow>Terms of Service</Eyebrow>
-      <h1 style={{ ...serif, fontSize: "clamp(2.25rem, 5vw, 3.25rem)", lineHeight: 1.05 }}>Terms of Service</h1>
-      <p className="mt-3 text-sm" style={{ color: MUTED }}>Last updated: April 10, 2026</p>
-
-      <div className="mt-12 space-y-8 text-[15px] leading-[1.85]" style={{ color: INK }}>
+    <>
+      <PageHero
+        eyebrow="Terms of Service"
+        title="Terms of"
+        accentWord="Service."
+        subtitle="Last updated: April 10, 2026"
+      />
+    <section className="max-w-[800px] mx-auto px-5 md:px-10 pt-12 md:pt-14 pb-20">
+      <div className="mt-4 space-y-8 text-[15px] leading-[1.85]" style={{ color: INK }}>
         <div>
           <h2 className="mb-3" style={{ ...serif, fontSize: 22 }}>Acceptance of Terms</h2>
           <p style={{ color: MUTED }}>By accessing or using the Home Front Solutions website, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.</p>
@@ -4416,6 +4658,7 @@ function TermsPage(props) {
         </div>
       </div>
     </section>
+    </>
   );
 }
 
@@ -5159,8 +5402,10 @@ export default function App(props) {
     setRoute(nextRoute);
   }
 
+  var routesWithDarkHero = ["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"];
+  var rootBg = routesWithDarkHero.indexOf(route.name) !== -1 ? NAVY : PAPER;
   return (
-    <div style={{ fontFamily: "'Aptos', 'Segoe UI', system-ui, sans-serif", background: PAPER, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ fontFamily: "'Aptos', 'Segoe UI', system-ui, sans-serif", background: rootBg, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <style>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -5244,9 +5489,9 @@ export default function App(props) {
       `}</style>
 
       <ScrollProgress />
-      <Header go={go} />
+      <Header go={go} onDark={["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
 
-      <main key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1 }}>
+      <main key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER }}>
         {route.name === "home" && <HomePage go={go} />}
         {route.name === "what-we-do" && <WhatWeDoPage go={go} />}
         {route.name === "why-us" && <WhyUsPage go={go} />}
