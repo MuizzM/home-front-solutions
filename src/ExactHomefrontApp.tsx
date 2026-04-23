@@ -3761,12 +3761,24 @@ function ApplyPage(props) {
 
   function validate() {
     var errs = {};
-    if (!form.fullName || !form.fullName.trim()) errs.fullName = "Please enter your full name";
-    // Accept any phone with 10+ digits (strip non-digits first)
+    if (!form.fullName || form.fullName.trim().length < 2) errs.fullName = "Please enter your full name";
+
+    // Phone — strip formatting, require 10+ digits, reject obvious repeats (e.g. 5555555555)
     var digitsOnly = (form.phone || "").replace(/\D/g, "");
     if (digitsOnly.length < 10) errs.phone = "Please enter a valid phone number (10+ digits)";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email || "")) errs.email = "Please enter a valid email";
-    if (!form.cityState || !form.cityState.trim()) errs.cityState = "Please enter your city and state";
+    else if (/^(\d)\1{9,}$/.test(digitsOnly)) errs.phone = "Please enter a real phone number";
+
+    // Email — RFC-lite format + required TLD (at least 2 chars)
+    var emailTrim = (form.email || "").trim();
+    if (!emailTrim) errs.email = "Please enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) errs.email = "Please enter a valid email (e.g. you@example.com)";
+    else if (emailTrim.length > 254) errs.email = "That email address looks too long";
+
+    // City & State — require format "City, ST" (2+ letter state abbreviation or full name)
+    var cityTrim = (form.cityState || "").trim();
+    if (!cityTrim) errs.cityState = "Please enter your city and state";
+    else if (!/^[A-Za-z][A-Za-z\s.'-]{1,}\s*,\s*[A-Za-z]{2,}\.?$/.test(cityTrim)) errs.cityState = 'Use format "City, ST" (e.g. Greensboro, NC)';
+
     if (!form.age18) errs.age18 = "Please select an option";
     if (!form.transport) errs.transport = "Please select an option";
     if (!form.experience) errs.experience = "Please select your experience level";
@@ -4705,28 +4717,90 @@ function ContactPage(props) {
   var _s = useState(false); var sent = _s[0]; var setSent = _s[1];
   var _p = useState(false); var pending = _p[0]; var setPending = _p[1];
   var _e = useState(null);  var submitError = _e[0]; var setSubmitError = _e[1];
-  var inputStyle = { width: "100%", padding: "14px 0", fontSize: 15.5, background: "transparent", border: "none", borderBottom: "1px solid " + RULE, outline: "none", fontFamily: "inherit", color: INK, transition: "border-color 200ms ease" };
+
+  // Controlled fields + per-field error state (matches the Apply form's pattern)
+  var _f = useState({ fullName: "", company: "", email: "", markets: "", details: "" });
+  var form = _f[0]; var setForm = _f[1];
+  var _er = useState({}); var errors = _er[0]; var setErrors = _er[1];
+  function update(field) {
+    return function(e) {
+      var v = e.target.value;
+      setForm(function(prev) { var next = Object.assign({}, prev); next[field] = v; return next; });
+      if (errors[field]) {
+        setErrors(function(prev) { var next = Object.assign({}, prev); delete next[field]; return next; });
+      }
+    };
+  }
+
+  function validateContact() {
+    var errs = {};
+    // Name
+    if (!form.fullName || form.fullName.trim().length < 2) errs.fullName = "Please enter your full name";
+
+    // Email — RFC-lite format + required 2+ char TLD
+    var emailTrim = (form.email || "").trim();
+    if (!emailTrim) errs.email = "Please enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) errs.email = "Please enter a valid email (e.g. you@example.com)";
+    else if (emailTrim.length > 254) errs.email = "That email address looks too long";
+
+    // Markets — optional, but if provided must be at least 2 chars
+    if (form.markets && form.markets.trim().length === 1) errs.markets = "Please enter a full market or region";
+
+    // Message body — optional but if started must be at least 10 chars so it's not junk
+    if (form.details && form.details.trim().length > 0 && form.details.trim().length < 10) {
+      errs.details = "Please add a little more detail (10+ characters)";
+    }
+
+    return errs;
+  }
+
+  var baseInputStyle = { width: "100%", padding: "14px 0", fontSize: 15.5, background: "transparent", border: "none", borderBottom: "1px solid " + RULE, outline: "none", fontFamily: "inherit", color: INK, transition: "border-color 200ms ease" };
+  function inputStyleFor(fieldName) {
+    if (errors[fieldName]) {
+      return Object.assign({}, baseInputStyle, { borderBottom: "1.5px solid #C25A3D", background: "rgba(194,90,61,0.04)" });
+    }
+    return baseInputStyle;
+  }
+  function FieldError(p) {
+    if (!p.error) return null;
+    return <div className="text-xs mt-1.5" role="alert" style={{ color: "#A6472D" }}>{p.error}</div>;
+  }
 
   function submitContact(e) {
     e.preventDefault();
     if (pending) return;
-    setPending(true);
     setSubmitError(null);
 
-    var form = e.target;
+    // Run validation first — block submit if any field fails
+    var errs = validateContact();
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) {
+      // Focus the first invalid field
+      var fieldMap = { fullName: "c-name", email: "c-email", markets: "c-markets", details: "c-details" };
+      var firstKey = Object.keys(errs)[0];
+      var el = document.getElementById(fieldMap[firstKey]);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(function() { try { el.focus(); } catch (err) {} }, 320);
+      }
+      return;
+    }
+
+    setPending(true);
+
     var data = new FormData();
     data.append("access_key", "126bc0d6-f069-4df8-bea0-b34ac332cc63");
-    data.append("subject", "New Contact Inquiry — " + (form.elements.fullName.value || "No name"));
-    data.append("from_name", form.elements.fullName.value || "");
-    data.append("email", form.elements.email.value || "");
-    data.append("company", form.elements.company.value || "");
-    data.append("markets", form.elements.markets.value || "");
+    data.append("subject", "New Contact Inquiry — " + (form.fullName || "No name"));
+    data.append("from_name", form.fullName || "");
+    data.append("email", form.email || "");
+    data.append("company", form.company || "");
+    data.append("markets", form.markets || "");
     data.append("message",
-      "Name: " + (form.elements.fullName.value || "") + "\n" +
-      "Company: " + (form.elements.company.value || "") + "\n" +
-      "Email: " + (form.elements.email.value || "") + "\n" +
-      "Markets of interest: " + (form.elements.markets.value || "") + "\n\n" +
-      "Message:\n" + (form.elements.details.value || "") + "\n\n" +
+      "Name: " + (form.fullName || "") + "\n" +
+      "Company: " + (form.company || "") + "\n" +
+      "Email: " + (form.email || "") + "\n" +
+      "Markets of interest: " + (form.markets || "") + "\n\n" +
+      "Message:\n" + (form.details || "") + "\n\n" +
       "Submitted: " + new Date().toLocaleString()
     );
     data.append("botcheck", "");
@@ -4741,7 +4815,8 @@ function ContactPage(props) {
         setPending(false);
         if (r.ok && r.data && r.data.success) {
           setSent(true);
-          try { form.reset(); } catch (err) {}
+          setForm({ fullName: "", company: "", email: "", markets: "", details: "" });
+          setErrors({});
           if (typeof window !== "undefined" && window.scrollTo) window.scrollTo({ top: 0, behavior: "smooth" });
         } else {
           setSubmitError(r.data && r.data.message ? r.data.message : "Something went wrong. Please email us directly.");
@@ -4752,6 +4827,7 @@ function ContactPage(props) {
         setSubmitError("Network error. Please email us at info@homefrontsolutionsllc.com.");
       });
   }
+  var inputStyle = baseInputStyle; // legacy alias used in the success view below
 
   return (
     <>
@@ -4840,24 +4916,35 @@ function ContactPage(props) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                   <div>
                     <label htmlFor="c-name" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Your name</label>
-                    <input id="c-name" name="fullName" type="text" required autoComplete="name" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                    <input id="c-name" name="fullName" type="text" required autoComplete="name" value={form.fullName} onChange={update("fullName")} style={inputStyleFor("fullName")} onFocus={function(e) { if (!errors.fullName) e.target.style.borderBottomColor = SIGNAL; }} onBlur={function(e) { if (!errors.fullName) e.target.style.borderBottomColor = RULE; }} aria-invalid={!!errors.fullName} aria-describedby={errors.fullName ? "c-name-err" : undefined} />
+                    <FieldError error={errors.fullName} />
                   </div>
                   <div>
                     <label htmlFor="c-company" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Company</label>
-                    <input id="c-company" name="company" type="text" autoComplete="organization" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                    <input id="c-company" name="company" type="text" autoComplete="organization" value={form.company} onChange={update("company")} style={inputStyleFor("company")} onFocus={function(e) { if (!errors.company) e.target.style.borderBottomColor = SIGNAL; }} onBlur={function(e) { if (!errors.company) e.target.style.borderBottomColor = RULE; }} />
                   </div>
                 </div>
                 <div className="mt-6">
                   <label htmlFor="c-email" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Email</label>
-                  <input id="c-email" name="email" type="email" required autoComplete="email" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <input id="c-email" name="email" type="email" required autoComplete="email" inputMode="email" value={form.email} onChange={update("email")} style={inputStyleFor("email")} onFocus={function(e) { if (!errors.email) e.target.style.borderBottomColor = SIGNAL; }} onBlur={function(e) {
+                    if (!errors.email) e.target.style.borderBottomColor = RULE;
+                    // On blur, lightweight email format check for instant feedback
+                    var v = (e.target.value || "").trim();
+                    if (v && !/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(v)) {
+                      setErrors(function(prev) { var next = Object.assign({}, prev); next.email = "Please enter a valid email (e.g. you@example.com)"; return next; });
+                    }
+                  }} aria-invalid={!!errors.email} />
+                  <FieldError error={errors.email} />
                 </div>
                 <div className="mt-6">
                   <label htmlFor="c-markets" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Markets of interest</label>
-                  <input id="c-markets" name="markets" type="text" placeholder="Nationwide, southeast, or a specific city" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <input id="c-markets" name="markets" type="text" placeholder="Nationwide, southeast, or a specific city" value={form.markets} onChange={update("markets")} style={inputStyleFor("markets")} onFocus={function(e) { if (!errors.markets) e.target.style.borderBottomColor = SIGNAL; }} onBlur={function(e) { if (!errors.markets) e.target.style.borderBottomColor = RULE; }} aria-invalid={!!errors.markets} />
+                  <FieldError error={errors.markets} />
                 </div>
                 <div className="mt-6">
                   <label htmlFor="c-details" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Tell us more</label>
-                  <textarea id="c-details" name="details" rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <textarea id="c-details" name="details" rows={4} value={form.details} onChange={update("details")} style={Object.assign({}, inputStyleFor("details"), { resize: "vertical" })} onFocus={function(e) { if (!errors.details) e.target.style.borderBottomColor = SIGNAL; }} onBlur={function(e) { if (!errors.details) e.target.style.borderBottomColor = RULE; }} aria-invalid={!!errors.details} />
+                  <FieldError error={errors.details} />
                 </div>
 
                 {submitError && (
