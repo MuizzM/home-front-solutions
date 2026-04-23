@@ -1101,6 +1101,139 @@ main button[class*="btn-ghost"] {
   color: var(--signal-deep);
   font-weight: 600;
 }
+.coach-mock__nav li {
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, padding-left 220ms var(--ease-spring);
+  user-select: none;
+}
+.coach-mock__nav li:hover:not(.is-active) {
+  background: #F3F6F9;
+  color: var(--ink);
+  padding-left: 13px;
+}
+.coach-mock__nav li:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Period dropdown — the "This Week ▾" chip */
+.coach-mock__week {
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+  font: inherit;
+  color: var(--muted);
+}
+.coach-mock__week:hover {
+  background: #F3F6F9;
+  border-color: var(--signal);
+  color: var(--signal-deep);
+}
+.coach-mock__period-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 140px;
+  background: #FFFFFF;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: 0 14px 38px rgba(11,37,64,0.16);
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  z-index: 5;
+  animation: coachMenuIn 220ms var(--ease-spring);
+}
+@keyframes coachMenuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+.coach-mock__period-menu li {
+  font-size: 11.5px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: background 140ms ease, color 140ms ease;
+}
+.coach-mock__period-menu li:hover { background: var(--signal-soft); color: var(--signal-deep); }
+.coach-mock__period-menu li.is-active { background: var(--signal); color: #FFFFFF; font-weight: 600; }
+
+/* Inline link inside cards (View ▸ / View All) */
+.coach-mock__link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--signal);
+  font: 600 10px/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  transition: color 180ms ease;
+}
+.coach-mock__link:hover { color: var(--signal-deep); text-decoration: underline; }
+.coach-mock__link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+/* Panels for the non-dashboard tabs */
+.coach-mock__panel {
+  animation: coachPanelIn 340ms var(--ease-spring);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.coach-mock__panel--soft .coach-mock__card { min-height: 96px; }
+@keyframes coachPanelIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Rep / roleplay row list */
+.coach-mock__rep-row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  background: #FFFFFF;
+  border: 1px solid #E3E8ED;
+  border-radius: 8px;
+  font-size: 11.5px;
+  color: var(--ink);
+  transition: transform 220ms var(--ease-spring), border-color 180ms ease, background 180ms ease;
+}
+.coach-mock__rep-row:hover {
+  border-color: rgba(30,109,107,0.32);
+  background: #FAFCFC;
+  transform: translateX(2px);
+}
+.coach-mock__rep-rank {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+.coach-mock__rep-name { font-weight: 600; }
+.coach-mock__rep-meta { color: var(--muted); font-size: 10.5px; }
+.coach-mock__rep-score { font-weight: 700; color: var(--signal); font-size: 12px; }
+
+/* Roleplay rows only have 3 cols — simplify */
+.coach-mock__panel .coach-mock__rep-row:not(:has(.coach-mock__rep-rank)) {
+  grid-template-columns: 1fr auto auto;
+}
+
+/* Score-card hover — lifts slightly and glows */
+.coach-mock__card { transition: transform 280ms var(--ease-spring), border-color 180ms ease, box-shadow 280ms ease; }
+.coach-mock__card:hover { transform: translateY(-2px); border-color: rgba(30,109,107,0.35); box-shadow: 0 8px 22px rgba(11,37,64,0.08); }
+
+/* Stat cards update with a tiny flash when their value changes */
+.coach-mock__stat-value {
+  transition: color 260ms var(--ease-out-smooth);
+}
+
+/* Mobile: stack everything cleanly (base mobile rules already hide the sidebar) */
+@media (max-width: 767px) {
+  .coach-mock__period-menu { right: auto; left: 0; }
+  .coach-mock__rep-row { grid-template-columns: 20px 1fr auto auto; font-size: 10.5px; padding: 8px; }
+  .coach-mock__rep-row > :nth-child(3) { display: none; } /* hide market column on phones */
+}
 .coach-mock__main { padding: 18px 20px; }
 .coach-mock__top {
   display: flex;
@@ -1778,6 +1911,12 @@ input:-webkit-autofill {
 
 /* Ensure buttons don't show the tap highlight on iOS */
 a, button { -webkit-tap-highlight-color: transparent; }
+
+/* Spinner — used by the contact form "Sending…" state */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
 /* ────────────────────────────────────────────────────────────
    MOBILE POLISH — 768px and below

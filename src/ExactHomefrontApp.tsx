@@ -2290,6 +2290,268 @@ function KnockOverlay(props) {
   );
 }
 
+// Animated count-up — tween to `target` over `duration` ms whenever target changes
+function useCountUp(target, duration) {
+  var _v = useState(0); var val = _v[0]; var setVal = _v[1];
+  useEffect(function() {
+    var start = 0;
+    var from = 0;
+    var to = typeof target === "number" ? target : 0;
+    var d = duration || 900;
+    var raf;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / d);
+      var eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      setVal(Math.round(from + (to - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+    return function() { if (raf) cancelAnimationFrame(raf); };
+  }, [target, duration]);
+  return val;
+}
+
+// ── HFS Coach — interactive dashboard mockup ──────────────────────────────
+// Clickable sidebar tabs switch panels; time-period chip swaps stat values
+// with an animated count-up; mini roleplay/leaderboard views are live too.
+function CoachMock() {
+  var _t = useState("dashboard"); var tab = _t[0]; var setTab = _t[1];
+  var _p = useState("week"); var period = _p[0]; var setPeriod = _p[1];
+  var _o = useState(false); var periodOpen = _o[0]; var setPeriodOpen = _o[1];
+
+  var navItems = [
+    { id: "dashboard", label: "Dashboard" },
+    { id: "reps",      label: "Reps" },
+    { id: "coaching",  label: "Coaching" },
+    { id: "roleplays", label: "Roleplays" },
+    { id: "reports",   label: "Reports" },
+    { id: "tools",     label: "Tools" },
+    { id: "leader",    label: "Leaderboard" },
+    { id: "settings",  label: "Settings" }
+  ];
+
+  // Stats per period — the numbers genuinely change when you click the chip.
+  var statsByPeriod = {
+    today: { calls: 12, conv: 8,  close: 62, sales: 3250 },
+    week:  { calls: 18, conv: 12, close: 67, sales: 14250 },
+    month: { calls: 74, conv: 56, close: 71, sales: 58200 }
+  };
+  var stats = statsByPeriod[period];
+
+  // Animated counters driven by the active period
+  var callsAnim = useCountUp(stats.calls, 700);
+  var convAnim  = useCountUp(stats.conv,  700);
+  var closeAnim = useCountUp(stats.close, 700);
+  var salesAnim = useCountUp(stats.sales, 900);
+
+  var periodLabel = { today: "Today", week: "This Week", month: "This Month" };
+
+  function pickPeriod(p) { setPeriod(p); setPeriodOpen(false); }
+
+  return (
+    <div className="coach-mock">
+      <aside className="coach-mock__side">
+        <div className="coach-mock__brand">HFS COACH</div>
+        <ul className="coach-mock__nav">
+          {navItems.map(function(item) {
+            return (
+              <li
+                key={item.id}
+                className={tab === item.id ? "is-active" : ""}
+                onClick={function() { setTab(item.id); }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setTab(item.id); } }}
+                aria-current={tab === item.id ? "page" : undefined}
+              >
+                {item.label}
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+      <div className="coach-mock__main">
+        <div className="coach-mock__top">
+          <span className="coach-mock__hello">
+            {tab === "dashboard" && "Welcome back, John!"}
+            {tab === "reps" && "Team — 32 reps"}
+            {tab === "coaching" && "Coaching — Week 16"}
+            {tab === "roleplays" && "Roleplays — Recent"}
+            {tab === "reports" && "Reports — Summary"}
+            {tab === "tools" && "Tools & CRM"}
+            {tab === "leader" && "Leaderboard"}
+            {tab === "settings" && "Settings"}
+          </span>
+          {tab === "dashboard" && (
+            <span className="coach-mock__period-wrap" style={{ position: "relative" }}>
+              <button
+                type="button"
+                className="coach-mock__week"
+                onClick={function() { setPeriodOpen(!periodOpen); }}
+                aria-haspopup="listbox"
+                aria-expanded={periodOpen}
+              >
+                {periodLabel[period]} <span aria-hidden="true">▾</span>
+              </button>
+              {periodOpen && (
+                <ul className="coach-mock__period-menu" role="listbox">
+                  {["today","week","month"].map(function(p) {
+                    return (
+                      <li
+                        key={p}
+                        role="option"
+                        aria-selected={period === p}
+                        className={period === p ? "is-active" : ""}
+                        onClick={function() { pickPeriod(p); }}
+                      >
+                        {periodLabel[p]}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </span>
+          )}
+        </div>
+
+        {/* Dashboard view */}
+        {tab === "dashboard" && (
+          <>
+            <div className="coach-mock__stats">
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Calls Today</div><div className="coach-mock__stat-value">{callsAnim}</div></div>
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Conversations</div><div className="coach-mock__stat-value">{convAnim}</div></div>
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Close Rate</div><div className="coach-mock__stat-value">{closeAnim}%</div></div>
+              <div className="coach-mock__stat"><div className="coach-mock__stat-label">Total Sales</div><div className="coach-mock__stat-value">${salesAnim.toLocaleString()}</div></div>
+            </div>
+            <div className="coach-mock__grid2">
+              <div className="coach-mock__card" title="Overall coaching score across pitch, tone, and follow-through">
+                <div className="coach-mock__card-title">Coaching Score</div>
+                <div className="coach-mock__score">
+                  <span className="coach-mock__circle" data-value="92" style={{ ["--p"]: "92%" }} />
+                  <div><div className="coach-mock__note">Great</div><div className="coach-mock__sub">Great work!</div></div>
+                </div>
+                <div className="coach-mock__spark" />
+              </div>
+              <div className="coach-mock__card" title="How well reps handle common pushbacks">
+                <div className="coach-mock__card-title">Objection Handling</div>
+                <div className="coach-mock__score">
+                  <span className="coach-mock__circle" data-value="87" style={{ ["--p"]: "87%" }} />
+                  <div><div className="coach-mock__note">Strong</div><div className="coach-mock__sub">Above team avg</div></div>
+                </div>
+              </div>
+              <div className="coach-mock__card" title="Pitch clarity, pacing, and benefits framing">
+                <div className="coach-mock__card-title">Pitch Score</div>
+                <div className="coach-mock__score">
+                  <span className="coach-mock__circle" data-value="90" style={{ ["--p"]: "90%" }} />
+                  <div><div className="coach-mock__note">Excellent</div><div className="coach-mock__sub">Top 10%</div></div>
+                </div>
+              </div>
+            </div>
+            <div className="coach-mock__grid2" style={{ gridTemplateColumns: "1.2fr 1fr" }}>
+              <div className="coach-mock__card">
+                <div className="coach-mock__card-title">Recent Roleplay</div>
+                <div className="flex items-center justify-between" style={{ gap: 8, marginTop: 6 }}>
+                  <span style={{ fontSize: 11.5, color: INK }}>Solar Presentation</span>
+                  <span style={{ fontSize: 11, color: MUTED }}>Score</span>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: INK, marginTop: 2 }}>91%</div>
+                <button type="button" className="coach-mock__link" onClick={function() { setTab("roleplays"); }}>View ▸</button>
+              </div>
+              <div className="coach-mock__card">
+                <div className="coach-mock__card-title flex items-center justify-between"><span>Leaderboard</span><button type="button" className="coach-mock__link" onClick={function() { setTab("leader"); }}>View All</button></div>
+                <div className="coach-mock__lb" style={{ gridTemplateColumns: "1fr", marginTop: 4 }}>
+                  <div className="coach-mock__lb-row"><span>1. Alex P.</span><span style={{ fontWeight: 600 }}>95%</span></div>
+                  <div className="coach-mock__lb-row"><span>2. Jordan R.</span><span style={{ fontWeight: 600 }}>92%</span></div>
+                  <div className="coach-mock__lb-row"><span>3. You</span><span style={{ fontWeight: 600, color: SIGNAL }}>91%</span></div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Reps view */}
+        {tab === "reps" && (
+          <div className="coach-mock__panel">
+            {[
+              { n: "Alex P.",   market: "Greensboro",    deals: 9, score: 95 },
+              { n: "Jordan R.", market: "High Point",    deals: 8, score: 92 },
+              { n: "Maya C.",   market: "Winston-Salem", deals: 7, score: 89 },
+              { n: "You",       market: "Charlotte",     deals: 6, score: 91 },
+              { n: "Devin B.",  market: "Raleigh",       deals: 5, score: 86 }
+            ].map(function(r, i) {
+              return (
+                <div key={r.n} className="coach-mock__rep-row">
+                  <span className="coach-mock__rep-rank">{i + 1}</span>
+                  <span className="coach-mock__rep-name">{r.n}</span>
+                  <span className="coach-mock__rep-meta">{r.market}</span>
+                  <span className="coach-mock__rep-meta">{r.deals} deals</span>
+                  <span className="coach-mock__rep-score">{r.score}%</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Coaching view */}
+        {tab === "coaching" && (
+          <div className="coach-mock__panel">
+            <div className="coach-mock__card" style={{ marginBottom: 10 }}>
+              <div className="coach-mock__card-title">Weekly Trend</div>
+              <div className="coach-mock__spark" style={{ height: 56, marginTop: 8 }} />
+              <div className="coach-mock__sub" style={{ marginTop: 6 }}>Coaching score: 87 → 92 over 6 weeks</div>
+            </div>
+            <div className="coach-mock__grid2">
+              <div className="coach-mock__card"><div className="coach-mock__card-title">Sessions</div><div className="coach-mock__stat-value">14</div></div>
+              <div className="coach-mock__card"><div className="coach-mock__card-title">Avg Score</div><div className="coach-mock__stat-value">92</div></div>
+            </div>
+          </div>
+        )}
+
+        {/* Roleplays view */}
+        {tab === "roleplays" && (
+          <div className="coach-mock__panel">
+            {[
+              { t: "Solar Presentation",    d: "Today",      s: 91 },
+              { t: "Objection · Price",     d: "Yesterday",  s: 84 },
+              { t: "Fiber Close",           d: "2 days ago", s: 88 },
+              { t: "Security · Trial Close",d: "3 days ago", s: 79 }
+            ].map(function(rp) {
+              return (
+                <div key={rp.t} className="coach-mock__rep-row">
+                  <span className="coach-mock__rep-name">{rp.t}</span>
+                  <span className="coach-mock__rep-meta">{rp.d}</span>
+                  <span className="coach-mock__rep-score" style={{ color: rp.s >= 85 ? SIGNAL : INK }}>{rp.s}%</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Reports, Tools, Leaderboard, Settings — light placeholders */}
+        {(tab === "reports" || tab === "tools" || tab === "leader" || tab === "settings") && (
+          <div className="coach-mock__panel coach-mock__panel--soft">
+            <div className="coach-mock__card">
+              <div className="coach-mock__card-title">
+                {tab === "reports"  && "Weekly Rollup"}
+                {tab === "tools"    && "Connected Tools"}
+                {tab === "leader"   && "Top Markets"}
+                {tab === "settings" && "Account"}
+              </div>
+              <div className="coach-mock__sub" style={{ marginTop: 8 }}>
+                {tab === "reports"  && "Knocks · Conversations · Closes · Installs, exported daily."}
+                {tab === "tools"    && "CRM · Routing · Messaging · Pay — all wired."}
+                {tab === "leader"   && "Greensboro, High Point, Charlotte."}
+                {tab === "settings" && "Territory, notifications, payout method."}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Small inline toolkit icons used inside the HFS Coach dashboard mockup
 function CheckDot() {
   return (
@@ -2599,87 +2861,9 @@ function HomePage(props) {
             </div>
           </div>
 
-          {/* HFS Coach dashboard mockup */}
+          {/* HFS Coach dashboard — interactive mockup */}
           <div className="lg:col-span-7 reveal" data-delay="1">
-            <div className="coach-mock">
-              <aside className="coach-mock__side" aria-hidden="true">
-                <div className="coach-mock__brand">HFS COACH</div>
-                <ul className="coach-mock__nav">
-                  <li className="is-active">Dashboard</li>
-                  <li>Reps</li>
-                  <li>Coaching</li>
-                  <li>Roleplays</li>
-                  <li>Reports</li>
-                  <li>Tools</li>
-                  <li>Leaderboard</li>
-                  <li>Settings</li>
-                </ul>
-              </aside>
-              <div className="coach-mock__main">
-                <div className="coach-mock__top">
-                  <span className="coach-mock__hello">Welcome back, John!</span>
-                  <span className="coach-mock__week">This Week ▾</span>
-                </div>
-                <div className="coach-mock__stats">
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Calls Today</div><div className="coach-mock__stat-value">18</div></div>
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Conversations</div><div className="coach-mock__stat-value">12</div></div>
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Close Rate</div><div className="coach-mock__stat-value">67%</div></div>
-                  <div className="coach-mock__stat"><div className="coach-mock__stat-label">Total Sales</div><div className="coach-mock__stat-value">$14,250</div></div>
-                </div>
-                <div className="coach-mock__grid2">
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Coaching Score</div>
-                    <div className="coach-mock__score">
-                      <span className="coach-mock__circle" data-value="92" style={{ ["--p"]: "92%" }} />
-                      <div>
-                        <div className="coach-mock__note">Great</div>
-                        <div className="coach-mock__sub">Great work!</div>
-                      </div>
-                    </div>
-                    <div className="coach-mock__spark" />
-                  </div>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Objection Handling</div>
-                    <div className="coach-mock__score">
-                      <span className="coach-mock__circle" data-value="87" style={{ ["--p"]: "87%" }} />
-                      <div>
-                        <div className="coach-mock__note">Strong</div>
-                        <div className="coach-mock__sub">Above team avg</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Pitch Score</div>
-                    <div className="coach-mock__score">
-                      <span className="coach-mock__circle" data-value="90" style={{ ["--p"]: "90%" }} />
-                      <div>
-                        <div className="coach-mock__note">90X Alarm</div>
-                        <div className="coach-mock__sub">Excellent</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="coach-mock__grid2" style={{ gridTemplateColumns: "1.2fr 1fr" }}>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title">Recent Roleplay</div>
-                    <div className="flex items-center justify-between" style={{ gap: 8, marginTop: 6 }}>
-                      <span style={{ fontSize: 11.5, color: INK }}>Solar Presentation</span>
-                      <span style={{ fontSize: 11, color: MUTED }}>Score</span>
-                    </div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: INK, marginTop: 2 }}>91%</div>
-                    <div style={{ fontSize: 10, color: SIGNAL, fontWeight: 600, marginTop: 3 }}>View ▸</div>
-                  </div>
-                  <div className="coach-mock__card">
-                    <div className="coach-mock__card-title flex items-center justify-between"><span>Leaderboard</span><span style={{ color: SIGNAL }}>View All</span></div>
-                    <div className="coach-mock__lb" style={{ gridTemplateColumns: "1fr", marginTop: 4 }}>
-                      <div className="coach-mock__lb-row"><span>1. Alex P.</span><span style={{ fontWeight: 600 }}>95%</span></div>
-                      <div className="coach-mock__lb-row"><span>2. Jordan R.</span><span style={{ fontWeight: 600 }}>92%</span></div>
-                      <div className="coach-mock__lb-row"><span>3. You</span><span style={{ fontWeight: 600, color: SIGNAL }}>91%</span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CoachMock />
           </div>
         </div>
       </section>
@@ -4519,7 +4703,55 @@ function ArticlePage(props) {
 
 function ContactPage(props) {
   var _s = useState(false); var sent = _s[0]; var setSent = _s[1];
+  var _p = useState(false); var pending = _p[0]; var setPending = _p[1];
+  var _e = useState(null);  var submitError = _e[0]; var setSubmitError = _e[1];
   var inputStyle = { width: "100%", padding: "14px 0", fontSize: 15.5, background: "transparent", border: "none", borderBottom: "1px solid " + RULE, outline: "none", fontFamily: "inherit", color: INK, transition: "border-color 200ms ease" };
+
+  function submitContact(e) {
+    e.preventDefault();
+    if (pending) return;
+    setPending(true);
+    setSubmitError(null);
+
+    var form = e.target;
+    var data = new FormData();
+    data.append("access_key", "126bc0d6-f069-4df8-bea0-b34ac332cc63");
+    data.append("subject", "New Contact Inquiry — " + (form.elements.fullName.value || "No name"));
+    data.append("from_name", form.elements.fullName.value || "");
+    data.append("email", form.elements.email.value || "");
+    data.append("company", form.elements.company.value || "");
+    data.append("markets", form.elements.markets.value || "");
+    data.append("message",
+      "Name: " + (form.elements.fullName.value || "") + "\n" +
+      "Company: " + (form.elements.company.value || "") + "\n" +
+      "Email: " + (form.elements.email.value || "") + "\n" +
+      "Markets of interest: " + (form.elements.markets.value || "") + "\n\n" +
+      "Message:\n" + (form.elements.details.value || "") + "\n\n" +
+      "Submitted: " + new Date().toLocaleString()
+    );
+    data.append("botcheck", "");
+
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: data
+    })
+      .then(function(res) { return res.json().then(function(j) { return { ok: res.ok, data: j }; }); })
+      .then(function(r) {
+        setPending(false);
+        if (r.ok && r.data && r.data.success) {
+          setSent(true);
+          try { form.reset(); } catch (err) {}
+          if (typeof window !== "undefined" && window.scrollTo) window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          setSubmitError(r.data && r.data.message ? r.data.message : "Something went wrong. Please email us directly.");
+        }
+      })
+      .catch(function() {
+        setPending(false);
+        setSubmitError("Network error. Please email us at info@homefrontsolutionsllc.com.");
+      });
+  }
 
   return (
     <>
@@ -4601,34 +4833,55 @@ function ContactPage(props) {
 
           <div className="md:col-span-7 reveal" data-delay="1">
             {!sent ? (
-              <form onSubmit={function(e) { e.preventDefault(); setSent(true); }}>
+              <form onSubmit={submitContact} noValidate>
                 <div style={{ ...monoKicker, color: MUTED, marginBottom: 24 }}>Send a message</div>
+                {/* Honeypot — hidden from humans, catches bots */}
+                <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                   <div>
-                    <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Your name</label>
-                    <input type="text" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                    <label htmlFor="c-name" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Your name</label>
+                    <input id="c-name" name="fullName" type="text" required autoComplete="name" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                   </div>
                   <div>
-                    <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Company</label>
-                    <input type="text" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                    <label htmlFor="c-company" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Company</label>
+                    <input id="c-company" name="company" type="text" autoComplete="organization" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                   </div>
                 </div>
                 <div className="mt-6">
-                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Email</label>
-                  <input type="email" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <label htmlFor="c-email" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Email</label>
+                  <input id="c-email" name="email" type="email" required autoComplete="email" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
                 <div className="mt-6">
-                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Markets of interest</label>
-                  <input type="text" placeholder="Nationwide, southeast, or a specific city" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <label htmlFor="c-markets" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Markets of interest</label>
+                  <input id="c-markets" name="markets" type="text" placeholder="Nationwide, southeast, or a specific city" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
                 <div className="mt-6">
-                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Tell us more</label>
-                  <textarea rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <label htmlFor="c-details" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Tell us more</label>
+                  <textarea id="c-details" name="details" rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
-                <button type="submit" className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
-                  Send message
-                  <span aria-hidden="true">→</span>
+
+                {submitError && (
+                  <div role="alert" className="mt-6 p-4 rounded-lg" style={{ background: "rgba(194,90,61,0.08)", border: "1px solid rgba(194,90,61,0.3)", color: "#8A3E28", fontSize: 14 }}>
+                    {submitError} <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>info@homefrontsolutionsllc.com</a>
+                  </div>
+                )}
+
+                <button type="submit" disabled={pending} className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: pending ? SIGNAL_DEEP : SIGNAL, color: "#FFFFFF", border: "none", cursor: pending ? "wait" : "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(30,109,107,0.32)", opacity: pending ? 0.85 : 1 }}>
+                  {pending ? (
+                    <>
+                      <span aria-hidden="true" style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "#FFFFFF", borderRadius: "50%", display: "inline-block", animation: "spin 720ms linear infinite" }} />
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      Send message
+                      <span aria-hidden="true">→</span>
+                    </>
+                  )}
                 </button>
+                <p className="mt-4" style={{ fontSize: 12.5, color: MUTED }}>
+                  Or email us directly at <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 500 }}>info@homefrontsolutionsllc.com</a>
+                </p>
               </form>
             ) : (
               <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
