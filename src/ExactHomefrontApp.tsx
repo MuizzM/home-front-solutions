@@ -4703,7 +4703,55 @@ function ArticlePage(props) {
 
 function ContactPage(props) {
   var _s = useState(false); var sent = _s[0]; var setSent = _s[1];
+  var _p = useState(false); var pending = _p[0]; var setPending = _p[1];
+  var _e = useState(null);  var submitError = _e[0]; var setSubmitError = _e[1];
   var inputStyle = { width: "100%", padding: "14px 0", fontSize: 15.5, background: "transparent", border: "none", borderBottom: "1px solid " + RULE, outline: "none", fontFamily: "inherit", color: INK, transition: "border-color 200ms ease" };
+
+  function submitContact(e) {
+    e.preventDefault();
+    if (pending) return;
+    setPending(true);
+    setSubmitError(null);
+
+    var form = e.target;
+    var data = new FormData();
+    data.append("access_key", "126bc0d6-f069-4df8-bea0-b34ac332cc63");
+    data.append("subject", "New Contact Inquiry — " + (form.elements.fullName.value || "No name"));
+    data.append("from_name", form.elements.fullName.value || "");
+    data.append("email", form.elements.email.value || "");
+    data.append("company", form.elements.company.value || "");
+    data.append("markets", form.elements.markets.value || "");
+    data.append("message",
+      "Name: " + (form.elements.fullName.value || "") + "\n" +
+      "Company: " + (form.elements.company.value || "") + "\n" +
+      "Email: " + (form.elements.email.value || "") + "\n" +
+      "Markets of interest: " + (form.elements.markets.value || "") + "\n\n" +
+      "Message:\n" + (form.elements.details.value || "") + "\n\n" +
+      "Submitted: " + new Date().toLocaleString()
+    );
+    data.append("botcheck", "");
+
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: data
+    })
+      .then(function(res) { return res.json().then(function(j) { return { ok: res.ok, data: j }; }); })
+      .then(function(r) {
+        setPending(false);
+        if (r.ok && r.data && r.data.success) {
+          setSent(true);
+          try { form.reset(); } catch (err) {}
+          if (typeof window !== "undefined" && window.scrollTo) window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          setSubmitError(r.data && r.data.message ? r.data.message : "Something went wrong. Please email us directly.");
+        }
+      })
+      .catch(function() {
+        setPending(false);
+        setSubmitError("Network error. Please email us at info@homefrontsolutionsllc.com.");
+      });
+  }
 
   return (
     <>
@@ -4785,34 +4833,55 @@ function ContactPage(props) {
 
           <div className="md:col-span-7 reveal" data-delay="1">
             {!sent ? (
-              <form onSubmit={function(e) { e.preventDefault(); setSent(true); }}>
+              <form onSubmit={submitContact} noValidate>
                 <div style={{ ...monoKicker, color: MUTED, marginBottom: 24 }}>Send a message</div>
+                {/* Honeypot — hidden from humans, catches bots */}
+                <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2">
                   <div>
-                    <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Your name</label>
-                    <input type="text" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                    <label htmlFor="c-name" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Your name</label>
+                    <input id="c-name" name="fullName" type="text" required autoComplete="name" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                   </div>
                   <div>
-                    <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Company</label>
-                    <input type="text" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                    <label htmlFor="c-company" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Company</label>
+                    <input id="c-company" name="company" type="text" autoComplete="organization" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                   </div>
                 </div>
                 <div className="mt-6">
-                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Email</label>
-                  <input type="email" required style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <label htmlFor="c-email" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Email</label>
+                  <input id="c-email" name="email" type="email" required autoComplete="email" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
                 <div className="mt-6">
-                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Markets of interest</label>
-                  <input type="text" placeholder="Nationwide, southeast, or a specific city" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <label htmlFor="c-markets" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Markets of interest</label>
+                  <input id="c-markets" name="markets" type="text" placeholder="Nationwide, southeast, or a specific city" style={inputStyle} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
                 <div className="mt-6">
-                  <label className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Tell us more</label>
-                  <textarea rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
+                  <label htmlFor="c-details" className="block" style={{ ...monoKicker, color: MUTED, marginBottom: 6 }}>Tell us more</label>
+                  <textarea id="c-details" name="details" rows={4} style={Object.assign({}, inputStyle, { resize: "vertical" })} onFocus={function(e) { e.target.style.borderColor = SIGNAL; }} onBlur={function(e) { e.target.style.borderColor = RULE; }} />
                 </div>
-                <button type="submit" className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
-                  Send message
-                  <span aria-hidden="true">→</span>
+
+                {submitError && (
+                  <div role="alert" className="mt-6 p-4 rounded-lg" style={{ background: "rgba(194,90,61,0.08)", border: "1px solid rgba(194,90,61,0.3)", color: "#8A3E28", fontSize: 14 }}>
+                    {submitError} <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>info@homefrontsolutionsllc.com</a>
+                  </div>
+                )}
+
+                <button type="submit" disabled={pending} className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: pending ? SIGNAL_DEEP : SIGNAL, color: "#FFFFFF", border: "none", cursor: pending ? "wait" : "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(30,109,107,0.32)", opacity: pending ? 0.85 : 1 }}>
+                  {pending ? (
+                    <>
+                      <span aria-hidden="true" style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "#FFFFFF", borderRadius: "50%", display: "inline-block", animation: "spin 720ms linear infinite" }} />
+                      Sending…
+                    </>
+                  ) : (
+                    <>
+                      Send message
+                      <span aria-hidden="true">→</span>
+                    </>
+                  )}
                 </button>
+                <p className="mt-4" style={{ fontSize: 12.5, color: MUTED }}>
+                  Or email us directly at <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 500 }}>info@homefrontsolutionsllc.com</a>
+                </p>
               </form>
             ) : (
               <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>

@@ -1912,6 +1912,12 @@ input:-webkit-autofill {
 /* Ensure buttons don't show the tap highlight on iOS */
 a, button { -webkit-tap-highlight-color: transparent; }
 
+/* Spinner — used by the contact form "Sending…" state */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ────────────────────────────────────────────────────────────
    MOBILE POLISH — 768px and below
    Tightens spacing, scales type, reorganizes the coach mock,
