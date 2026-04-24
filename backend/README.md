@@ -8,13 +8,55 @@ Lives on the `backend/fastapi` branch so it can evolve independently of the mark
 
 ## What's here
 
-| Endpoint | Method | Purpose |
+| Endpoint | Auth | Purpose |
 |---|---|---|
-| `/health` | GET | Liveness check |
-| `/auth/login` | POST | Sign a rep in with email + password, issue an HttpOnly JWT cookie |
-| `/auth/logout` | POST | Clear the auth cookie |
-| `/auth/me` | GET | Return the current rep's profile (requires auth) |
-| `/docs` | GET | Interactive OpenAPI docs (FastAPI-generated) |
+| `GET /health` | Public | Liveness check |
+| `GET /` | Public | Service info + docs link |
+| `POST /auth/login` | Public | Sign a rep in. Returns `access_token` + user profile AND sets an HttpOnly cookie |
+| `POST /auth/logout` | Public | Clear the auth cookie |
+| `GET /auth/me` | **Bearer** or cookie | Current rep's profile |
+| `POST /auth/refresh` | **Bearer** or cookie | Issue a new token with a fresh expiry |
+| `GET /me/stats` | **Bearer** or cookie | Example protected endpoint (daily call stats) |
+| `GET /docs` | Public | Interactive OpenAPI docs with an **Authorize** button |
+
+## Authentication model
+
+Every protected endpoint accepts either transport — whichever is easier for the client:
+
+1. **`Authorization: Bearer <token>`** header — preferred for API clients, mobile apps, server-to-server, Postman, curl.
+2. **HttpOnly cookie `hfs_auth`** — used by the browser rep portal. JavaScript can't read it, which closes off XSS-based token theft.
+
+Both flows map to the same `require_rep` dependency in `main.py`, so any new protected route just adds `Depends(require_rep)` and gets both transports for free.
+
+### Get a token
+
+```bash
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@homefrontsolutionsllc.com","password":"hfs-demo-2026"}'
+```
+
+Response:
+```json
+{
+  "ok": true,
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer",
+  "expires_in": 14400,
+  "user": { "id": "rep_000001", "email": "demo@homefrontsolutionsllc.com", "full_name": "Demo Rep", "role": "field_rep", "market": "Greensboro, NC" },
+  "redirect": "/portal"
+}
+```
+
+### Call a protected route
+
+```bash
+TOKEN="eyJhbGciOiJIUzI1NiIs..."
+curl http://localhost:8000/auth/me -H "Authorization: Bearer $TOKEN"
+curl http://localhost:8000/me/stats -H "Authorization: Bearer $TOKEN"
+```
+
+Or, inside Swagger UI at `/docs`, click **Authorize** (top-right) and paste the token — every protected endpoint will then include it automatically.
 
 ---
 
@@ -88,16 +130,42 @@ fly deploy
 
 ---
 
+## Adding a new protected route
+
+Protect every new route by depending on `require_rep`. You get the active rep's row as a dict, and the request is rejected with **401** before your handler runs if no valid Bearer/cookie is present.
+
+```python
+from typing import Annotated
+from fastapi import Depends
+
+@app.get("/me/roleplays", tags=["protected"], dependencies=[Depends(bearer_scheme)])
+def my_roleplays(rep: Annotated[dict, Depends(require_rep)]):
+    return roleplay_service.recent_for(rep["id"])
+```
+
+The `dependencies=[Depends(bearer_scheme)]` line is what surfaces the lock icon + `Authorize` button in Swagger — it doesn't affect runtime (auth is still enforced by `require_rep`).
+
+## Security in place
+
+- **Every protected route requires a valid JWT** (Bearer or cookie). No handler runs without `require_rep` succeeding first.
+- **Rate limit** on `/auth/login`: 10 attempts per (IP, email) per 15 min. 429 with a generic message.
+- **Constant-time auth**: bcrypt verify runs against a dummy hash even when the email doesn't exist, so timing can't enumerate valid accounts.
+- **Production boot guard**: the server refuses to start if `ENV=prod` and `JWT_SECRET` is the placeholder or < 32 chars.
+- **HttpOnly cookie** for browsers — JS can't read the token → XSS-based token theft is blocked.
+- **CORS is allow-listed** to the exact origins in `ALLOWED_ORIGINS`, `allow_credentials=True` only for those origins.
+- **WWW-Authenticate: Bearer** header returned on 401 so clients know how to respond.
+- **Passwords hashed with bcrypt** via passlib, never stored in plaintext, never logged.
+
 ## What's still TODO before real use
 
-- [ ] Replace the in-memory `REPS` dict with a real database (Postgres + SQLAlchemy or SQLModel)
-- [ ] Add rate-limiting on `/auth/login` (fastapi-limiter or an edge WAF rule)
-- [ ] Add password reset flow (`/auth/forgot`, `/auth/reset`) wired to transactional email (Resend, Postmark, SES)
-- [ ] Add new-hire invitation flow (admin generates a setup-link token, rep clicks it and sets their password)
-- [ ] Add an admin portal layer (manager/area-manager roles) for territory assignment + onboarding
-- [ ] Add the actual dashboard endpoints: `/stats/today`, `/stats/week`, `/leaderboard/market/:slug`, `/roleplays/recent`
-- [ ] Add structured logging (JSON to stdout, picked up by host)
-- [ ] Add integration tests (pytest + httpx)
+- [ ] Replace the in-memory `REPS` dict with Postgres + SQLAlchemy / SQLModel
+- [ ] Replace the in-memory rate limiter with Redis + fastapi-limiter (or an edge WAF rule like Cloudflare)
+- [ ] Password reset flow (`/auth/forgot`, `/auth/reset`) wired to transactional email (Resend, Postmark, SES)
+- [ ] New-hire invitation flow (admin generates a setup-link token, rep clicks it and sets their password)
+- [ ] Admin portal layer (manager/area-manager roles) for territory assignment + onboarding
+- [ ] Real dashboard endpoints: `/stats/today`, `/stats/week`, `/leaderboard/market/:slug`, `/roleplays/recent` (all should depend on `require_rep`)
+- [ ] Structured logging (JSON to stdout, scraped by host)
+- [ ] Integration tests (pytest + httpx, including a 401-when-no-token test for every protected route)
 
 ---
 

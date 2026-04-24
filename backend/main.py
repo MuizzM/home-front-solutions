@@ -4,27 +4,38 @@ Home Front Solutions — Rep Portal API
 
 FastAPI backend that powers the HFS Coach rep portal.
 
-Endpoints:
-  POST /auth/login   — sign a rep in with email + password (issues a JWT cookie)
-  POST /auth/logout  — clear the auth cookie
-  GET  /auth/me      — return the current rep's profile (requires auth)
-  GET  /health       — liveness check
+Authentication
+--------------
+Every protected route requires a valid JWT. Two accepted transports:
 
-Run locally:
+  1. Authorization: Bearer <token>        ← preferred for API / mobile / server-to-server
+  2. HttpOnly cookie "hfs_auth"           ← used by the browser rep portal
+
+Both transports map to the SAME dependency (`require_rep`), so any new
+protected route just adds `rep: Annotated[dict, Depends(require_rep)]`
+and gets both flows for free — no route-by-route bookkeeping.
+
+Endpoints
+---------
+Public:
+  GET  /health         — liveness check
+  POST /auth/login     — email + password → returns { access_token, token_type, expires_in, user }
+                         and also sets an HttpOnly cookie for browser clients
+  POST /auth/logout    — clear the cookie
+
+Protected (Bearer token OR cookie required):
+  GET  /auth/me        — current rep's profile
+  POST /auth/refresh   — issue a new token with a fresh expiry
+  GET  /me/stats       — example protected data (daily call stats)
+
+Local run
+---------
   cd backend
   python -m venv .venv && source .venv/bin/activate
   pip install -r requirements.txt
-  cp .env.example .env          # fill in JWT_SECRET, ALLOWED_ORIGINS
+  cp .env.example .env          # set JWT_SECRET, ALLOWED_ORIGINS
   uvicorn main:app --reload --port 8000
-
-Deploy:
-  Any container host (Fly.io, Render, Railway, ECS). The included
-  Dockerfile runs uvicorn on $PORT.
-
-Frontend:
-  The /rep-login form on the marketing site POSTs to
-  `${VITE_API_URL}/auth/login` with { email, password, remember }
-  and credentials: "include" so the HttpOnly cookie sticks.
+  # → http://localhost:8000/docs  (click "Authorize" to paste a bearer token)
 """
 
 from __future__ import annotations
@@ -33,8 +44,17 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Annotated, Optional
 
-from fastapi import Cookie, Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi import (
+    Cookie,
+    Depends,
+    FastAPI,
+    HTTPException,
+    Request,
+    Response,
+    status,
+)
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr, Field
@@ -53,6 +73,7 @@ if os.getenv("ENV", "dev").lower() in {"prod", "production"} and (
         "Refusing to start: JWT_SECRET must be set to a strong random value in production "
         "(>= 32 chars). Generate one with: python -c \"import secrets; print(secrets.token_urlsafe(48))\""
     )
+
 JWT_DEFAULT_MINUTES = int(os.getenv("JWT_DEFAULT_MINUTES", "240"))        # 4 hours
 JWT_REMEMBER_DAYS = int(os.getenv("JWT_REMEMBER_DAYS", "30"))              # "Remember me"
 
@@ -73,8 +94,12 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI(
     title="Home Front Solutions — Rep Portal API",
-    version="0.1.0",
-    description="Authentication + rep profile endpoints for the HFS Coach portal.",
+    version="0.2.0",
+    description=(
+        "Authentication + rep profile endpoints for the HFS Coach portal. "
+        "Every protected route requires a Bearer token (or the equivalent HttpOnly cookie "
+        "set by /auth/login for browser clients)."
+    ),
 )
 
 app.add_middleware(
@@ -85,12 +110,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ──────────────────────────────────────────────────────────────────
+# Security scheme — shows the "Authorize" button in Swagger UI and
+# extracts the Bearer token automatically. auto_error=False so the
+# combined dependency below can fall back to the cookie cleanly.
+# ──────────────────────────────────────────────────────────────────
+bearer_scheme = HTTPBearer(
+    scheme_name="RepBearer",
+    description="Paste the `access_token` returned by `POST /auth/login`.",
+    auto_error=False,
+)
+
 
 # ──────────────────────────────────────────────────────────────────
 # In-memory "database" — replace with Postgres + SQLAlchemy in prod
 # ──────────────────────────────────────────────────────────────────
-# Seed a demo rep so /rep-login has something to authenticate against.
-# Remove/replace before real use.
+# Seed a demo rep so the marketing site's /rep-login page has
+# something to authenticate against during development.
 _demo_password_hash = pwd_context.hash("hfs-demo-2026")
 
 REPS: dict[str, dict] = {
@@ -126,12 +162,22 @@ class RepProfile(BaseModel):
 
 class LoginResponse(BaseModel):
     ok: bool = True
+    access_token: str                    # the Bearer token (also set in HttpOnly cookie)
+    token_type: str = "bearer"
+    expires_in: int                      # seconds until the token expires
     user: RepProfile
     redirect: str = "/portal"
 
 
 class SimpleOk(BaseModel):
     ok: bool = True
+
+
+class DailyStats(BaseModel):
+    doors_knocked: int
+    conversations: int
+    appointments: int
+    close_rate: float
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -162,24 +208,46 @@ def _decode_token(token: str) -> dict:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired session. Please sign in again.",
+            headers={"WWW-Authenticate": 'Bearer realm="hfs-rep-portal"'},
         ) from exc
 
 
-def get_current_rep(
+# ──────────────────────────────────────────────────────────────────
+# Auth dependency — applied to EVERY protected route
+#
+# Accepts either:
+#   Authorization: Bearer <jwt>               (API / mobile / server-to-server)
+#   Cookie: hfs_auth=<jwt>                    (browser rep portal)
+#
+# If neither is present → 401 with WWW-Authenticate so clients can
+# respond correctly. No protected route talks to the database before
+# this dependency has returned a valid, active rep.
+# ──────────────────────────────────────────────────────────────────
+def require_rep(
+    creds: Annotated[Optional[HTTPAuthorizationCredentials], Depends(bearer_scheme)] = None,
     hfs_auth: Annotated[Optional[str], Cookie(alias=COOKIE_NAME)] = None,
 ) -> dict:
-    if not hfs_auth:
+    token: Optional[str] = None
+    if creds and creds.scheme and creds.scheme.lower() == "bearer" and creds.credentials:
+        token = creds.credentials
+    elif hfs_auth:
+        token = hfs_auth
+
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not signed in.",
+            detail="Authentication required. Provide a Bearer token or sign in.",
+            headers={"WWW-Authenticate": 'Bearer realm="hfs-rep-portal"'},
         )
-    claims = _decode_token(hfs_auth)
+
+    claims = _decode_token(token)
     email = claims.get("email")
     rep = REPS.get(email) if email else None
     if not rep or not rep.get("active"):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Account no longer active. Contact your team lead.",
+            headers={"WWW-Authenticate": 'Bearer realm="hfs-rep-portal"'},
         )
     return rep
 
@@ -195,17 +263,8 @@ def _rep_to_profile(rep: dict) -> RepProfile:
 
 
 # ──────────────────────────────────────────────────────────────────
-# Routes
-# ──────────────────────────────────────────────────────────────────
-@app.get("/health")
-def health() -> dict:
-    return {"ok": True, "service": "hfs-rep-portal-api", "version": app.version}
-
-
-# ──────────────────────────────────────────────────────────────────
-# Tiny in-memory rate limiter for /auth/login
-# 10 attempts per (IP, email) per 15 min window. Replace with Redis +
-# fastapi-limiter (or an edge WAF rule) before real traffic.
+# Rate limiter — in-memory, keyed on (client IP, email). Swap for
+# Redis + fastapi-limiter (or an edge WAF rule) before real traffic.
 # ──────────────────────────────────────────────────────────────────
 LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS", "10"))
 LOGIN_WINDOW_SECONDS = int(os.getenv("LOGIN_WINDOW_SECONDS", "900"))  # 15 min
@@ -225,7 +284,24 @@ def _check_login_rate(key: str) -> None:
     _login_hits[key] = hits
 
 
-@app.post("/auth/login", response_model=LoginResponse)
+# ──────────────────────────────────────────────────────────────────
+# Public routes
+# ──────────────────────────────────────────────────────────────────
+@app.get("/health", tags=["public"])
+def health() -> dict:
+    return {"ok": True, "service": "hfs-rep-portal-api", "version": app.version}
+
+
+@app.get("/", tags=["public"])
+def root() -> dict:
+    return {
+        "service": "HFS Rep Portal API",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
+@app.post("/auth/login", response_model=LoginResponse, tags=["auth"])
 def login(body: LoginRequest, request: Request, response: Response) -> LoginResponse:
     # Rate-limit on (client IP, email) to slow credential-stuffing
     client_ip = request.client.host if request.client else "unknown"
@@ -247,6 +323,8 @@ def login(body: LoginRequest, request: Request, response: Response) -> LoginResp
         )
 
     token, max_age = _issue_token(rep["id"], rep["email"], body.remember)
+
+    # Browser clients: set HttpOnly cookie so JS can't read the token.
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
@@ -256,27 +334,82 @@ def login(body: LoginRequest, request: Request, response: Response) -> LoginResp
         samesite=COOKIE_SAMESITE,
         path="/",
     )
-    return LoginResponse(user=_rep_to_profile(rep), redirect="/portal")
+    # API / mobile clients: return the token in the body so they can
+    # use it as a Bearer on subsequent calls.
+    return LoginResponse(
+        access_token=token,
+        expires_in=max_age,
+        user=_rep_to_profile(rep),
+        redirect="/portal",
+    )
 
 
-@app.post("/auth/logout", response_model=SimpleOk)
+@app.post("/auth/logout", response_model=SimpleOk, tags=["auth"])
 def logout(response: Response) -> SimpleOk:
     response.delete_cookie(key=COOKIE_NAME, path="/")
     return SimpleOk()
 
 
-@app.get("/auth/me", response_model=RepProfile)
-def me(rep: Annotated[dict, Depends(get_current_rep)]) -> RepProfile:
+# ──────────────────────────────────────────────────────────────────
+# Protected routes — each one depends on require_rep, so a valid
+# Bearer token (or cookie) is enforced before the handler runs.
+# ──────────────────────────────────────────────────────────────────
+@app.get(
+    "/auth/me",
+    response_model=RepProfile,
+    tags=["protected"],
+    dependencies=[Depends(bearer_scheme)],  # surface the lock icon in Swagger
+)
+def me(rep: Annotated[dict, Depends(require_rep)]) -> RepProfile:
     return _rep_to_profile(rep)
 
 
-# ──────────────────────────────────────────────────────────────────
-# Root
-# ──────────────────────────────────────────────────────────────────
-@app.get("/")
-def root() -> dict:
-    return {
-        "service": "HFS Rep Portal API",
-        "docs": "/docs",
-        "health": "/health",
-    }
+@app.post(
+    "/auth/refresh",
+    response_model=LoginResponse,
+    tags=["protected"],
+    dependencies=[Depends(bearer_scheme)],
+)
+def refresh(
+    rep: Annotated[dict, Depends(require_rep)],
+    response: Response,
+) -> LoginResponse:
+    """Issue a new token (non-remember lifetime) for the current rep."""
+    token, max_age = _issue_token(rep["id"], rep["email"], remember=False)
+    response.set_cookie(
+        key=COOKIE_NAME,
+        value=token,
+        max_age=max_age,
+        httponly=True,
+        secure=COOKIE_SECURE,
+        samesite=COOKIE_SAMESITE,
+        path="/",
+    )
+    return LoginResponse(
+        access_token=token,
+        expires_in=max_age,
+        user=_rep_to_profile(rep),
+        redirect="/portal",
+    )
+
+
+@app.get(
+    "/me/stats",
+    response_model=DailyStats,
+    tags=["protected"],
+    dependencies=[Depends(bearer_scheme)],
+)
+def my_stats(rep: Annotated[dict, Depends(require_rep)]) -> DailyStats:
+    """
+    Example protected endpoint — the CoachMockV2 on the marketing site
+    demonstrates this shape. Real data will come from the rep's CRM
+    rollup once the dashboard pipeline is wired.
+    """
+    # TODO: replace with real aggregation query, scoped to rep["id"].
+    _ = rep  # placeholder until the real source lands
+    return DailyStats(
+        doors_knocked=152,
+        conversations=98,
+        appointments=36,
+        close_rate=36.7,
+    )
