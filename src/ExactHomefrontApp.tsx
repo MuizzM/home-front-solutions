@@ -31,6 +31,59 @@ var CLAY = "#C25A3D";
 var FOREST = SIGNAL;
 var FOREST_SOFT = SIGNAL_SOFT;
 var LOGO = "/logo-transparent.png";
+
+// ── Rep-portal API helpers ─────────────────────────────────────────
+// Every protected call MUST go through apiFetch so the Bearer token
+// is attached automatically. Never bypass this to hit the portal API
+// directly from a component.
+function getApiBase() {
+  if (typeof import.meta !== "undefined" && import.meta && import.meta.env && import.meta.env.VITE_API_URL) {
+    return String(import.meta.env.VITE_API_URL).replace(/\/$/, "");
+  }
+  return "/api";
+}
+
+function getStoredToken() {
+  if (typeof window === "undefined") return null;
+  try {
+    var expiry = window.localStorage.getItem("hfs_token_expires_at") || window.sessionStorage.getItem("hfs_token_expires_at");
+    if (expiry && Date.now() > Number(expiry)) {
+      // Expired — clear it so we don't send a stale token
+      window.localStorage.removeItem("hfs_access_token");
+      window.localStorage.removeItem("hfs_token_expires_at");
+      window.sessionStorage.removeItem("hfs_access_token");
+      window.sessionStorage.removeItem("hfs_token_expires_at");
+      return null;
+    }
+    return window.localStorage.getItem("hfs_access_token") || window.sessionStorage.getItem("hfs_access_token");
+  } catch (e) { return null; }
+}
+
+function clearStoredToken() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem("hfs_access_token");
+    window.localStorage.removeItem("hfs_token_expires_at");
+    window.sessionStorage.removeItem("hfs_access_token");
+    window.sessionStorage.removeItem("hfs_token_expires_at");
+  } catch (e) {}
+}
+
+function apiFetch(path, options) {
+  var opts = options || {};
+  var headers = Object.assign({ Accept: "application/json" }, opts.headers || {});
+  var token = getStoredToken();
+  if (token) headers["Authorization"] = "Bearer " + token;
+  return fetch(getApiBase() + path, Object.assign({}, opts, {
+    headers: headers,
+    // `credentials: include` also sends the HttpOnly cookie as a fallback,
+    // so the backend accepts either transport.
+    credentials: "include"
+  })).then(function(res) {
+    if (res.status === 401) clearStoredToken();
+    return res;
+  });
+}
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
 var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
@@ -5462,6 +5515,15 @@ function RepLoginPage(props) {
       .then(function(r) {
         if (r.ok) {
           setState({ pending: false, error: null, success: true });
+          // Persist the access_token for future Bearer calls (API, mobile wrappers, etc.).
+          // The browser portal itself can keep using the HttpOnly cookie — this is belt-and-suspenders.
+          if (r.data && r.data.access_token && typeof window !== "undefined") {
+            try {
+              var storage = form.remember ? window.localStorage : window.sessionStorage;
+              storage.setItem("hfs_access_token", r.data.access_token);
+              if (r.data.expires_in) storage.setItem("hfs_token_expires_at", String(Date.now() + r.data.expires_in * 1000));
+            } catch (err) { /* storage disabled — cookie is still set, keep going */ }
+          }
           // Redirect to the portal on success (portal app lives on the backend)
           setTimeout(function() {
             if (r.data && r.data.redirect) window.location.href = r.data.redirect;
