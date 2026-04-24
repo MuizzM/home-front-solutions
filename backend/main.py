@@ -44,6 +44,15 @@ from pydantic import BaseModel, EmailStr, Field
 # ──────────────────────────────────────────────────────────────────
 JWT_SECRET = os.getenv("JWT_SECRET", "CHANGE-ME-IN-PROD")
 JWT_ALGORITHM = "HS256"
+
+# Refuse to boot in production with the placeholder secret.
+if os.getenv("ENV", "dev").lower() in {"prod", "production"} and (
+    JWT_SECRET == "CHANGE-ME-IN-PROD" or len(JWT_SECRET) < 32
+):
+    raise RuntimeError(
+        "Refusing to start: JWT_SECRET must be set to a strong random value in production "
+        "(>= 32 chars). Generate one with: python -c \"import secrets; print(secrets.token_urlsafe(48))\""
+    )
 JWT_DEFAULT_MINUTES = int(os.getenv("JWT_DEFAULT_MINUTES", "240"))        # 4 hours
 JWT_REMEMBER_DAYS = int(os.getenv("JWT_REMEMBER_DAYS", "30"))              # "Remember me"
 
@@ -102,7 +111,7 @@ REPS: dict[str, dict] = {
 # Schemas
 # ──────────────────────────────────────────────────────────────────
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: EmailStr = Field(max_length=254)          # RFC 5321 upper bound
     password: str = Field(min_length=6, max_length=256)
     remember: bool = False
 
@@ -193,10 +202,40 @@ def health() -> dict:
     return {"ok": True, "service": "hfs-rep-portal-api", "version": app.version}
 
 
+# ──────────────────────────────────────────────────────────────────
+# Tiny in-memory rate limiter for /auth/login
+# 10 attempts per (IP, email) per 15 min window. Replace with Redis +
+# fastapi-limiter (or an edge WAF rule) before real traffic.
+# ──────────────────────────────────────────────────────────────────
+LOGIN_MAX_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS", "10"))
+LOGIN_WINDOW_SECONDS = int(os.getenv("LOGIN_WINDOW_SECONDS", "900"))  # 15 min
+_login_hits: dict[str, list[float]] = {}
+
+
+def _check_login_rate(key: str) -> None:
+    from time import time as _now
+    now = _now()
+    hits = [t for t in _login_hits.get(key, []) if now - t < LOGIN_WINDOW_SECONDS]
+    if len(hits) >= LOGIN_MAX_ATTEMPTS:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many sign-in attempts. Please try again in a few minutes.",
+        )
+    hits.append(now)
+    _login_hits[key] = hits
+
+
 @app.post("/auth/login", response_model=LoginResponse)
-def login(body: LoginRequest, response: Response) -> LoginResponse:
+def login(body: LoginRequest, request: Request, response: Response) -> LoginResponse:
+    # Rate-limit on (client IP, email) to slow credential-stuffing
+    client_ip = request.client.host if request.client else "unknown"
+    _check_login_rate(f"{client_ip}:{body.email.lower()}")
+
     rep = REPS.get(body.email.lower())
+    # Constant-time response so invalid-email and invalid-password look the same to timing attacks
+    dummy_hash = "$2b$12$0000000000000000000000000000000000000000000000000000"
     if not rep or not rep.get("active"):
+        pwd_context.verify(body.password, dummy_hash)  # spend the cycles anyway
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
