@@ -2758,6 +2758,279 @@ a, button { -webkit-tap-highlight-color: transparent; }
   background: linear-gradient(180deg, var(--blue-primary), var(--signal));
 }
 
+/* "Coming Soon" pill (used next to section eyebrows) */
+.soon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(245,185,66,0.14);
+  color: var(--accent-deep);
+  border: 1px solid rgba(245,185,66,0.32);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.soon-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(245,185,66,0.55);
+  animation: hiringPulse 2.4s ease-in-out infinite;
+}
+
+/* ────────────────────────────────────────────────────────────
+   REP LOGIN — two-panel screen for the HFS Coach portal
+   ──────────────────────────────────────────────────────────── */
+.rep-login {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  margin-top: -92px;
+  padding-top: 0;
+  background: #FFFFFF;
+}
+@media (min-width: 900px) { .rep-login { grid-template-columns: 5fr 7fr; } }
+@media (max-width: 767px) { .rep-login { margin-top: -80px; } }
+
+.rep-login__brand {
+  position: relative;
+  color: #F5F7FA;
+  padding: 112px 36px 40px;
+  background:
+    radial-gradient(700px 360px at 10% 100%, rgba(47,163,158,0.22), transparent 65%),
+    radial-gradient(800px 420px at 95% 10%, rgba(37,99,235,0.24), transparent 65%),
+    linear-gradient(145deg, #081A2E 0%, #0B2540 50%, #11405A 100%);
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+}
+.rep-login__brand::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 4px 4px;
+  pointer-events: none;
+  z-index: 0;
+}
+.rep-login__brand > * { position: relative; z-index: 1; }
+@media (min-width: 900px) { .rep-login__brand { padding: 132px 56px 48px; } }
+@media (max-width: 767px) { .rep-login__brand { padding: 100px 24px 36px; min-height: 360px; } }
+
+.rep-login__home { display: inline-flex; align-items: center; gap: 10px; width: fit-content; }
+
+.rep-login__pitch { max-width: 44ch; }
+.rep-login__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(245,185,66,0.14);
+  border: 1px solid rgba(245,185,66,0.36);
+  color: #F5B942;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.rep-login__tag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F5B942;
+  animation: hiringPulse 2s ease-in-out infinite;
+}
+.rep-login__title {
+  font-family: "Geist", "Inter", sans-serif;
+  font-size: clamp(2.2rem, 4.2vw, 3.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 16px;
+}
+.rep-login__sub {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: rgba(245,247,250,0.76);
+  margin-bottom: 20px;
+}
+.rep-login__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.rep-login__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(245,247,250,0.88);
+}
+.rep-login__check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(74,130,236,0.24);
+  color: #8AB0F2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Right panel (the form card) */
+.rep-login__panel {
+  padding: 112px 24px 40px;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+@media (min-width: 900px) { .rep-login__panel { padding: 132px 48px 48px; } }
+
+.rep-login__card {
+  width: 100%;
+  max-width: 440px;
+  background: #FFFFFF;
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  padding: 36px 32px 32px;
+  box-shadow: 0 24px 60px rgba(11,37,64,0.08);
+}
+.rep-login__heading {
+  font-family: "Geist", "Inter", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.rep-login__helper { font-size: 13.5px; line-height: 1.55; color: var(--muted); }
+.rep-login__helper a { color: var(--blue-primary); font-weight: 600; text-decoration: none; }
+.rep-login__helper a:hover { text-decoration: underline; }
+
+.rep-login__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.rep-login__input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--ink);
+  background: #FBFDFF;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+.rep-login__input:focus {
+  outline: none;
+  border-color: var(--blue-primary);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+}
+.rep-login__input[aria-invalid="true"] {
+  border-color: #DC2626;
+  background: rgba(220,38,38,0.04);
+}
+
+.rep-login__remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.rep-login__remember input {
+  width: 16px; height: 16px;
+  accent-color: var(--blue-primary);
+  cursor: pointer;
+}
+.rep-login__forgot { font-size: 13px; color: var(--blue-primary); font-weight: 500; text-decoration: none; }
+.rep-login__forgot:hover { text-decoration: underline; }
+
+.rep-login__alert {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(220,38,38,0.06);
+  border: 1px solid rgba(220,38,38,0.22);
+  color: #A6472D;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.rep-login__success {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(30,109,107,0.06);
+  border: 1px solid rgba(30,109,107,0.22);
+  color: var(--signal-deep);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.rep-login__submit {
+  width: 100%;
+  margin-top: 22px;
+  min-height: 50px;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.rep-login__submit:disabled { opacity: 0.85; cursor: wait; }
+
+.rep-login__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 720ms linear infinite;
+}
+
+.rep-login__notice {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.rep-login__notice a { color: var(--blue-primary); font-weight: 600; text-decoration: none; }
+.rep-login__notice a:hover { text-decoration: underline; }
+
+.rep-login__footer {
+  font-size: 12px;
+  color: var(--subtle);
+  text-align: center;
+}
+.rep-login__footer a { color: var(--muted); text-decoration: none; }
+.rep-login__footer a:hover { color: var(--blue-primary); }
+
 /* Footer US-map silhouette */
 .footer-v2 { position: relative; overflow: hidden; }
 .footer-v2__map {

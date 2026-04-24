@@ -1418,6 +1418,7 @@ function getPathForRoute(name, slug) {
   if (name === "contact") return "/contact";
   if (name === "privacy") return "/privacy";
   if (name === "terms") return "/terms";
+  if (name === "rep-login") return "/rep-login";
   return "/";
 }
 
@@ -1758,6 +1759,7 @@ function getRouteFromPath(pathname) {
   if (cleanPath === "/contact") return { name: "contact", slug: null };
   if (cleanPath === "/privacy") return { name: "privacy", slug: null };
   if (cleanPath === "/terms") return { name: "terms", slug: null };
+  if (cleanPath === "/rep-login" || cleanPath === "/login" || cleanPath === "/signin") return { name: "rep-login", slug: null };
   if (parts[0] === "careers" && parts[1] && parts[2] === "apply" && parts[3] === "thank-you") {
     return { name: "thank-you", slug: parts[1] };
   }
@@ -2110,7 +2112,7 @@ function Footer(props) {
         </div>
 
         <div className="pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2025 Home Front Solutions LLC. All rights reserved.</div>
+          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2026 Home Front Solutions LLC. All rights reserved.</div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ fontSize: 12.5 }}>
             <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Privacy Policy</a>
             <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Terms of Service</a>
@@ -3073,10 +3075,16 @@ function HomePage(props) {
       <section className="coach-panel">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 reveal">
-            <div className="coach-panel__eyebrow">AI-Powered Advantage</div>
-            <h2 className="section-h2 mt-2">HFS Coach<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
-            <p className="mt-4 mb-7" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "32ch" }}>
-              Our AI training and coaching platform turns good reps into top performers.
+            <div className="flex items-center gap-2 mb-3">
+              <div className="coach-panel__eyebrow">AI-Powered Advantage</div>
+              <span className="soon-badge" aria-label="Coming soon">
+                <span className="soon-badge__dot" aria-hidden="true" />
+                Coming Soon
+              </span>
+            </div>
+            <h2 className="section-h2">HFS Coach <span style={{ color: MUTED, fontWeight: 500 }}>/</span> Rep Portal<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
+            <p className="mt-4 mb-6" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "38ch" }}>
+              Our AI training platform and rep portal. Real-time call feedback, AI roleplays, leaderboards, and live dashboards — launching for active reps soon.
             </p>
             <ul className="coach-panel__features">
               {coachFeatures.map(function(f) {
@@ -3090,15 +3098,26 @@ function HomePage(props) {
                 );
               })}
             </ul>
-            <a
-              href="/why-us"
-              onClick={function(e) { handleNavClick(e, props.go, "why-us"); }}
-              className="btn-outline-blue mt-8 inline-flex items-center gap-2 px-6 rounded-full font-medium"
-              style={{ minHeight: 46, fontSize: 14 }}
-            >
-              See HFS Coach in Action
-              <span aria-hidden="true">→</span>
-            </a>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="/rep-login"
+                onClick={function(e) { handleNavClick(e, props.go, "rep-login"); }}
+                className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+                Rep Sign In
+              </a>
+              <a
+                href="/careers"
+                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Join the waitlist
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
           <div className="lg:col-span-7 reveal" data-delay="1">
             <CoachMockV2 />
@@ -5341,6 +5360,189 @@ function TermsPage(props) {
   );
 }
 
+// ── REP LOGIN PAGE ───────────────────────────────────────────────
+// Frontend-only login screen for the HFS Coach rep portal.
+// POSTs to the FastAPI backend at VITE_API_URL/auth/login (or /api/auth/login).
+// Backend lives on the `backend/fastapi` branch.
+function RepLoginPage(props) {
+  var _f = useState({ email: "", password: "", remember: true });
+  var form = _f[0]; var setForm = _f[1];
+  var _s = useState({ pending: false, error: null, success: false });
+  var state = _s[0]; var setState = _s[1];
+
+  function update(field) {
+    return function(e) {
+      var v = field === "remember" ? e.target.checked : e.target.value;
+      setForm(function(prev) { var next = Object.assign({}, prev); next[field] = v; return next; });
+    };
+  }
+
+  function submit(e) {
+    e.preventDefault();
+    if (state.pending) return;
+
+    // Lightweight client-side validation
+    var emailTrim = (form.email || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) {
+      setState({ pending: false, error: "Please enter a valid email", success: false });
+      return;
+    }
+    if (!form.password || form.password.length < 6) {
+      setState({ pending: false, error: "Password must be at least 6 characters", success: false });
+      return;
+    }
+
+    setState({ pending: true, error: null, success: false });
+
+    // Backend lives on the `backend/fastapi` branch.
+    // Point VITE_API_URL at it when you deploy, otherwise fall back to /api.
+    var apiBase = (typeof import.meta !== "undefined" && import.meta && import.meta.env && import.meta.env.VITE_API_URL) ? import.meta.env.VITE_API_URL : "/api";
+    fetch(apiBase.replace(/\/$/, "") + "/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ email: emailTrim, password: form.password, remember: form.remember }),
+      credentials: "include"
+    })
+      .then(function(res) {
+        if (res.ok) return res.json().then(function(d) { return { ok: true, data: d }; });
+        return res.json().then(function(d) { return { ok: false, data: d }; }).catch(function() { return { ok: false, data: { detail: "Invalid email or password" } }; });
+      })
+      .then(function(r) {
+        if (r.ok) {
+          setState({ pending: false, error: null, success: true });
+          // Redirect to the portal on success (portal app lives on the backend)
+          setTimeout(function() {
+            if (r.data && r.data.redirect) window.location.href = r.data.redirect;
+            else window.location.href = "/portal";
+          }, 400);
+        } else {
+          setState({ pending: false, error: (r.data && (r.data.detail || r.data.message)) || "Invalid email or password", success: false });
+        }
+      })
+      .catch(function() {
+        setState({
+          pending: false,
+          error: "The rep portal isn't live yet — we're launching soon. Meanwhile, email info@homefrontsolutionsllc.com if you need access.",
+          success: false
+        });
+      });
+  }
+
+  return (
+    <section className="rep-login">
+      {/* Left panel — navy brand + pitch */}
+      <aside className="rep-login__brand">
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="rep-login__home" aria-label="Back to Home Front Solutions">
+          <BrandLockup onDark={true} />
+        </a>
+        <div className="rep-login__pitch">
+          <span className="rep-login__tag">
+            <span className="rep-login__tag-dot" aria-hidden="true" />
+            Rep Portal · Coming Soon
+          </span>
+          <h1 className="rep-login__title">
+            Welcome back<span style={{ color: "#F5B942" }}>.</span>
+          </h1>
+          <p className="rep-login__sub">
+            HFS Coach — real-time call feedback, AI roleplays, leaderboards, and the dashboard your team lead sees. All in one place.
+          </p>
+          <ul className="rep-login__list">
+            {[
+              "Track knocks, conversations, and closes",
+              "Practice pitches with AI, get graded in real time",
+              "See where you sit on the market leaderboard",
+              "Book ride-alongs with your team lead"
+            ].map(function(line) {
+              return (
+                <li key={line}>
+                  <span className="rep-login__check" aria-hidden="true">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+                  </span>
+                  {line}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </aside>
+
+      {/* Right panel — sign-in card */}
+      <div className="rep-login__panel">
+        <div className="rep-login__card">
+          <h2 className="rep-login__heading">Rep Sign In</h2>
+          <p className="rep-login__helper">Sign in to the HFS Coach rep portal. Don't have an account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply to join the team</a>.</p>
+
+          <form onSubmit={submit} noValidate className="mt-6">
+            {/* Honeypot */}
+            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} />
+
+            <label htmlFor="rl-email" className="rep-login__label">Email</label>
+            <input
+              id="rl-email"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              required
+              value={form.email}
+              onChange={update("email")}
+              placeholder="you@homefrontsolutionsllc.com"
+              className="rep-login__input"
+              aria-invalid={!!state.error}
+            />
+
+            <label htmlFor="rl-password" className="rep-login__label mt-5">Password</label>
+            <input
+              id="rl-password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={form.password}
+              onChange={update("password")}
+              placeholder="Your password"
+              className="rep-login__input"
+              aria-invalid={!!state.error}
+            />
+
+            <div className="flex items-center justify-between mt-5">
+              <label className="rep-login__remember">
+                <input type="checkbox" checked={form.remember} onChange={update("remember")} />
+                <span>Remember me</span>
+              </label>
+              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="rep-login__forgot">Forgot password?</a>
+            </div>
+
+            {state.error && (
+              <div role="alert" className="rep-login__alert">{state.error}</div>
+            )}
+            {state.success && (
+              <div role="status" className="rep-login__success">Signed in. Redirecting to the portal…</div>
+            )}
+
+            <button type="submit" disabled={state.pending} className="btn-blue rep-login__submit">
+              {state.pending ? (
+                <>
+                  <span aria-hidden="true" className="rep-login__spinner" />
+                  Signing in…
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <span aria-hidden="true">→</span>
+                </>
+              )}
+            </button>
+
+            <p className="rep-login__notice">
+              New hire? Check your email for a setup link from <strong style={{ color: INK }}>noreply@homefrontsolutionsllc.com</strong>. No account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply here</a>.
+            </p>
+          </form>
+        </div>
+        <p className="rep-login__footer">© 2026 Home Front Solutions LLC · <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }}>Privacy</a> · <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }}>Terms</a></p>
+      </div>
+    </section>
+  );
+}
+
 // Build-time dates so Google for Jobs sees fresh postings every deploy.
 // datePosted rotates to the most recent Monday (<= 30 days old), validThrough stays 90 days forward.
 function getJobDates() {
@@ -6174,7 +6376,7 @@ export default function App(props) {
       }}>Skip to main content</a>
 
       <ScrollProgress />
-      <Header go={go} route={route} onDark={false} />
+      {route.name !== "rep-login" && <Header go={go} route={route} onDark={false} />}
 
       <main id="main" key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER, outline: "none" }}>
         {route.name === "home" && <HomePage go={go} />}
@@ -6191,15 +6393,16 @@ export default function App(props) {
         {route.name === "contact" && <ContactPage go={go} />}
         {route.name === "privacy" && <PrivacyPage go={go} />}
         {route.name === "terms" && <TermsPage go={go} />}
+        {route.name === "rep-login" && <RepLoginPage go={go} />}
       </main>
 
-      <Footer go={go} />
+      {route.name !== "rep-login" && <Footer go={go} />}
 
       {/* Floating scroll-to-top — fades in after ~600 px of scroll */}
-      <ScrollTop />
+      {route.name !== "rep-login" && <ScrollTop />}
 
       {/* Sticky mobile CTA dock — phones only, hides when native nav menu is open */}
-      <MobileStickyCTA go={go} route={route} />
+      {route.name !== "rep-login" && <MobileStickyCTA go={go} route={route} />}
     </div>
   );
 }
