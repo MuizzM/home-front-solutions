@@ -2200,6 +2200,17 @@ function StatIcon(props) {
   return null;
 }
 
+// HFS Coach module mini-card icons
+function CoachModuleIcon(props) {
+  var kind = props.kind;
+  var common = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "mic")    return <svg {...common}><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11 V12 A7 7 0 0 0 19 12 V11"/><path d="M12 19 V22"/><path d="M8 22 H16"/></svg>;
+  if (kind === "chat")   return <svg {...common}><path d="M3 6 H21 V16 H10 L5 20 V16 H3 Z"/><path d="M7 10 H16" opacity="0.55"/><path d="M7 13 H13" opacity="0.55"/></svg>;
+  if (kind === "trophy") return <svg {...common}><path d="M7 4 H17 V9 A5 5 0 0 1 7 9 Z"/><path d="M7 6 H3 V8 A4 4 0 0 0 7 12"/><path d="M17 6 H21 V8 A4 4 0 0 1 17 12"/><path d="M10 14 H14 L13 19 H11 Z"/><path d="M8 22 H16"/></svg>;
+  if (kind === "chart")  return <svg {...common}><rect x="3" y="4.5" width="18" height="14" rx="1.2"/><path d="M6 14 L10 10 L13 12 L17 7"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/><path d="M7 21 H17"/></svg>;
+  return null;
+}
+
 // Career-perk icons used in the recruiting band
 function PerkIcon(props) {
   var kind = props.kind;
@@ -2835,11 +2846,11 @@ function HomePage(props) {
     { num: "2", icon: "shake", title: "We close with confidence.", body: "Our reps qualify, present, and close with clarity — backed by proven scripts and live support." },
     { num: "3", icon: "bar",   title: "You own the numbers.",      body: "Real-time reporting, verified leads, and appointments you can track from door to deal." }
   ];
-  var coachFeatures = [
-    "Real-time call feedback",
-    "AI roleplay & objection handling",
-    "Leaderboards & performance insights",
-    "Data that drives results"
+  var coachModules = [
+    { icon: "mic",    title: "Live call coaching",        body: "Every pitch scored in real time. Weak spots flagged before the next door." },
+    { icon: "chat",   title: "AI roleplay",               body: "Practice the objection at 11pm. Knock it at 9am." },
+    { icon: "trophy", title: "Market leaderboards",        body: "See where you sit. Who&rsquo;s ahead. What&rsquo;s working this week." },
+    { icon: "chart",  title: "Dashboards that drive work", body: "Live knocks, closes, and installs — not a monthly slide deck." }
   ];
   var cities = [
     { region: "Greensboro",     slug: "greensboro-nc" },
@@ -2872,12 +2883,12 @@ function HomePage(props) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             <div className="lg:col-span-6">
               <h1 className="home-hero__title">
-                <span className="word-reveal word-reveal--inline">Home services</span>{" "}
-                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms" }}>growth, built</span>{" "}
-                <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "200ms" }}>face to face.</span>
+                <span className="word-reveal word-reveal--inline">Face-to-face sales</span>{" "}
+                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "120ms" }}>that grow</span>{" "}
+                <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "240ms" }}>home service brands.</span>
               </h1>
-              <p className="home-hero__lead word-reveal" style={{ animationDelay: "380ms" }}>
-                Nationwide door-to-door teams for fiber, security, solar, and home services. <strong style={{ color: INK, fontWeight: 600 }}>We&rsquo;re hiring coachable reps in 28+ markets</strong> — six-figure first-year earnings, paid certification, a real path to leadership.
+              <p className="home-hero__lead word-reveal" style={{ animationDelay: "400ms" }}>
+                Real conversations. Real customers. Real growth. Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win.
               </p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "480ms" }}>
                 <Magnetic strength={0.2}>
@@ -2952,8 +2963,8 @@ function HomePage(props) {
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-16 md:pb-20">
           <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">Services We Represent</h2>
-            <p className="section-sub">Top home services. High intent customers. Real results.</p>
+            <h2 className="section-h2">The brands we knock for.</h2>
+            <p className="section-sub">Six categories. One disciplined field team.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 reveal" data-delay="1">
             {services.map(function(s) {
@@ -2974,12 +2985,54 @@ function HomePage(props) {
         </div>
       </section>
 
+      {/* ── WHY FACE-TO-FACE STILL WINS — persuasion block ── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24" style={{ borderTop: "1px solid " + RULE }}>
+          <div className="reveal grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end mb-12">
+            <div className="lg:col-span-7">
+              <h2 className="section-h2">Why face-to-face still wins.</h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="section-sub" style={{ marginTop: 0 }}>
+                Clicks and impressions don&rsquo;t install fiber, set alarms, or mount panels. People do — and the home is still the most personal purchase your customer makes.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
+            <article className="reason-card">
+              <span className="reason-card__i" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+              </span>
+              <h3 className="reason-card__h">Trust moves faster in person.</h3>
+              <p className="reason-card__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
+            </article>
+
+            <article className="reason-card">
+              <span className="reason-card__i" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6 C 4 4.5, 5 4, 6 4 H18 C 19 4, 20 4.5, 20 6 V16 C 20 17, 19 17.5, 18 17.5 H10 L5 21 L5 17.5 C 4.5 17.5, 4 17, 4 16 Z"/><path d="M8 9 H16"/><path d="M8 13 H13"/></svg>
+              </span>
+              <h3 className="reason-card__h">Real objections, handled on the spot.</h3>
+              <p className="reason-card__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
+            </article>
+
+            <article className="reason-card">
+              <span className="reason-card__i" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19 V8"/><path d="M10 19 V12"/><path d="M16 19 V4"/><path d="M2 19 H22"/><path d="M4 11 L10 7 L16 9" opacity="0.7"/></svg>
+              </span>
+              <h3 className="reason-card__h">You pay for installs, not impressions.</h3>
+              <p className="reason-card__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       {/* ── HOW IT WORKS ─────────────────────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
           <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">How It Works</h2>
-            <p className="section-sub">Simple process. Serious results.</p>
+            <h2 className="section-h2">The growth process.</h2>
+            <p className="section-sub">Three disciplines. One market. Measured every day.</p>
           </div>
           <div className="how-flow reveal" data-delay="1">
             {(function() {
@@ -3021,7 +3074,7 @@ function HomePage(props) {
             <div className="career-band__eyebrow">For Sales Reps</div>
             <h2 className="section-h2" style={{ color: "#F5F7FA" }}>Your career. Your earnings.</h2>
             <p className="section-sub" style={{ color: "rgba(245,247,250,0.72)", marginTop: 10 }}>
-              A real path from first door to area manager. Paid training, weekly commission, promotion from within.
+              Paid training. Weekly commission. Promotion from within. No politics, no favorites — hit the numbers, the next role opens.
             </p>
           </div>
           <div className="career-ladder reveal" data-delay="1">
@@ -3086,18 +3139,17 @@ function HomePage(props) {
             <p className="mt-4 mb-6" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "38ch" }}>
               Our AI training platform and rep portal. Real-time call feedback, AI roleplays, leaderboards, and live dashboards — launching for active reps soon.
             </p>
-            <ul className="coach-panel__features">
-              {coachFeatures.map(function(f) {
+            <div className="coach-modules">
+              {coachModules.map(function(m) {
                 return (
-                  <li key={f}>
-                    <span className="coach-panel__check" aria-hidden="true">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
-                    </span>
-                    {f}
-                  </li>
+                  <div key={m.title} className="coach-module">
+                    <span className="coach-module__i" aria-hidden="true"><CoachModuleIcon kind={m.icon} /></span>
+                    <h4 className="coach-module__h">{m.title}</h4>
+                    <p className="coach-module__p" dangerouslySetInnerHTML={{ __html: m.body }} />
+                  </div>
                 );
               })}
-            </ul>
+            </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="/rep-login"
@@ -3129,8 +3181,8 @@ function HomePage(props) {
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <h2 className="section-h2">Built by reps, for reps.</h2>
-            <p className="section-sub">Every leader at HFS started on the doorstep. Here&rsquo;s what the team says about the work.</p>
+            <h2 className="section-h2">Built by reps. Run by reps.</h2>
+            <p className="section-sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
             {[
@@ -3202,8 +3254,8 @@ function HomePage(props) {
       <section style={{ background: PAPER_DEEP }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <h2 className="section-h2">Why Home Front</h2>
-            <p className="section-sub">We build stronger brands and stronger teams — together.</p>
+            <h2 className="section-h2">Built for operators that need more than clicks.</h2>
+            <p className="section-sub">Stronger brands. Stronger teams. Measured in installs, not impressions.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
             {values.map(function(v) {
