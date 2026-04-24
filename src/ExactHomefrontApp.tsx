@@ -2751,32 +2751,34 @@ function CheckDot() {
 
 // Shared navy hero band for every non-home page so the whole site carries the
 // same premium navy + gold energy as the landing page.
+// Shared page hero — white/light band with navy headline, blue eyebrow,
+// teal italic accent, and optional blue CTAs. Matches the new home style.
 function PageHero(props) {
   var eyebrow = props.eyebrow;
   var title = props.title;
   var subtitle = props.subtitle;
-  var accentWord = props.accentWord;     // optional — renders in italic gold if provided
+  var accentWord = props.accentWord;     // optional — renders in italic teal if provided
   var actions = props.actions;           // optional ReactNode for CTAs
   return (
-    <section className="hero-navy page-hero">
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-16 md:pb-20">
+    <section className="page-hero-light">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-20 pb-14 md:pb-16">
         {eyebrow && (
-          <div className="page-hero__eyebrow" aria-label={eyebrow}>{eyebrow}</div>
+          <div className="page-hero-light__eyebrow">{eyebrow}</div>
         )}
-        <h1 className="page-hero__title" style={{ fontFamily: "Geist, Inter, sans-serif" }}>
+        <h1 className="page-hero-light__title">
           {title}
           {accentWord ? (
             <>
               {" "}
-              <span className="page-hero__accent" style={{ ...serif }}>{accentWord}</span>
+              <span className="page-hero-light__accent" style={{ ...serif }}>{accentWord}</span>
             </>
           ) : null}
         </h1>
         {subtitle && (
-          <p className="page-hero__subtitle">{subtitle}</p>
+          <p className="page-hero-light__subtitle">{subtitle}</p>
         )}
         {actions && (
-          <div className="page-hero__actions">{actions}</div>
+          <div className="page-hero-light__actions">{actions}</div>
         )}
       </div>
     </section>
@@ -3177,7 +3179,7 @@ function WhatWeDoPage(props) {
           ].map(function(item) {
             return (
               <div key={item.n}>
-                <span className="text-xs" style={{ color: GOLD_DEEP, fontWeight: 700, letterSpacing: "0.1em" }}>{item.n}</span>
+                <span className="text-xs" style={{ color: BLUE_PRIMARY, fontWeight: 700, letterSpacing: "0.1em" }}>{item.n}</span>
                 <h2 className="mt-2 mb-3" style={{ ...serif, fontSize: 24, color: INK, letterSpacing: "-0.02em" }}>{item.t}</h2>
                 <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{item.d}</p>
               </div>
@@ -3213,7 +3215,7 @@ function WhyUsPage(props) {
           {principles.map(function(r, i) {
             return (
               <div key={r.t}>
-                <div style={{ ...monoKicker, color: i % 2 === 0 ? SIGNAL : GOLD_DEEP, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</div>
                 <h3 className="mb-3" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>{r.t}</h3>
                 <p style={{ fontSize: 15, lineHeight: 1.72, color: MUTED }}>{r.d}</p>
               </div>
@@ -3227,7 +3229,7 @@ function WhyUsPage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 reveal">
             <div className="lg:col-span-7">
-              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>How we run it</div>
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 18 }}>How we run it</div>
               <h2 className="display" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
                 Three things, every day, the same way.
               </h2>
@@ -3260,7 +3262,7 @@ function WhyUsPage(props) {
       <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-start">
           <div className="lg:col-span-6 reveal">
-            <div style={{ ...monoKicker, color: GOLD_DEEP, marginBottom: 18 }}>How we train</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 18 }}>How we train</div>
             <h2 className="display mb-6" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
               Reps practice on AI before they ever knock a real door.
             </h2>
@@ -3272,7 +3274,7 @@ function WhyUsPage(props) {
             </p>
           </div>
           <div className="lg:col-span-6 reveal" data-delay="1">
-            <div style={{ ...monoKicker, color: SIGNAL_DEEP, marginBottom: 22 }}>Six-module certification</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 22 }}>Six-module certification</div>
             <ol className="space-y-0" style={{ borderTop: "1px solid " + RULE, listStyle: "none", margin: 0, padding: 0 }}>
               {[
                 ["The product", "Offer basics, who it's for, pricing, and install flow."],
@@ -3284,7 +3286,7 @@ function WhyUsPage(props) {
               ].map(function(item, i) {
                 return (
                   <li key={item[0]} className="grid items-start" style={{ gridTemplateColumns: "44px minmax(0,1fr)", gap: 20, padding: "20px 0", borderBottom: "1px solid " + RULE }}>
-                    <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                     <div>
                       <div style={{ ...serif, fontSize: 18, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{item[0]}</div>
                       <div className="mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.6, color: MUTED }}>{item[1]}</div>
@@ -3301,7 +3303,7 @@ function WhyUsPage(props) {
       <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32" style={{ borderTop: "1px solid " + RULE }}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           <div className="lg:col-span-4 reveal">
-            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Frequently asked</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 18 }}>Frequently asked</div>
             <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
               Real questions, straight answers.
             </h2>
@@ -3313,7 +3315,7 @@ function WhyUsPage(props) {
             {HOME_FAQS.map(function(item, i) {
               return (
                 <div key={item.q} className="grid items-start" style={{ gridTemplateColumns: "44px minmax(0,1fr)", gap: 24, padding: "28px 0", borderBottom: "1px solid " + RULE }}>
-                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                  <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                   <div>
                     <h3 className="mb-3" style={{ ...serif, fontSize: "clamp(1.225rem, 2vw, 1.5rem)", lineHeight: 1.18, color: INK, letterSpacing: "-0.018em", fontWeight: 440 }}>{item.q}</h3>
                     <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>{item.a}</p>
@@ -3376,7 +3378,7 @@ function CareersIndexPage(props) {
             <a
               href="#open-positions"
               onClick={function(e) { e.preventDefault(); var el = document.getElementById("open-positions"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-              className="btn-gold inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
               See open roles
@@ -3387,10 +3389,8 @@ function CareersIndexPage(props) {
               onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
               target={BOOKING_URL ? "_blank" : undefined}
               rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
-              style={{ background: "transparent", color: "#F5F7FA", border: "1px solid rgba(245,247,250,0.32)", minHeight: 48, fontSize: 14 }}
-              onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,247,250,0.08)"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.6)"; }}
-              onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.32)"; }}
+              className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ minHeight: 48, fontSize: 14 }}
             >
               Talk to us
             </a>
@@ -3419,7 +3419,7 @@ function CareersIndexPage(props) {
           </div>
           <aside className="lg:col-span-5 reveal" data-delay="1">
             <figure style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20, padding: 32 }}>
-              <div style={{ ...monoKicker, color: GOLD_DEEP, marginBottom: 22 }}>From the founder</div>
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 22 }}>From the founder</div>
               <blockquote style={{ ...serif, fontSize: 19, lineHeight: 1.4, color: INK, letterSpacing: "-0.015em", fontWeight: 420, margin: 0 }}>
                 We hire for character first, experience second. Show up, stay coachable, treat people with respect. We'll handle the training, the territory, and the support.
               </blockquote>
@@ -3440,7 +3440,7 @@ function CareersIndexPage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="flex flex-wrap items-end justify-between gap-6 mb-12 reveal">
             <div>
-              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 16 }}>Open positions · {JOBS.length} roles</div>
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 16 }}>Open positions · {JOBS.length} roles</div>
               <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
                 Currently hiring.
               </h2>
@@ -3462,7 +3462,7 @@ function CareersIndexPage(props) {
                         <span>·</span>
                         <span>{job.type}</span>
                         <span>·</span>
-                        <span style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
+                        <span style={{ color: BLUE_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
                       </div>
                       <p className="mt-3 max-w-2xl hidden md:block" style={{ fontSize: 14, color: MUTED, lineHeight: 1.65 }}>{job.pitch}</p>
                     </div>
@@ -3530,7 +3530,7 @@ function CareersIndexPage(props) {
                 onMouseLeave={function(e) { e.currentTarget.style.background = SURF; }}
               >
                 <div className="flex items-center justify-between mb-8">
-                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")} / {market.region}</span>
+                  <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")} / {market.region}</span>
                   <span aria-hidden="true" style={{ fontSize: 16, color: MUTED, transition: "transform 260ms ease", display: "inline-block" }}>→</span>
                 </div>
                 <h3 className="mb-3" style={{ ...serif, fontSize: 22, lineHeight: 1.14, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{market.headline || market.region}</h3>
@@ -3698,7 +3698,7 @@ function JobDetailPage(props) {
       <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-12 md:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
           <div className="lg:col-span-8 reveal">
-            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 20 }}>{job.location} · {job.type}</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 20 }}>{job.location} · {job.type}</div>
             <h1 className="display mb-6" style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.5rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>{job.title}</h1>
             <p className="max-w-3xl" style={{ fontSize: "clamp(1.05rem, 1.3vw, 1.18rem)", color: MUTED, lineHeight: 1.62 }}>
               {job.pitch} Built for people who want real upside, real territory responsibility, and a clean path into leadership if they can produce.
@@ -3752,7 +3752,7 @@ function JobDetailPage(props) {
                 {job.responsibilities.map(function(item, i) {
                   return (
                     <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.responsibilities.length - 1 ? "none" : "1px solid " + RULE }}>
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                       <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
@@ -3766,7 +3766,7 @@ function JobDetailPage(props) {
                 {job.qualifications.map(function(item, i) {
                   return (
                     <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.qualifications.length - 1 ? "none" : "1px solid " + RULE }}>
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                       <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
@@ -3780,7 +3780,7 @@ function JobDetailPage(props) {
                 {job.benefits.map(function(item, i) {
                   return (
                     <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.benefits.length - 1 ? "none" : "1px solid " + RULE }}>
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                       <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
@@ -3841,7 +3841,7 @@ function JobDetailPage(props) {
                       onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(14,14,12,0.18)"; }}
                       onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = RULE; }}
                     >
-                      <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>{article.eyebrow}</div>
+                      <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>{article.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 19, lineHeight: 1.18, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{article.title}</div>
                       <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{article.description}</p>
                     </a>
@@ -3854,7 +3854,7 @@ function JobDetailPage(props) {
           <aside className="lg:col-span-4">
             <div className="lg:sticky lg:top-32">
               <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
-                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>Apply</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>Apply</div>
                 <h3 className="mb-4" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>Ready to join the team?</h3>
                 <p style={{ fontSize: 14.5, color: MUTED, lineHeight: 1.68, marginBottom: 24 }}>Application takes about 5 minutes. We respond within 48 hours with direct next steps if there's a fit.</p>
                 <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
@@ -4452,7 +4452,7 @@ function MarketPage(props) {
                   {marketProof.map(function(item) {
                     return (
                       <div key={item.label} className="p-5" style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16 }}>
-                        <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{item.label}</div>
+                        <div className="text-[10px] uppercase mb-2" style={{ color: BLUE_PRIMARY, letterSpacing: "0.14em", fontWeight: 800 }}>{item.label}</div>
                         <div className="text-sm leading-[1.8]" style={{ color: INK, fontWeight: 600 }}>{item.value}</div>
                       </div>
                     );
@@ -4535,7 +4535,7 @@ function MarketPage(props) {
                       className="p-5 text-left block"
                       style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
                     >
-                      <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
+                      <div className="text-[10px] uppercase mb-2" style={{ color: BLUE_PRIMARY, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{article.title}</div>
                       <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
                     </a>
@@ -4670,7 +4670,7 @@ function InsightsIndexPage(props) {
           <section key={topic.id} id={"topic-" + topic.id} className="max-w-[1280px] mx-auto px-6 md:px-12 pt-14 md:pt-20 pb-4 scroll-mt-24">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-10 reveal">
               <div className="lg:col-span-7">
-                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>{topic.kicker}</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>{topic.kicker}</div>
                 <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: INK }}>{topic.name}</h2>
               </div>
               <div className="lg:col-span-5">
@@ -4694,7 +4694,7 @@ function InsightsIndexPage(props) {
                       onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "26px"; }}
                     >
                       <div className="flex items-center justify-between mb-7">
-                        <span style={{ ...monoKicker, color: SIGNAL }}>{article.eyebrow}</span>
+                        <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{article.eyebrow}</span>
                         <span aria-hidden="true" style={{ fontSize: 14, color: SIGNAL }}>→</span>
                       </div>
                       <h3 style={{ ...serif, fontSize: 21, lineHeight: 1.16, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>{article.title}</h3>
@@ -4809,7 +4809,7 @@ function ArticlePage(props) {
                       onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(14,14,12,0.18)"; }}
                       onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = RULE; }}
                     >
-                      <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 12 }}>{item.eyebrow}</div>
+                      <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 12 }}>{item.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 19, lineHeight: 1.18, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{item.title}</div>
                       <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{item.description}</p>
                     </a>
@@ -5036,7 +5036,7 @@ function ContactPage(props) {
               ].map(function(row, i, arr) {
                 var content = (
                   <div className="grid items-start" style={{ gridTemplateColumns: "120px minmax(0,1fr)", gap: 24, padding: "22px 0", borderBottom: i === arr.length - 1 ? "none" : "1px solid " + RULE }}>
-                    <dt style={{ ...monoKicker, color: SIGNAL, lineHeight: 1.5 }}>{row.kicker}</dt>
+                    <dt style={{ ...monoKicker, color: BLUE_PRIMARY, lineHeight: 1.5 }}>{row.kicker}</dt>
                     <dd className="m-0" style={{ ...serif, fontSize: 19, lineHeight: 1.3, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{row.value}</dd>
                   </div>
                 );
@@ -5091,7 +5091,7 @@ function ContactPage(props) {
 
                 {submitError && (
                   <div role="alert" className="mt-6 p-4 rounded-lg" style={{ background: "rgba(194,90,61,0.08)", border: "1px solid rgba(194,90,61,0.3)", color: "#8A3E28", fontSize: 14 }}>
-                    {submitError} <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>info@homefrontsolutionsllc.com</a>
+                    {submitError} <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: BLUE_DEEP, fontWeight: 600 }}>info@homefrontsolutionsllc.com</a>
                   </div>
                 )}
 
@@ -5109,12 +5109,12 @@ function ContactPage(props) {
                   )}
                 </button>
                 <p className="mt-4" style={{ fontSize: 12.5, color: MUTED }}>
-                  Or email us directly at <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 500 }}>info@homefrontsolutionsllc.com</a>
+                  Or email us directly at <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: BLUE_DEEP, fontWeight: 500 }}>info@homefrontsolutionsllc.com</a>
                 </p>
               </form>
             ) : (
               <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
-                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 16 }}>Received</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 16 }}>Received</div>
                 <h3 style={{ ...serif, fontSize: 28, lineHeight: 1.18, letterSpacing: "-0.025em", color: INK, fontWeight: 440 }}>Thank you.</h3>
                 <p className="mt-4" style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>We'll be in touch within 24 hours.</p>
               </div>
@@ -5978,8 +5978,7 @@ export default function App(props) {
     setRoute(nextRoute);
   }
 
-  var routesWithDarkHero = ["what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"];
-  var rootBg = routesWithDarkHero.indexOf(route.name) !== -1 ? NAVY : PAPER;
+  var rootBg = PAPER;
   return (
     <div style={{ fontFamily: "'Aptos', 'Segoe UI', system-ui, sans-serif", background: rootBg, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <style>{`
@@ -6072,7 +6071,7 @@ export default function App(props) {
       }}>Skip to main content</a>
 
       <ScrollProgress />
-      <Header go={go} route={route} onDark={["what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
+      <Header go={go} route={route} onDark={false} />
 
       <main id="main" key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER, outline: "none" }}>
         {route.name === "home" && <HomePage go={go} />}
