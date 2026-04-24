@@ -22,11 +22,13 @@ var SAGE = "#8FB09B";
 var GOLD = "#F5B942";             // primary CTA gold (Book a Call)
 var GOLD_DEEP = "#E0A42A";
 var GOLD_SOFT = "#FCEAC0";
-// Brand blue — primary action color in the new mockup
-var BLUE_PRIMARY = "#2563EB";
-var BLUE_DEEP = "#1D4FC5";
-var BLUE_SOFT = "#EEF3FD";
-var BLUE_LIGHT = "#F4F8FF";       // light-blue panel bg
+// HFS brand green — primary action color (matches the teal-green in the HFS logo).
+// Kept the BLUE_* names because they're used everywhere internally as the
+// semantic "primary action" tokens; the hex values carry the brand.
+var BLUE_PRIMARY = "#3EA394";     // HFS green — buttons, focus rings, active nav
+var BLUE_DEEP = "#2A8277";        // deeper green — hover/pressed states
+var BLUE_SOFT = "#DFF2EE";        // soft tint — badge backgrounds, card surfaces
+var BLUE_LIGHT = "#F1FBF8";       // light panel bg (HFS Coach section)
 var CLAY = "#C25A3D";
 var FOREST = SIGNAL;
 var FOREST_SOFT = SIGNAL_SOFT;
@@ -2074,7 +2076,7 @@ function Footer(props) {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     color: "#E7ECF2", transition: "background 200ms ease, border-color 200ms ease, color 200ms ease"
   };
-  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(37,99,235,0.18)"; e.currentTarget.style.borderColor = "#4A82EC"; e.currentTarget.style.color = "#8AB0F2"; };
+  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(62,163,148,0.18)"; e.currentTarget.style.borderColor = "#5FB8A5"; e.currentTarget.style.color = "#96D7C6"; };
   var socialHoverOut = function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; e.currentTarget.style.color = "#E7ECF2"; };
   return (
     <footer className="footer-navy footer-v2">
@@ -2141,19 +2143,19 @@ function Footer(props) {
             <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Contact Us</p>
             <ul className="space-y-2.5" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#4A82EC", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                <span style={{ color: "#5FB8A5", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4 H9 L11 9 L8 11 C 9 14, 10 15, 13 16 L15 13 L20 15 V19 A2 2 0 0 1 18 21 C 10 21, 3 14, 3 6 A 2 2 0 0 1 5 4 Z"/></svg>
                 </span>
                 <a href="tel:3364209379" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>(336) 420-9379</a>
               </li>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#4A82EC", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                <span style={{ color: "#5FB8A5", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></svg>
                 </span>
                 <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a>
               </li>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#4A82EC", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                <span style={{ color: "#5FB8A5", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
                 </span>
                 <span style={{ color: "#CBD4DD", fontSize: 13.5, lineHeight: 1.55 }}>
@@ -2396,8 +2398,8 @@ function CoachMockV2() {
             <svg viewBox={"0 0 " + chartW + " " + chartH} className="coach2__chart" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#2563EB" stopOpacity="0.22"/>
-                  <stop offset="100%" stopColor="#2563EB" stopOpacity="0"/>
+                  <stop offset="0%" stopColor="#3EA394" stopOpacity="0.22"/>
+                  <stop offset="100%" stopColor="#3EA394" stopOpacity="0"/>
                 </linearGradient>
               </defs>
               {[0,1,2,3].map(function(i) {
@@ -2405,12 +2407,12 @@ function CoachMockV2() {
                 return <line key={i} x1={pad} x2={chartW - pad} y1={y} y2={y} stroke="#E3E8ED" strokeWidth="1" strokeDasharray="2 4"/>;
               })}
               <path d={toPath(thisWeek) + " L" + (chartW - pad) + "," + (chartH - pad) + " L" + pad + "," + (chartH - pad) + " Z"} fill="url(#trendFill)"/>
-              <path d={toPath(thisWeek)} fill="none" stroke="#2563EB" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d={toPath(thisWeek)} fill="none" stroke="#3EA394" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"/>
               {thisWeek.map(function(v, i) {
                 var step = (chartW - pad * 2) / (thisWeek.length - 1);
                 var x = pad + i * step;
                 var y = chartH - pad - (v / max) * (chartH - pad * 2);
-                return <circle key={i} cx={x} cy={y} r="3" fill="#FFFFFF" stroke="#2563EB" strokeWidth="2"/>;
+                return <circle key={i} cx={x} cy={y} r="3" fill="#FFFFFF" stroke="#3EA394" strokeWidth="2"/>;
               })}
               {which === "last" && <path d={toPath(lastWeek)} fill="none" stroke="#8A96A0" strokeWidth="1.8" strokeDasharray="4 3" strokeLinecap="round"/>}
             </svg>
