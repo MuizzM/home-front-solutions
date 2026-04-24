@@ -3653,7 +3653,7 @@ function CareersIndexPage(props) {
                 We hire for character first, experience second. Show up, stay coachable, treat people with respect. We'll handle the training, the territory, and the support.
               </blockquote>
               <figcaption className="mt-6 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid " + RULE }}>
-                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + GOLD + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
+                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + BLUE_PRIMARY + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
                 <span>
                   <span className="block" style={{ fontSize: 13, color: INK, fontWeight: 600 }}>Muizz Muhammad</span>
                   <span className="block" style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Founder</span>
@@ -3951,13 +3951,13 @@ function JobDetailPage(props) {
           <aside className="lg:col-span-4 reveal" data-delay="1">
             <div className="relative overflow-hidden" style={{ background: SIGNAL_DEEP, color: "#F5F1E7", borderRadius: 20, padding: 28 }}>
               <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(520px 300px at 80% 0%, rgba(143,176,155,0.28), transparent 60%), radial-gradient(420px 240px at 10% 100%, rgba(217,166,60,0.18), transparent 60%)" }} />
-              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, " + SAGE + ", " + GOLD + ")" }} />
+              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, " + BLUE_PRIMARY + ", " + BLUE_DEEP + ")" }} />
               <div className="relative">
                 <div style={{ ...monoKicker, color: SAGE, marginBottom: 24 }}>The role, plainly</div>
                 <blockquote style={{ ...serif, fontSize: 22, lineHeight: 1.25, letterSpacing: "-0.018em", color: "#F5F1E7", fontWeight: 420, margin: 0 }}>
                   Real product. Straight commission. Leadership that actually shows up in the field with you.
                 </blockquote>
-                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 52, fontSize: 15, boxShadow: "0 10px 24px rgba(217,166,60,0.32)" }} onMouseEnter={function(e) { e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="btn-blue mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 52, fontSize: 15 }}>
                   Apply for this role
                   <span aria-hidden="true">→</span>
                 </a>
@@ -5223,7 +5223,7 @@ function ContactPage(props) {
                 Pick a time that works. We'll jump on a 30-minute call to learn about your markets, current field performance, and what you'd need us to run. No decks, no pitch. Straight conversation.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(217,166,60,0.34)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-white inline-flex items-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 54, fontSize: 15 }}>
                   {BOOKING_URL ? "Pick a time" : "Send a message"}
                   <span aria-hidden="true">→</span>
                 </a>
@@ -5557,7 +5557,7 @@ function RepLoginPage(props) {
             Rep Portal · Coming Soon
           </span>
           <h1 className="rep-login__title">
-            Welcome back<span style={{ color: "#F5B942" }}>.</span>
+            Welcome back.
           </h1>
           <p className="rep-login__sub">
             HFS Coach — real-time call feedback, AI roleplays, leaderboards, and the dashboard your team lead sees. All in one place.
