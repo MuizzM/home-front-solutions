@@ -1,0 +1,19 @@
+# Secrets + local config — never commit these
+.env
+.env.local
+.env.*.local
+
+# Python runtime
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor noise
+.vscode/
+.idea/
+.DS_Store
