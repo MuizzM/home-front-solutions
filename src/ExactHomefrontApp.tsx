@@ -22,11 +22,14 @@ var SAGE = "#8FB09B";
 var GOLD = "#F5B942";             // primary CTA gold (Book a Call)
 var GOLD_DEEP = "#E0A42A";
 var GOLD_SOFT = "#FCEAC0";
+// Brand blue — primary action color in the new mockup
+var BLUE_PRIMARY = "#2563EB";
+var BLUE_DEEP = "#1D4FC5";
+var BLUE_SOFT = "#EEF3FD";
+var BLUE_LIGHT = "#F4F8FF";       // light-blue panel bg
 var CLAY = "#C25A3D";
 var FOREST = SIGNAL;
 var FOREST_SOFT = SIGNAL_SOFT;
-var BLUE = INK;
-var BLUE_SOFT = SIGNAL_SOFT;
 var LOGO = "/logo-transparent.png";
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
 var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
@@ -1960,11 +1963,16 @@ function Header(props) {
             onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
             target={BOOKING_URL ? "_blank" : undefined}
             rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-            className="btn-gold inline-flex items-center gap-2 px-5 rounded-full"
+            className="btn-blue inline-flex items-center gap-2 px-5 rounded-full"
             style={{ cursor: "pointer", minHeight: 42, fontSize: 13.5, letterSpacing: "-0.005em" }}
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2"/>
+              <path d="M3 9 H21"/>
+              <path d="M8 3 V6"/>
+              <path d="M16 3 V6"/>
+            </svg>
             Book a Call
-            <span aria-hidden="true">→</span>
           </a>
         </nav>
         <button
@@ -2011,11 +2019,17 @@ function Footer(props) {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     color: "#E7ECF2", transition: "background 200ms ease, border-color 200ms ease, color 200ms ease"
   };
-  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(245,185,66,0.15)"; e.currentTarget.style.borderColor = "#F5B942"; e.currentTarget.style.color = "#F5B942"; };
+  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(37,99,235,0.18)"; e.currentTarget.style.borderColor = "#4A82EC"; e.currentTarget.style.color = "#8AB0F2"; };
   var socialHoverOut = function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; e.currentTarget.style.color = "#E7ECF2"; };
   return (
-    <footer className="footer-navy">
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 pb-8">
+    <footer className="footer-navy footer-v2">
+      {/* Soft US-map silhouette peeks through from the right */}
+      <span className="footer-v2__map" aria-hidden="true">
+        <svg viewBox="0 0 260 140" width="260" height="140" fill="currentColor">
+          {[[20,58],[36,56],[52,58],[68,52],[84,46],[100,44],[118,42],[134,40],[152,40],[170,42],[188,46],[206,52],[224,60],[32,74],[50,72],[68,68],[86,66],[104,64],[122,62],[140,62],[158,64],[176,66],[194,70],[212,74],[228,80],[46,90],[64,86],[82,82],[100,80],[118,80],[136,82],[154,84],[172,86],[190,88],[206,92],[64,104],[82,100],[100,98],[118,98],[136,100],[154,102],[172,104],[84,116],[102,114],[120,114],[138,116],[156,118]].map(function(p,i){ return <circle key={i} cx={p[0]} cy={p[1]} r="2.6"/>; })}
+        </svg>
+      </span>
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 pb-8 relative" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-10 mb-10">
           {/* Brand + tagline + social */}
           <div className="md:col-span-4">
@@ -2023,7 +2037,7 @@ function Footer(props) {
               <BrandLockup onDark={true} />
             </a>
             <p className="max-w-sm mt-5" style={{ fontSize: 13.5, lineHeight: 1.6, color: "#9BA7B2" }}>
-              Home services growth, built face to face.
+              Nationwide door-to-door growth for the home services that power modern life.
             </p>
             <div className="flex items-center gap-3 mt-6">
               <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" style={socialItem} onMouseEnter={socialHoverIn} onMouseLeave={socialHoverOut} aria-label="Facebook">
@@ -2054,38 +2068,41 @@ function Footer(props) {
             </ul>
           </div>
 
-          {/* For Partners */}
-          <div className="md:col-span-2">
-            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>For Partners</p>
+          {/* Services */}
+          <div className="md:col-span-3">
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Services</p>
             <ul className="space-y-0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              <li><a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Become a Partner</a></li>
-              <li><a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Partner Login</a></li>
-              <li><a href="/insights" onClick={function(e) { handleNavClick(e, props.go, "insights"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Resources</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Fiber Internet</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Home Security</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Solar</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Water Filtration</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Roofing</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Home Services</a></li>
             </ul>
           </div>
 
-          {/* Let's Connect */}
-          <div className="md:col-span-4">
-            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Let's Connect</p>
+          {/* Contact Us */}
+          <div className="md:col-span-3">
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Contact Us</p>
             <ul className="space-y-2.5" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></svg>
-                </span>
-                <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4 H9 L11 9 L8 11 C 9 14, 10 15, 13 16 L15 13 L20 15 V19 A2 2 0 0 1 18 21 C 10 21, 3 14, 3 6 A 2 2 0 0 1 5 4 Z"/></svg>
+                <span style={{ color: "#4A82EC", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4 H9 L11 9 L8 11 C 9 14, 10 15, 13 16 L15 13 L20 15 V19 A2 2 0 0 1 18 21 C 10 21, 3 14, 3 6 A 2 2 0 0 1 5 4 Z"/></svg>
                 </span>
                 <a href="tel:3364209379" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>(336) 420-9379</a>
               </li>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+                <span style={{ color: "#4A82EC", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></svg>
+                </span>
+                <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span style={{ color: "#4A82EC", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
                 </span>
                 <span style={{ color: "#CBD4DD", fontSize: 13.5, lineHeight: 1.55 }}>
-                  High Point, NC<br/>Serving markets nationwide
+                  Greensboro, NC<br/>Serving markets nationwide.
                 </span>
               </li>
             </ul>
@@ -2093,7 +2110,7 @@ function Footer(props) {
         </div>
 
         <div className="pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2026 Home Front Solutions, LLC. All rights reserved.</div>
+          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2025 Home Front Solutions LLC. All rights reserved.</div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ fontSize: 12.5 }}>
             <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Privacy Policy</a>
             <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Terms of Service</a>
@@ -2173,10 +2190,181 @@ function StatIcon(props) {
   var kind = props.kind;
   var common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
   if (kind === "globe") return <svg {...common}><circle cx="12" cy="12" r="9"/><path d="M3 12 H21"/><path d="M12 3 C 15 6.5, 15 17.5, 12 21"/><path d="M12 3 C 9 6.5, 9 17.5, 12 21"/></svg>;
+  if (kind === "pin")    return <svg {...common}><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>;
   if (kind === "cats")   return <svg {...common}><rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/></svg>;
   if (kind === "brain")  return <svg {...common}><path d="M8 5 C 5 5, 4 8, 5 10 C 3.5 11.5, 4 14, 6 14.5 C 6 17, 8.5 18.5, 11 18 V 6 C 10 5, 9 5, 8 5 Z"/><path d="M16 5 C 19 5, 20 8, 19 10 C 20.5 11.5, 20 14, 18 14.5 C 18 17, 15.5 18.5, 13 18 V 6 C 14 5, 15 5, 16 5 Z"/></svg>;
-  if (kind === "chart")  return <svg {...common}><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>;
+  if (kind === "sparkle") return <svg {...common}><path d="M12 3 L13.6 9 L20 11 L13.6 13 L12 19 L10.4 13 L4 11 L10.4 9 Z"/><path d="M18 4 L18.6 6 L20.8 6.8 L18.6 7.6 L18 9.8 L17.4 7.6 L15.2 6.8 L17.4 6 Z" opacity="0.7"/></svg>;
+  if (kind === "chart")  return <svg {...common}><path d="M4 19 V8"/><path d="M10 19 V11"/><path d="M16 19 V4"/><path d="M2 19 H22"/><path d="M4 11 L10 7 L16 9" opacity="0.75"/></svg>;
   return null;
+}
+
+// Why-Home-Front icons (shield, house, US map silhouette, badge)
+function WhyIcon(props) {
+  var kind = props.kind;
+  var common = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.55, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "shield") return (<svg {...common}><path d="M12 3 L20 6 V12 C 20 16.5, 16.5 19.5, 12 21 C 7.5 19.5, 4 16.5, 4 12 V6 Z"/><path d="M8.5 12 L11 14.3 L15.5 9.6"/></svg>);
+  if (kind === "house")  return (<svg {...common}><path d="M3 11 L12 3.5 L21 11 V20 A1 1 0 0 1 20 21 H4 A1 1 0 0 1 3 20 Z"/><path d="M9 21 V13 H15 V21"/></svg>);
+  if (kind === "map")    return (
+    <svg width="44" height="28" viewBox="0 0 260 140" fill="currentColor" aria-hidden="true">
+      {[[20,58],[36,56],[52,58],[68,52],[84,46],[100,44],[118,42],[134,40],[152,40],[170,42],[188,46],[206,52],[224,60],[32,74],[50,72],[68,68],[86,66],[104,64],[122,62],[140,62],[158,64],[176,66],[194,70],[212,74],[228,80],[46,90],[64,86],[82,82],[100,80],[118,80],[136,82],[154,84],[172,86],[190,88],[206,92],[64,104],[82,100],[100,98],[118,98],[136,100],[154,102],[172,104],[84,116],[102,114],[120,114],[138,116],[156,118]].map(function(p,i){ return <circle key={i} cx={p[0]} cy={p[1]} r="3.2"/>; })}
+    </svg>
+  );
+  if (kind === "badge")  return (<svg {...common}><circle cx="12" cy="9" r="5.2"/><path d="M9.8 9 L11.2 10.3 L14.2 7.5" strokeWidth="1.6"/><path d="M7.5 14 L6 21 L12 18 L18 21 L16.5 14"/></svg>);
+  return null;
+}
+
+// FAQ row used in the new 2-column grid
+function FaqRow2(props) {
+  var _o = useState(false); var open = _o[0]; var setOpen = _o[1];
+  return (
+    <div className="faq2" data-open={open ? "true" : "false"}>
+      <button type="button" className="faq2__trigger" onClick={function() { setOpen(!open); }} aria-expanded={open}>
+        <span>{props.q}</span>
+        <svg className="faq2__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div className="faq2__body">{props.a}</div>
+    </div>
+  );
+}
+
+// HFS Coach™ — new mockup-matching dashboard with real line chart + avatar leaderboard
+function CoachMockV2() {
+  var _t = useState("dashboard"); var tab = _t[0]; var setTab = _t[1];
+  var _pw = useState("this"); var which = _pw[0]; var setWhich = _pw[1];
+
+  var stats = [
+    { label: "Doors Knocked", value: "152" },
+    { label: "Conversations", value: "98" },
+    { label: "Appointments",  value: "36" },
+    { label: "Close Rate",    value: "36.7%" }
+  ];
+
+  var thisWeek = [42, 64, 56, 88, 74, 112, 134];
+  var lastWeek = [36, 48, 44, 62, 70, 88, 96];
+  var labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  var max = 160, pad = 10, chartW = 360, chartH = 120;
+  function toPath(arr) {
+    var step = (chartW - pad * 2) / (arr.length - 1);
+    return arr.map(function(v, i) {
+      var x = pad + i * step;
+      var y = chartH - pad - (v / max) * (chartH - pad * 2);
+      return (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+    }).join(" ");
+  }
+
+  var leaders = [
+    { name: "A. Martinez", appts: 48, init: "AM" },
+    { name: "J. Thompson", appts: 43, init: "JT" },
+    { name: "M. Johnson",  appts: 39, init: "MJ" }
+  ];
+
+  var navItems = [
+    { id: "dashboard", label: "Dashboard", icon: "grid" },
+    { id: "reps",      label: "Reps",      icon: "users" },
+    { id: "coaching",  label: "Coaching",  icon: "headset" },
+    { id: "roleplays", label: "Roleplays", icon: "chat" },
+    { id: "reports",   label: "Reports",   icon: "doc" },
+    { id: "tools",     label: "Tools",     icon: "wrench" },
+    { id: "leader",    label: "Leaderboard", icon: "trophy" }
+  ];
+
+  return (
+    <div className="coach2">
+      <aside className="coach2__side">
+        <div className="coach2__brand">
+          <span className="coach2__brand-dot" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11 L12 3.5 L21 11 V20 H3 Z"/></svg>
+          </span>
+          HFS Coach
+        </div>
+        <ul className="coach2__nav">
+          {navItems.map(function(item) {
+            var active = tab === item.id;
+            return (
+              <li key={item.id} className={active ? "is-active" : ""} onClick={function() { setTab(item.id); }} role="button" tabIndex={0}
+                onKeyDown={function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setTab(item.id); } }}>
+                <span className="coach2__nav-i" aria-hidden="true">
+                  {item.icon === "grid"    && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>}
+                  {item.icon === "users"   && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="3"/><path d="M3 19 C 4 16, 6 14.5, 9 14.5 C 12 14.5, 14 16, 15 19"/><circle cx="17" cy="9" r="2.6"/><path d="M15 15 C 17 15, 20 16, 21 19"/></svg>}
+                  {item.icon === "headset" && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15 V12 A8 8 0 0 1 20 12 V15"/><rect x="2" y="13" width="4" height="6" rx="1"/><rect x="18" y="13" width="4" height="6" rx="1"/></svg>}
+                  {item.icon === "chat"    && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6 H21 V16 H9 L5 20 V16 H3 Z"/></svg>}
+                  {item.icon === "doc"     && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3 H14 L19 8 V21 H5 Z"/><path d="M14 3 V8 H19"/></svg>}
+                  {item.icon === "wrench"  && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3 A5 5 0 0 1 18 11 L8 21 L3 16 L13 6 A5 5 0 0 1 15 3 Z"/></svg>}
+                  {item.icon === "trophy"  && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4 H17 V9 A5 5 0 0 1 7 9 Z"/><path d="M7 6 H3 V8 A4 4 0 0 0 7 12"/><path d="M17 6 H21 V8 A4 4 0 0 1 17 12"/><path d="M10 14 H14 L13 19 H11 Z"/></svg>}
+                </span>
+                {item.label}
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+
+      <div className="coach2__main">
+        <div className="coach2__top">Today's Overview</div>
+
+        <div className="coach2__stats">
+          {stats.map(function(s) {
+            return (
+              <div key={s.label} className="coach2__stat">
+                <div className="coach2__stat-label">{s.label}</div>
+                <div className="coach2__stat-value">{s.value}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="coach2__grid">
+          <div className="coach2__card">
+            <div className="coach2__card-head"><span className="coach2__card-title">Performance Trend</span></div>
+            <svg viewBox={"0 0 " + chartW + " " + chartH} className="coach2__chart" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#2563EB" stopOpacity="0.22"/>
+                  <stop offset="100%" stopColor="#2563EB" stopOpacity="0"/>
+                </linearGradient>
+              </defs>
+              {[0,1,2,3].map(function(i) {
+                var y = pad + ((chartH - pad * 2) / 3) * i;
+                return <line key={i} x1={pad} x2={chartW - pad} y1={y} y2={y} stroke="#E3E8ED" strokeWidth="1" strokeDasharray="2 4"/>;
+              })}
+              <path d={toPath(thisWeek) + " L" + (chartW - pad) + "," + (chartH - pad) + " L" + pad + "," + (chartH - pad) + " Z"} fill="url(#trendFill)"/>
+              <path d={toPath(thisWeek)} fill="none" stroke="#2563EB" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"/>
+              {thisWeek.map(function(v, i) {
+                var step = (chartW - pad * 2) / (thisWeek.length - 1);
+                var x = pad + i * step;
+                var y = chartH - pad - (v / max) * (chartH - pad * 2);
+                return <circle key={i} cx={x} cy={y} r="3" fill="#FFFFFF" stroke="#2563EB" strokeWidth="2"/>;
+              })}
+              {which === "last" && <path d={toPath(lastWeek)} fill="none" stroke="#8A96A0" strokeWidth="1.8" strokeDasharray="4 3" strokeLinecap="round"/>}
+            </svg>
+            <div className="coach2__chart-legend">
+              {labels.map(function(l) { return <span key={l}>{l}</span>; })}
+            </div>
+            <div className="coach2__chart-tabs">
+              <button type="button" className={which === "this" ? "is-active" : ""} onClick={function() { setWhich("this"); }}>This Week</button>
+              <button type="button" className={which === "last" ? "is-active" : ""} onClick={function() { setWhich("last"); }}>Last Week</button>
+            </div>
+          </div>
+
+          <div className="coach2__card">
+            <div className="coach2__card-head"><span className="coach2__card-title">Rep Leaderboard</span><span className="coach2__card-sub">Appts</span></div>
+            <ul className="coach2__lb">
+              {leaders.map(function(r, i) {
+                return (
+                  <li key={r.name}>
+                    <span className="coach2__lb-rank">{i + 1}</span>
+                    <span className="coach2__lb-avatar" aria-hidden="true">{r.init}</span>
+                    <span className="coach2__lb-name">{r.name}</span>
+                    <span className="coach2__lb-val">{r.appts}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // Step-flow icons — door-with-knock, two-handed handshake, dashboard chart
@@ -2622,144 +2810,121 @@ function HomePage(props) {
     { kind: "home",     label: "Home Services" }
   ];
   var stats = [
-    { icon: "globe", label: "Markets Launched",     value: "28+" },
-    { icon: "cats",  label: "Service Categories",   value: "6+" },
-    { icon: "brain", label: "AI-Powered Training",  value: "100%" },
-    { icon: "chart", label: "Performance Reporting", value: "Real-Time" }
+    { icon: "pin",    label: "Markets Launched",     value: "28+" },
+    { icon: "cats",   label: "Service Categories",   value: "6+" },
+    { icon: "sparkle",label: "AI-Powered Training",  value: "100%" },
+    { icon: "chart",  label: "Reporting",            value: "Real-Time" }
   ];
   var steps = [
-    { num: "01", icon: "door",  title: "We knock every door.",       body: "Branded, badged reps cover your territory — face-to-face conversations at every home on the route." },
-    { num: "02", icon: "shake", title: "We close with confidence.",  body: "Trained to present, handle objections, and convert right at the doorstep — installs, not just signatures." },
-    { num: "03", icon: "bar",   title: "You own the numbers.",        body: "Live dashboards track knocks, conversations, closes, and activations in real time — no black box." }
+    { num: "1", icon: "door",  title: "We knock every door.",      body: "Professional reps. Real conversations. We introduce your offer to the right homes at the right time." },
+    { num: "2", icon: "shake", title: "We close with confidence.", body: "Our reps qualify, present, and close with clarity — backed by proven scripts and live support." },
+    { num: "3", icon: "bar",   title: "You own the numbers.",      body: "Real-time reporting, verified leads, and appointments you can track from door to deal." }
   ];
-  var trainingPerks = [
-    "Product Knowledge", "Compliance",
-    "Pitch Mastery",     "Field Simulation",
-    "Objection Handling", "Tools / CRM"
+  var coachFeatures = [
+    "Real-time call feedback",
+    "AI roleplay & objection handling",
+    "Leaderboards & performance insights",
+    "Data that drives results"
   ];
   var cities = [
-    { region: "Greensboro",     slug: "greensboro-nc",     img: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=700&q=80" },
-    { region: "High Point",     slug: "high-point-nc",     img: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=700&q=80" },
-    { region: "Winston-Salem",  slug: "winston-salem-nc",  img: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=700&q=80" },
-    { region: "Charlotte",      slug: "charlotte-nc",      img: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=700&q=80" },
-    { region: "Raleigh",        slug: "raleigh-nc",        img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=700&q=80" },
-    { region: "Piedmont Triad", slug: "piedmont-triad-nc", img: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=80" }
+    { region: "Greensboro",     slug: "greensboro-nc" },
+    { region: "High Point",     slug: "high-point-nc" },
+    { region: "Winston-Salem",  slug: "winston-salem-nc" },
+    { region: "Charlotte",      slug: "charlotte-nc" },
+    { region: "Raleigh",        slug: "raleigh-nc" },
+    { region: "Piedmont Triad", slug: "piedmont-triad-nc" }
   ];
   var values = [
-    { icon: "user",  title: "Honest\nin-person service",   body: "We treat every homeowner with respect and integrity." },
-    { icon: "house", title: "Strong\nhome-service offers", body: "Top brands. High value. Solutions that help." },
-    { icon: "pin",   title: "Locally rooted,\nnationally trusted", body: "We know the neighborhoods. We deliver national results." },
-    { icon: "badge", title: "Trained,\ncertified reps", body: "We invest in our team so they can build a real career." }
+    { icon: "shield", title: "Honest in-person service", body: "Real conversations. Real trust. That's how we build long-term customer relationships." },
+    { icon: "house",  title: "Strong home-service offers", body: "We represent products people need and want — from internet to security, solar, and more." },
+    { icon: "map",    title: "Locally rooted.\nNationally trusted.", body: "Local teams with national standards and support." },
+    { icon: "badge",  title: "Trained. Certified. Supported.", body: "Our reps are trained to win and supported to grow." }
   ];
   var faqs = [
-    { q: "Do I need prior sales experience?", a: "No. Most of our top reps started with zero sales experience. Our paid training covers product knowledge, pitch delivery, objection handling, compliance, and live field simulation before your first real door." },
-    { q: "How does pay and commission work?",  a: "All field roles are commission-based with weekly payouts. First-year reps typically earn $100K–$185K depending on market, product line, and production. Commission is uncapped." },
-    { q: "What products and services will I sell?", a: "You will represent one or more of: fiber internet, home security, solar, water filtration, roofing, and other home services. Product mix depends on the market you are hired into." },
-    { q: "What does a typical day look like?", a: "Morning training and route planning, 4 to 6 hours of door-to-door field activity in a defined neighborhood territory, and CRM wrap-up at end of shift. Most reps are in the field Monday through Saturday on a flexible schedule." }
+    { q: "What services do you represent?", a: "We partner with top brands across fiber internet, home security, solar, water filtration, roofing, and home services. Our teams only represent offers we'd recommend to our own families." },
+    { q: "Where do you operate?", a: "Home Front Solutions fields teams in 28+ U.S. markets and growing. We're headquartered in the Carolinas with active teams in the Southeast, Midwest, and Sunbelt." },
+    { q: "How do your door-to-door teams work?", a: "Every rep completes our certification program before they knock a real door. We assign territories by neighborhood, coach in the field every day, and report on knocks, conversations, and installs in real time." },
+    { q: "What makes HFS different?", a: "We don't just recruit reps — we train, coach, and retain them. Our AI-powered coaching platform HFS Coach helps reps level up faster, and our leadership still walks the streets with their teams." },
+    { q: "How is performance tracked?", a: "Live dashboards surface knocks, conversations, closes, and activations every day. Partners see the same real-time numbers our leadership does — no black box." },
+    { q: "How do I get started?", a: "Brands: book a 30-minute discovery call and we'll scope a pilot market. Reps: apply online — most first applications get a recruiter response within one business day." }
   ];
 
   return (
     <>
-      {/* ── HERO (navy) ─────────────────────────────────────────── */}
-      <section id="home-hero" className="hero-navy">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-24 md:pb-32 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          <div className="lg:col-span-7">
-            <h1 className="display" style={{ fontSize: "clamp(2.6rem, 6.2vw, 4.75rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              <span className="word-reveal word-reveal--inline">Home services</span>{" "}
-              <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms" }}>growth, built</span>{" "}
-              <span className="word-reveal word-reveal--inline" style={{ animationDelay: "200ms", color: GOLD, fontStyle: "italic", fontWeight: 500, ...serif }}>face to face.</span>
-            </h1>
-            <p className="mt-7 max-w-xl word-reveal" style={{ animationDelay: "380ms", fontSize: 16, lineHeight: 1.7, color: "rgba(245,247,250,0.78)" }}>
-              Nationwide door-to-door teams built for fiber internet — plus security, solar, and home services. Six-figure first-year earnings, paid certification, trained reps at your homeowners' doors.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "500ms" }}>
-              <Magnetic strength={0.2}>
-                <a
-                  href="/careers"
-                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-gold inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium"
-                  style={{ cursor: "pointer", minHeight: 56, fontSize: 15.5, letterSpacing: "-0.005em" }}
-                  aria-label="Join the Home Front Solutions team"
-                >
-                  Join the Team
-                  <span aria-hidden="true">→</span>
-                </a>
-              </Magnetic>
+      {/* ── HERO (white background, navy stat bar strip at bottom) ─── */}
+      <section id="home-hero" className="home-hero">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-14 pb-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            <div className="lg:col-span-6">
+              <h1 className="home-hero__title">
+                <span className="word-reveal word-reveal--inline">Home services</span>{" "}
+                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms" }}>growth, built</span>{" "}
+                <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "200ms" }}>face to face.</span>
+              </h1>
+              <p className="home-hero__lead word-reveal" style={{ animationDelay: "380ms" }}>
+                Nationwide door-to-door teams that grow the home services that keep America connected, protected, and efficient — fiber internet, security, solar, and more.
+              </p>
+              <div className="mt-7 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "480ms" }}>
+                <Magnetic strength={0.2}>
+                  <a
+                    href="/careers"
+                    onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                    className="btn-blue inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
+                    aria-label="Join the Home Front Solutions team"
+                  >
+                    Join the Team
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2}>
+                  <a
+                    href={BOOKING_URL || "/contact"}
+                    onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                    target={BOOKING_URL ? "_blank" : undefined}
+                    rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                    className="btn-outline inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
+                    aria-label="Partner with Home Front Solutions"
+                  >
+                    Partner With Us
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </Magnetic>
+              </div>
+              <div className="mt-6 flex items-center gap-2.5 word-reveal" style={{ animationDelay: "600ms" }}>
+                <span className="home-hero__trust-dot" aria-hidden="true">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+                </span>
+                <span className="home-hero__trust-label">Trusted by leading brands. Proven in communities nationwide.</span>
+              </div>
             </div>
 
-            <div className="trust-row mt-8 word-reveal" style={{ animationDelay: "640ms" }}>
-              {["Proven Field Execution", "AI-Powered Training", "Real-Time Reporting"].map(function(item) {
-                return (
-                  <span key={item} className="trust-row__item">
-                    <span className="trust-check" aria-hidden="true">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
-                    </span>
-                    {item}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Hero portrait — single rep knocking a door (lead action shot) */}
-          <div className="lg:col-span-5 word-reveal" style={{ animationDelay: "260ms" }}>
-            <div className="hero-portrait">
-              {/* Soft residential silhouette behind the portrait */}
-              <svg
-                className="hero-collage__house"
-                viewBox="0 0 400 400"
-                preserveAspectRatio="xMidYMid meet"
-                aria-hidden="true"
-              >
-                <defs>
-                  <linearGradient id="houseLine" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%"  stopColor="rgba(245,185,66,0.35)" />
-                    <stop offset="100%" stopColor="rgba(245,185,66,0)" />
-                  </linearGradient>
-                </defs>
-                <path d="M60 230 L200 100 L340 230 L340 360 L60 360 Z" fill="none" stroke="url(#houseLine)" strokeWidth="1.4" />
-                <rect x="180" y="250" width="40" height="110" fill="none" stroke="url(#houseLine)" strokeWidth="1.4" />
-                <circle cx="212" cy="305" r="2" fill="rgba(245,185,66,0.7)" />
-                <rect x="95"  y="260" width="55" height="55" fill="none" stroke="url(#houseLine)" strokeWidth="1.2" />
-                <rect x="250" y="260" width="55" height="55" fill="none" stroke="url(#houseLine)" strokeWidth="1.2" />
-                <path d="M200 400 C 200 380, 200 370, 200 360" fill="none" stroke="rgba(245,185,66,0.3)" strokeWidth="6" strokeLinecap="round" />
-              </svg>
-
-              <div className="hero-portrait__blob" aria-hidden="true" />
-              <div className="hero-portrait__dot" aria-hidden="true" />
-
-              <figure className="hero-portrait__frame m-0">
+            <div className="lg:col-span-6 word-reveal" style={{ animationDelay: "280ms" }}>
+              <div className="home-hero__photo">
                 <img
                   src="/rep-knock-1.jpg"
-                  alt="Home Front Solutions rep in navy polo knocking on a homeowner's front door"
+                  alt="Home Front Solutions rep knocking on a front door"
                   loading="eager"
                   decoding="async"
                   onError={function(e) {
-                    /* No founder fallback — go straight to the illustrated rep-at-door placeholder */
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.parentElement.classList.add("hero-portrait__frame--fallback");
+                    e.currentTarget.parentElement.classList.add("home-hero__photo--fallback");
                   }}
                 />
-                {/* Illustrated knock overlay sits on the photo */}
-                <KnockOverlay size={104} position="bottom-right" />
-              </figure>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── STAT BAR (white card overlaps the hero/white divide) ──── */}
-      <section className="relative" style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12" style={{ marginTop: "-48px" }}>
-          <div className="stat-bar reveal">
+          {/* Navy stat-bar strip seated at the bottom of the hero */}
+          <div className="home-stat-bar reveal">
             {stats.map(function(s) {
               return (
-                <div key={s.label} className="stat-bar__cell">
-                  <span className="stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
+                <div key={s.label} className="home-stat-bar__cell">
+                  <span className="home-stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
                   <div>
-                    <div className="stat-bar__label">{s.label}</div>
-                    <div className="stat-bar__value">{s.value}</div>
+                    <div className="home-stat-bar__value">{s.value}</div>
+                    <div className="home-stat-bar__label">{s.label}</div>
                   </div>
                 </div>
               );
@@ -2768,27 +2933,25 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── SERVICE CATEGORIES ─────────────────────────────────── */}
+      {/* ── SERVICES WE REPRESENT ─────────────────────────────── */}
       <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-28 pb-16 md:pb-20">
-          <div className="reveal">
-            <div className="eyebrow-teal mb-3">Our Service Categories</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Home solutions people trust.
-            </h2>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-16 md:pb-20">
+          <div className="reveal text-center max-w-2xl mx-auto mb-10">
+            <h2 className="section-h2">Services We Represent</h2>
+            <p className="section-sub">Top home services. High intent customers. Real results.</p>
           </div>
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 reveal" data-delay="1">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 reveal" data-delay="1">
             {services.map(function(s) {
               return (
                 <a
                   key={s.kind}
                   href="/what-we-do"
                   onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}
-                  className="svc-card"
+                  className="svc-tile"
                   aria-label={s.label + " — explore service"}
                 >
-                  <span className="svc-card__icon"><SvcIcon kind={s.kind} /></span>
-                  <span className="svc-card__label">{s.label}</span>
+                  <span className="svc-tile__icon"><SvcIcon kind={s.kind} /></span>
+                  <span className="svc-tile__label">{s.label}</span>
                 </a>
               );
             })}
@@ -2796,141 +2959,135 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS (light gray band, 3-card layout) ────── */}
-      <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12 md:mb-16">
-            <div className="eyebrow-teal mb-3">How It Works</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.95rem, 3.6vw, 2.75rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Simple. Disciplined. Scalable.
-            </h2>
-            <p className="mt-5" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7 }}>
-              Three disciplines that run every market the same way — and show up in the numbers every day.
-            </p>
+      {/* ── HOW IT WORKS ─────────────────────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-10">
+            <h2 className="section-h2">How It Works</h2>
+            <p className="section-sub">Simple process. Serious results.</p>
           </div>
-          <div className="step-grid reveal" data-delay="1">
-            {steps.map(function(step) {
+          <div className="how-flow reveal" data-delay="1">
+            {(function() {
+              var out = [];
+              steps.forEach(function(step, i) {
+                out.push(
+                  <article key={"s-" + step.num} className="how-card">
+                    <div className="how-card__head">
+                      <span className="how-card__num" aria-hidden="true">{step.num}</span>
+                      <div>
+                        <h3 className="how-card__title">{step.title}</h3>
+                        <p className="how-card__body">{step.body}</p>
+                      </div>
+                    </div>
+                    <span className="how-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
+                  </article>
+                );
+                if (i < steps.length - 1) {
+                  out.push(
+                    <span key={"a-" + i} className="how-arrow" aria-hidden="true">
+                      <svg width="34" height="14" viewBox="0 0 34 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeDasharray="3 4">
+                        <path d="M2 7 H28"/>
+                        <path d="M24 3 L28 7 L24 11" strokeDasharray="0"/>
+                      </svg>
+                    </span>
+                  );
+                }
+              });
+              return out;
+            })()}
+          </div>
+        </div>
+      </section>
+
+      {/* ── HFS COACH™ — light-blue panel with interactive dashboard ── */}
+      <section className="coach-panel">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="lg:col-span-5 reveal">
+            <div className="coach-panel__eyebrow">AI-Powered Advantage</div>
+            <h2 className="section-h2 mt-2">HFS Coach<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
+            <p className="mt-4 mb-7" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "32ch" }}>
+              Our AI training and coaching platform turns good reps into top performers.
+            </p>
+            <ul className="coach-panel__features">
+              {coachFeatures.map(function(f) {
+                return (
+                  <li key={f}>
+                    <span className="coach-panel__check" aria-hidden="true">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+                    </span>
+                    {f}
+                  </li>
+                );
+              })}
+            </ul>
+            <a
+              href="/why-us"
+              onClick={function(e) { handleNavClick(e, props.go, "why-us"); }}
+              className="btn-outline-blue mt-8 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ minHeight: 46, fontSize: 14 }}
+            >
+              See HFS Coach in Action
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div className="lg:col-span-7 reveal" data-delay="1">
+            <CoachMockV2 />
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHERE WE HIRE — pill chips ───────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-9">
+            <h2 className="section-h2">Where We Hire</h2>
+            <p className="section-sub">Local teams. National impact.</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3 reveal" data-delay="1">
+            {cities.map(function(c) {
               return (
-                <article key={step.num} className="step-card">
-                  <div className="step-card__head">
-                    <span className="step-card__num" aria-hidden="true">{step.num}</span>
-                    <span className="step-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
-                  </div>
-                  <h3 className="step-card__title" style={{ fontFamily: "Geist, Inter, sans-serif" }}>{step.title}</h3>
-                  <p className="step-card__body">{step.body}</p>
-                </article>
+                <a
+                  key={c.slug}
+                  href={getPathForRoute("market", c.slug)}
+                  onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
+                  className="city-pill"
+                >
+                  <span className="city-pill__pin" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+                  </span>
+                  <span>{c.region}</span>
+                </a>
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* ── TRAINING (navy bg, left copy + right HFS Coach mockup) ─ */}
-      <section style={{ background: NAVY, color: "#F5F7FA" }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          <div className="lg:col-span-5 reveal">
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#2FA39E", fontWeight: 600, marginBottom: 14 }}>AI-Powered Coaching</div>
-            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.05, letterSpacing: "-0.028em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Training that creates closers.
-            </h2>
-            <p className="mt-5 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.7 }}>
-              Our AI-powered platform coaches reps in real time, so they perform better in the field — faster.
-            </p>
-            <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3.5">
-              {trainingPerks.map(function(t) {
-                return (
-                  <div key={t} className="flex items-center gap-2.5" style={{ color: "rgba(245,247,250,0.88)", fontSize: 14 }}>
-                    <CheckDot />
-                    <span>{t}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-9">
-              <a
-                href="/why-us"
-                onClick={function(e) { handleNavClick(e, props.go, "why-us"); }}
-                className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ background: SIGNAL, color: "#FFFFFF", minHeight: 48, fontSize: 14, border: "none", boxShadow: "0 10px 22px rgba(30,109,107,0.4)" }}
-                onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
-                onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
-              >
-                Learn More About Our Training
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-
-          {/* HFS Coach dashboard — interactive mockup */}
-          <div className="lg:col-span-7 reveal" data-delay="1">
-            <CoachMock />
+          <div className="mt-8 text-center">
+            <a
+              href="/careers"
+              onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+              className="btn-outline-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ minHeight: 46, fontSize: 14 }}
+            >
+              View Open Positions
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
       </section>
 
-      {/* ── WHERE WE HIRE (city grid) ──────────────────────────── */}
-      <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          <div className="lg:col-span-4 reveal">
-            <div className="eyebrow-teal mb-3">Where We Hire</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Local opportunities.<br/>Real communities.
-            </h2>
+      {/* ── WHY HOME FRONT (4 value cards with shield/house/map/badge) ── */}
+      <section style={{ background: PAPER_DEEP }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12">
+            <h2 className="section-h2">Why Home Front</h2>
+            <p className="section-sub">We build stronger brands and stronger teams — together.</p>
           </div>
-          <div className="lg:col-span-8 reveal" data-delay="1">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {cities.map(function(c) {
-                return (
-                  <a
-                    key={c.slug}
-                    href={getPathForRoute("market", c.slug)}
-                    onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
-                    className="city-card"
-                    aria-label={c.region + " — view market"}
-                  >
-                    <div className="city-card__img" style={{ backgroundImage: "url(" + c.img + ")" }} />
-                    <div className="city-card__overlay" aria-hidden="true" />
-                    <span className="city-card__pin" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/></svg>
-                    </span>
-                    <span className="city-card__label">{c.region}</span>
-                  </a>
-                );
-              })}
-            </div>
-            <div className="mt-8 text-center">
-              <a
-                href="/careers"
-                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ background: "#FFFFFF", color: INK, border: "1px solid " + RULE, minHeight: 46, fontSize: 14 }}
-                onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }}
-                onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}
-              >
-                View All Open Positions
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHY HOME FRONT (4 value cards) ─────────────────────── */}
-      <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-6 pb-20 md:pb-28">
-          <div className="reveal">
-            <div className="eyebrow-teal mb-3">Why Home Front</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Built on people. Driven by results.
-            </h2>
-          </div>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
             {values.map(function(v) {
               return (
-                <div key={v.title} className="val-card">
-                  <span className="val-card__icon" aria-hidden="true"><ValIcon kind={v.icon} /></span>
-                  <h3 style={{ fontSize: 16.5, fontWeight: 600, color: INK, lineHeight: 1.25, letterSpacing: "-0.012em", whiteSpace: "pre-line" }}>{v.title}</h3>
-                  <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.6 }}>{v.body}</p>
+                <div key={v.title} className="why-card">
+                  <span className="why-card__icon" aria-hidden="true"><WhyIcon kind={v.icon} /></span>
+                  <h3 className="why-card__title" style={{ whiteSpace: "pre-line" }}>{v.title}</h3>
+                  <p className="why-card__body">{v.body}</p>
                 </div>
               );
             })}
@@ -2938,73 +3095,58 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── FAQ (light gray band) ─────────────────────────────── */}
-      <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          <div className="lg:col-span-4 reveal">
-            <div className="eyebrow-teal mb-3">FAQ</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Questions? We've got answers.
-            </h2>
+      {/* ── FAQ (2-column grid) ──────────────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-10">
+            <h2 className="section-h2">Frequently Asked Questions</h2>
           </div>
-          <div className="lg:col-span-8 reveal" data-delay="1">
-            <div style={{ borderTop: "1px solid " + RULE }}>
-              {faqs.map(function(f) {
-                return <FaqRow key={f.q} q={f.q} a={f.a} />;
-              })}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 reveal" data-delay="1">
+            {faqs.map(function(f) {
+              return <FaqRow2 key={f.q} q={f.q} a={f.a} />;
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── DUAL CTA BAND (Brands / People) ───────────────────── */}
+      {/* ── DUAL CTA BAND (teal left, blue right) ────────────── */}
       <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-28">
-          <div className="dual-cta reveal">
-            <div className="dual-cta__panel dual-cta__panel--left">
-              <span className="dual-cta__icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
+          <div className="dual-split reveal">
+            <div className="dual-split__panel dual-split__panel--teal">
+              <span className="dual-split__icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
               </span>
-              <div className="dual-cta__body">
-                <h3 style={{ ...serif, fontSize: "clamp(1.35rem, 2vw, 1.65rem)", fontWeight: 500, color: "#F5F7FA", letterSpacing: "-0.018em", lineHeight: 1.2 }}>
-                  For Brands That<br/>Need Field Growth
-                </h3>
-                <p className="mt-3" style={{ fontSize: 13.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.65 }}>
-                  Scale customer acquisition with disciplined field execution, real-time data, and results you can measure.
-                </p>
+              <div>
+                <h3 className="dual-split__title">For Brands That<br/>Need Field Growth</h3>
+                <p className="dual-split__body">Scale your reach. Increase appointments. Grow your business — door to door.</p>
                 <a
                   href={BOOKING_URL || "/contact"}
                   onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                   target={BOOKING_URL ? "_blank" : undefined}
                   rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                  className="mt-4 inline-flex items-center gap-2 px-5 rounded-full font-medium"
-                  style={{ background: SIGNAL, color: "#FFFFFF", minHeight: 44, fontSize: 13.5, border: "none", boxShadow: "0 10px 22px rgba(30,109,107,0.36)" }}
-                  onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
+                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
+                  style={{ minHeight: 42, fontSize: 13.5 }}
                 >
-                  Schedule a Discovery Call
+                  Partner With Us
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
-            <div className="dual-cta__panel dual-cta__panel--right">
-              <span className="dual-cta__icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20 C 5 16, 8 14.5, 12 14.5 C 16 14.5, 19 16, 20 20"/></svg>
+            <div className="dual-split__panel dual-split__panel--blue">
+              <span className="dual-split__icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3 19 C 4 16, 6 14.5, 9 14.5 C 12 14.5, 14 16, 15 19"/><circle cx="17" cy="9" r="3"/><path d="M15 14.8 C 18 14.5, 20 15.5, 21 19"/></svg>
               </span>
-              <div className="dual-cta__body">
-                <h3 style={{ ...serif, fontSize: "clamp(1.35rem, 2vw, 1.65rem)", fontWeight: 500, color: "#F5F7FA", letterSpacing: "-0.018em", lineHeight: 1.2 }}>
-                  For People Who<br/>Want To Work
-                </h3>
-                <p className="mt-3" style={{ fontSize: 13.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.65 }}>
-                  Join a team, get elite training, and build real income and leadership opportunities.
-                </p>
+              <div>
+                <h3 className="dual-split__title">For People Who<br/>Want To Work</h3>
+                <p className="dual-split__body">Build a career with purpose. Competitive pay. Growth opportunities. Local teams.</p>
                 <a
                   href="/careers"
                   onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-gold mt-4 inline-flex items-center gap-2 px-5 rounded-full"
-                  style={{ minHeight: 44, fontSize: 13.5 }}
+                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
+                  style={{ minHeight: 42, fontSize: 13.5 }}
                 >
-                  View Open Positions
+                  Join the Team
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
@@ -5836,7 +5978,7 @@ export default function App(props) {
     setRoute(nextRoute);
   }
 
-  var routesWithDarkHero = ["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"];
+  var routesWithDarkHero = ["what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"];
   var rootBg = routesWithDarkHero.indexOf(route.name) !== -1 ? NAVY : PAPER;
   return (
     <div style={{ fontFamily: "'Aptos', 'Segoe UI', system-ui, sans-serif", background: rootBg, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -5930,7 +6072,7 @@ export default function App(props) {
       }}>Skip to main content</a>
 
       <ScrollProgress />
-      <Header go={go} route={route} onDark={["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
+      <Header go={go} route={route} onDark={["what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
 
       <main id="main" key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER, outline: "none" }}>
         {route.name === "home" && <HomePage go={go} />}
