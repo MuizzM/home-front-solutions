@@ -2529,6 +2529,235 @@ a, button { -webkit-tap-highlight-color: transparent; }
   gap: 12px;
 }
 
+/* ────────────────────────────────────────────────────────────
+   RECRUITING BAND — "Your career. Your earnings."
+   Navy gradient section that sells the rep opportunity.
+   ──────────────────────────────────────────────────────────── */
+.career-band {
+  position: relative;
+  background:
+    radial-gradient(800px 420px at 12% -10%, rgba(47,163,158,0.18), transparent 60%),
+    radial-gradient(900px 440px at 96% 110%, rgba(37,99,235,0.22), transparent 60%),
+    linear-gradient(135deg, #081A2E 0%, #0B2540 48%, #11405A 100%);
+  color: #F5F7FA;
+  isolation: isolate;
+  overflow: hidden;
+}
+.career-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 4px 4px;
+  pointer-events: none;
+  z-index: 0;
+}
+.career-band > div { position: relative; z-index: 1; }
+
+.career-band__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.career-ladder {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 768px)  { .career-ladder { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .career-ladder { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+
+.career-card {
+  position: relative;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 24px 22px;
+  transition: transform 320ms var(--ease-spring), border-color 220ms ease, background 220ms ease;
+  backdrop-filter: blur(4px);
+}
+.career-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(74,130,236,0.6);
+  background: rgba(37,99,235,0.08);
+}
+.career-card__pip {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--blue-primary);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(37,99,235,0.45);
+}
+.career-card__tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245,247,250,0.62);
+  margin-bottom: 6px;
+  margin-top: 4px;
+}
+.career-card__title {
+  font-family: "Geist", "Inter", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  margin-bottom: 10px;
+}
+.career-card__body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(245,247,250,0.74);
+  margin-bottom: 14px;
+}
+.career-card__earn {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(245,185,66,0.16);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(245,185,66,0.28);
+}
+
+.career-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #E7ECF2;
+  font-size: 13px;
+  font-weight: 500;
+}
+.career-pill__i {
+  color: var(--blue-primary);
+  background: rgba(74,130,236,0.2);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hiring NOW badge on Where We Hire */
+.hiring-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(220,38,38,0.08);
+  color: #B91C1C;
+  border: 1px solid rgba(220,38,38,0.24);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.hiring-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #DC2626;
+  box-shadow: 0 0 0 0 rgba(220,38,38,0.55);
+  animation: hiringPulse 1.8s ease-in-out infinite;
+}
+@keyframes hiringPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.55); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 6px rgba(220,38,38,0); transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) { .hiring-badge__dot { animation: none; } }
+
+/* Rep story testimonial cards */
+.rep-card {
+  margin: 0;
+  background: #FFFFFF;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 22px 22px 24px;
+  transition: transform 300ms var(--ease-spring), border-color 220ms ease, box-shadow 280ms ease;
+}
+.rep-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(37,99,235,0.32);
+  box-shadow: 0 16px 36px rgba(11,37,64,0.08);
+}
+.rep-card__head {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.rep-card__avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB, #1D4FC5);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.rep-card__name { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.rep-card__city { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.rep-card__earn {
+  display: inline-flex;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue-primary);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.rep-card__quote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+  position: relative;
+  padding-left: 16px;
+}
+.rep-card__quote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--blue-primary), var(--signal));
+}
+
 /* Footer US-map silhouette */
 .footer-v2 { position: relative; overflow: hidden; }
 .footer-v2__map {

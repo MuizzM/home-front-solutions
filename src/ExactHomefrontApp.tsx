@@ -2198,6 +2198,17 @@ function StatIcon(props) {
   return null;
 }
 
+// Career-perk icons used in the recruiting band
+function PerkIcon(props) {
+  var kind = props.kind;
+  var common = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "wallet")  return <svg {...common}><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10 H21"/><circle cx="17" cy="14.5" r="1" fill="currentColor"/></svg>;
+  if (kind === "badge")   return <svg {...common}><circle cx="12" cy="9" r="5"/><path d="M7 14 L6 21 L12 18 L18 21 L17 14"/></svg>;
+  if (kind === "ladder")  return <svg {...common}><path d="M7 3 V21"/><path d="M17 3 V21"/><path d="M7 7 H17"/><path d="M7 12 H17"/><path d="M7 17 H17"/></svg>;
+  if (kind === "support") return <svg {...common}><path d="M4 15 V12 A8 8 0 0 1 20 12 V15"/><rect x="2" y="13" width="4" height="6" rx="1"/><rect x="18" y="13" width="4" height="6" rx="1"/><path d="M20 18 C 20 20, 17 21, 14 21"/></svg>;
+  return null;
+}
+
 // Why-Home-Front icons (shield, house, US map silhouette, badge)
 function WhyIcon(props) {
   var kind = props.kind;
@@ -2843,12 +2854,12 @@ function HomePage(props) {
     { icon: "badge",  title: "Trained. Certified. Supported.", body: "Our reps are trained to win and supported to grow." }
   ];
   var faqs = [
-    { q: "What services do you represent?", a: "We partner with top brands across fiber internet, home security, solar, water filtration, roofing, and home services. Our teams only represent offers we'd recommend to our own families." },
-    { q: "Where do you operate?", a: "Home Front Solutions fields teams in 28+ U.S. markets and growing. We're headquartered in the Carolinas with active teams in the Southeast, Midwest, and Sunbelt." },
-    { q: "How do your door-to-door teams work?", a: "Every rep completes our certification program before they knock a real door. We assign territories by neighborhood, coach in the field every day, and report on knocks, conversations, and installs in real time." },
-    { q: "What makes HFS different?", a: "We don't just recruit reps — we train, coach, and retain them. Our AI-powered coaching platform HFS Coach helps reps level up faster, and our leadership still walks the streets with their teams." },
-    { q: "How is performance tracked?", a: "Live dashboards surface knocks, conversations, closes, and activations every day. Partners see the same real-time numbers our leadership does — no black box." },
-    { q: "How do I get started?", a: "Brands: book a 30-minute discovery call and we'll scope a pilot market. Reps: apply online — most first applications get a recruiter response within one business day." }
+    { q: "Do I need sales experience to join?", a: "No. Most of our top reps started with zero sales experience. Paid certification before your first real door covers product knowledge, pitch delivery, objection handling, and live field simulation. Bring drive and coachability — we handle the rest." },
+    { q: "How much can I earn?", a: "First-year reps typically clear $80K–$150K on uncapped commission paid weekly. Top producers regularly break $180K in year one. Team leads and area managers move into the $250K+ range." },
+    { q: "What's the promotion path?", a: "Every manager at HFS was promoted out of production. Hit the numbers, coach the next rep, and the next role opens: Field Rep → Team Lead → Area Manager. No politics, no favorites." },
+    { q: "What does the training look like?", a: "Six modules, five days, fully paid. You'll practice on HFS Coach (our AI roleplay platform) and ride along with a team lead before you own a territory. Coaching continues daily in the field." },
+    { q: "Where do you operate?", a: "28+ U.S. markets and growing. Headquartered in the Carolinas with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
+    { q: "How do I get started?", a: "Reps: apply online — most applications get a recruiter response within one business day. Brands: book a 30-minute discovery call and we'll scope a pilot market." }
   ];
 
   return (
@@ -2864,7 +2875,7 @@ function HomePage(props) {
                 <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "200ms" }}>face to face.</span>
               </h1>
               <p className="home-hero__lead word-reveal" style={{ animationDelay: "380ms" }}>
-                Nationwide door-to-door teams that grow the home services that keep America connected, protected, and efficient — fiber internet, security, solar, and more.
+                Nationwide door-to-door teams for fiber, security, solar, and home services. <strong style={{ color: INK, fontWeight: 600 }}>We&rsquo;re hiring coachable reps in 28+ markets</strong> — six-figure first-year earnings, paid certification, a real path to leadership.
               </p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "480ms" }}>
                 <Magnetic strength={0.2}>
@@ -3001,6 +3012,63 @@ function HomePage(props) {
         </div>
       </section>
 
+      {/* ── YOUR CAREER WITH HFS — recruiting-heavy section ─── */}
+      <section className="career-band">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12">
+            <div className="career-band__eyebrow">For Sales Reps</div>
+            <h2 className="section-h2" style={{ color: "#F5F7FA" }}>Your career. Your earnings.</h2>
+            <p className="section-sub" style={{ color: "rgba(245,247,250,0.72)", marginTop: 10 }}>
+              A real path from first door to area manager. Paid training, weekly commission, promotion from within.
+            </p>
+          </div>
+          <div className="career-ladder reveal" data-delay="1">
+            {[
+              { tag: "Month 1", title: "Paid certification", body: "Six-module training before your first real door. Product knowledge, pitch mastery, objection handling, compliance.", earn: "Paid" },
+              { tag: "Year 1",  title: "Field Rep",          body: "Own a territory. Weekly commission. Top producers clear $150K in year one.",                                    earn: "$80K – $150K+" },
+              { tag: "Year 2",  title: "Team Lead",          body: "Promote from within. Build and coach a 4–6 rep team while keeping your own pipeline.",                          earn: "$150K – $250K" },
+              { tag: "Year 3+", title: "Area Manager",       body: "Own the market. Own the P&L. Report directly to ownership.",                                                    earn: "$250K+" }
+            ].map(function(step, i) {
+              return (
+                <article key={step.tag} className="career-card">
+                  <span className="career-card__pip" aria-hidden="true">{i + 1}</span>
+                  <div className="career-card__tag">{step.tag}</div>
+                  <h3 className="career-card__title">{step.title}</h3>
+                  <p className="career-card__body">{step.body}</p>
+                  <div className="career-card__earn">{step.earn}</div>
+                </article>
+              );
+            })}
+          </div>
+          <div className="reveal mt-10 flex flex-wrap justify-center gap-5" data-delay="2">
+            {[
+              { icon: "wallet",  label: "Weekly commission" },
+              { icon: "badge",   label: "Paid certification" },
+              { icon: "ladder",  label: "Promotion from within" },
+              { icon: "support", label: "Live coaching + AI support" }
+            ].map(function(p) {
+              return (
+                <span key={p.label} className="career-pill">
+                  <span className="career-pill__i" aria-hidden="true"><PerkIcon kind={p.icon} /></span>
+                  {p.label}
+                </span>
+              );
+            })}
+          </div>
+          <div className="reveal mt-10 text-center" data-delay="3">
+            <a
+              href="/careers"
+              onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+              className="btn-blue inline-flex items-center gap-2 px-7 rounded-full font-medium"
+              style={{ minHeight: 52, fontSize: 15 }}
+            >
+              Apply in 5 minutes
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── HFS COACH™ — light-blue panel with interactive dashboard ── */}
       <section className="coach-panel">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
@@ -3038,12 +3106,47 @@ function HomePage(props) {
         </div>
       </section>
 
+      {/* ── REP STORIES — real quotes from the field ───────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12">
+            <h2 className="section-h2">Built by reps, for reps.</h2>
+            <p className="section-sub">Every leader at HFS started on the doorstep. Here&rsquo;s what the team says about the work.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
+            {[
+              { init: "AM", name: "Alex Martinez",    city: "Charlotte, NC",    earn: "$184K year 1", quote: "Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months." },
+              { init: "JT", name: "Jordan Thompson", city: "Greensboro, NC",   earn: "$156K year 1", quote: "Every manager I work with actually knocks doors. There's no layer between me and the decision-makers. When I need help at 8pm, someone picks up." },
+              { init: "MJ", name: "Maya Johnson",    city: "Winston-Salem, NC", earn: "$142K year 1", quote: "HFS Coach changed the game for me. I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door. My close rate jumped 30%." }
+            ].map(function(t) {
+              return (
+                <figure key={t.name} className="rep-card">
+                  <div className="rep-card__head">
+                    <span className="rep-card__avatar" aria-hidden="true">{t.init}</span>
+                    <div>
+                      <div className="rep-card__name">{t.name}</div>
+                      <div className="rep-card__city">{t.city}</div>
+                    </div>
+                    <span className="rep-card__earn">{t.earn}</span>
+                  </div>
+                  <blockquote className="rep-card__quote">&ldquo;{t.quote}&rdquo;</blockquote>
+                </figure>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* ── WHERE WE HIRE — pill chips ───────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="reveal text-center max-w-2xl mx-auto mb-9">
-            <h2 className="section-h2">Where We Hire</h2>
-            <p className="section-sub">Local teams. National impact.</p>
+            <span className="hiring-badge" aria-label="Now hiring">
+              <span className="hiring-badge__dot" aria-hidden="true" />
+              Now hiring · {JOBS.length} open roles
+            </span>
+            <h2 className="section-h2 mt-3">Where We Hire</h2>
+            <p className="section-sub">Local teams. National impact. Apply in five minutes.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3 reveal" data-delay="1">
             {cities.map(function(c) {
