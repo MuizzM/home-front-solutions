@@ -3040,6 +3040,37 @@ function HomePage(props) {
         </div>
       </section>
 
+      {/* ── FIBER / ISP PARTNERS — brand wall ────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
+          <div className="reveal grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-10">
+            <div className="lg:col-span-7">
+              <h2 className="section-h2">The fiber networks we knock for.</h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="section-sub" style={{ marginTop: 0 }}>
+                Top ISPs trust HFS with their door-to-door customer acquisition. Our reps carry their colors, their offer, and their install numbers.
+              </p>
+            </div>
+          </div>
+
+          <div className="brand-wall reveal" data-delay="1">
+            {[
+              "AT&T Fiber", "T-Mobile Home Internet", "Brightspeed", "Frontier",
+              "Lumos", "MetroNet", "GoNetspeed", "Google Fiber",
+              "Kinetic", "Quantum Fiber", "Astound Broadband", "Ziply Fiber",
+              "Ripple Fiber", "Fidium Fiber"
+            ].map(function(b) {
+              return <span key={b} className="brand-wall__item">{b}</span>;
+            })}
+          </div>
+
+          <p className="reveal mt-6 text-center" data-delay="2" style={{ fontSize: 12.5, color: MUTED, fontFamily: "var(--font-mono)", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+            + Home Security · Solar · Water Filtration · Roofing partners
+          </p>
+        </div>
+      </section>
+
       {/* ── WHY FACE-TO-FACE STILL WINS — persuasion block ── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24" style={{ borderTop: "1px solid " + RULE }}>

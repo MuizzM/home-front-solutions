@@ -525,22 +525,10 @@ img {
   max-width: 520px;
   margin-left: auto;
 }
-.hero-portrait__blob {
-  position: absolute;
-  inset: -2% -4% -2% -4%;
-  border-radius: 40% 56% 48% 52% / 46% 44% 56% 54%;
-  background:
-    radial-gradient(ellipse at 40% 30%, rgba(30,109,107,0.55), transparent 60%),
-    radial-gradient(ellipse at 65% 80%, rgba(245,185,66,0.18), transparent 65%);
-  filter: blur(0.5px);
-  animation: blobDrift 14s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-@keyframes blobDrift {
-  0%, 100% { border-radius: 40% 56% 48% 52% / 46% 44% 56% 54%; transform: translateY(0); }
-  50%      { border-radius: 50% 44% 54% 46% / 52% 48% 48% 54%; transform: translateY(-6px); }
-}
+/* The decorative blob is gone — let the photo carry the section.
+   .hero-portrait__blob is intentionally hidden so any markup that
+   still references it stays harmless. */
+.hero-portrait__blob { display: none; }
 .hero-portrait__dot {
   position: absolute;
   top: 4%;
@@ -996,22 +984,9 @@ main button[class*="btn-ghost"] {
   isolation: isolate;
   overflow: hidden;
 }
-.step-card::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 3px;
-  width: 0;
-  background: linear-gradient(90deg, var(--blue-primary), var(--blue-deep));
-  transition: width 420ms var(--ease-spring);
-}
 .step-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(30,109,107,0.28);
-  box-shadow: 0 18px 40px rgba(11,37,64,0.08);
+  border-color: rgba(15,42,68,0.28);
 }
-.step-card:hover::before { width: 100%; }
 .step-card__head {
   display: flex;
   align-items: center;
@@ -1355,16 +1330,15 @@ main button[class*="btn-ghost"] {
   transition: transform 300ms var(--ease-spring), border-color 220ms ease, box-shadow 300ms ease;
 }
 .val-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(30,109,107,0.32);
-  box-shadow: 0 14px 32px rgba(11,37,64,0.06);
+  border-color: rgba(15,42,68,0.28);
 }
 .val-card__icon {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: var(--signal-soft); color: var(--signal);
   display: inline-flex; align-items: center; justify-content: center;
-  margin-bottom: 14px;
+  width: 24px; height: 24px;
+  color: var(--blue-primary);
+  margin-bottom: 16px;
 }
+.val-card__icon svg { width: 100%; height: 100%; }
 
 /* FAQ accordion */
 .faq-item {
@@ -2081,23 +2055,41 @@ a, button { -webkit-tap-highlight-color: transparent; }
   box-shadow: 0 28px 60px rgba(11,37,64,0.28);
 }
 @media (max-width: 767px) { .home-stat-bar { grid-template-columns: 1fr 1fr; padding: 18px 20px; gap: 14px 18px; } }
-.home-stat-bar__cell { display: flex; align-items: center; gap: 12px; }
+.home-stat-bar__cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(245,247,250,0.12);
+}
+.home-stat-bar__cell:first-child { padding-left: 0; border-left: none; }
+@media (max-width: 767px) {
+  .home-stat-bar__cell { padding-left: 0; border-left: none; }
+}
+/* Icon kept but reduced to a thin stroke — no colored tile, no AI-y badge. */
 .home-stat-bar__icon {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: rgba(47,163,158,0.18);
-  color: #4FD2CC;
+  width: 18px; height: 18px;
+  color: #8AD4C4;                          /* soft green stroke */
   display: inline-flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  opacity: 0.85;
 }
+.home-stat-bar__icon svg { width: 100%; height: 100%; }
 .home-stat-bar__value {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
   color: #FFFFFF;
 }
-.home-stat-bar__label { font-size: 11.5px; color: rgba(245,247,250,0.72); margin-top: 3px; }
+.home-stat-bar__label {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245,247,250,0.55);
+  margin-top: 6px;
+  font-family: var(--font-mono);
+}
 
 /* Services We Represent tiles (no underline) */
 .svc-tile {
@@ -2582,38 +2574,21 @@ a, button { -webkit-tap-highlight-color: transparent; }
   backdrop-filter: blur(4px);
 }
 .career-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(95,184,165,0.6);
-  background: rgba(62,163,148,0.08);
+  border-color: rgba(95,184,165,0.5);
 }
-.career-card__pip {
-  position: absolute;
-  top: -12px;
-  left: 20px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--blue-primary);
-  color: #FFFFFF;
-  font-size: 13px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 16px rgba(62,163,148,0.45);
-}
+/* Numbered pip is dropped — the tag ("Year 1") already carries the order. */
+.career-card__pip { display: none; }
 .career-card__tag {
   font-family: var(--font-mono);
   font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(245,247,250,0.62);
-  margin-bottom: 6px;
-  margin-top: 4px;
+  color: rgba(245,247,250,0.55);
+  margin-bottom: 14px;
 }
 .career-card__title {
   font-family: "Geist", "Inter", sans-serif;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   color: #FFFFFF;
   line-height: 1.2;
@@ -2621,32 +2596,21 @@ a, button { -webkit-tap-highlight-color: transparent; }
   margin-bottom: 10px;
 }
 .career-card__body {
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.6;
-  color: rgba(245,247,250,0.74);
-  margin-bottom: 14px;
+  color: rgba(245,247,250,0.7);
+  margin-bottom: 22px;
 }
 .career-card__earn {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  padding-top: 10px;
-  margin-top: 4px;
-  border-top: 1px solid rgba(245,247,250,0.14);
+  /* Earnings is the headline number — no decoration, just type. */
+  display: block;
+  padding-top: 18px;
+  border-top: 1px solid rgba(245,247,250,0.12);
   color: #FFFFFF;
-  font-family: var(--font-mono);
-  font-size: 12px;
+  font-family: "Geist", "Inter", sans-serif;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: 0.02em;
-}
-.career-card__earn::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--blue-primary);
-  flex-shrink: 0;
-  transform: translateY(-2px);
+  letter-spacing: -0.014em;
 }
 
 .career-pill {
@@ -2777,21 +2741,19 @@ a, button { -webkit-tap-highlight-color: transparent; }
   transition: transform 320ms var(--ease-spring), border-color 220ms ease, box-shadow 280ms ease;
 }
 .reason-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(62,163,148,0.28);
-  box-shadow: 0 18px 40px rgba(11,37,64,0.07);
+  border-color: rgba(15,42,68,0.28);
 }
 .reason-card__i {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: var(--blue-soft);
-  color: var(--blue-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 18px;
+  color: var(--blue-primary);
+  /* No tile, no background — just the stroke. Pairs better with editorial type. */
 }
+.reason-card__i svg { width: 100%; height: 100%; }
 .reason-card__h {
   font-family: "Geist", "Inter", sans-serif;
   font-size: 17px;
@@ -2818,21 +2780,18 @@ a, button { -webkit-tap-highlight-color: transparent; }
   transition: transform 260ms var(--ease-spring), border-color 200ms ease, box-shadow 260ms ease;
 }
 .coach-module:hover {
-  transform: translateY(-2px);
-  border-color: rgba(62,163,148,0.32);
-  box-shadow: 0 10px 24px rgba(11,37,64,0.06);
+  border-color: rgba(15,42,68,0.28);
 }
 .coach-module__i {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--blue-soft);
-  color: var(--blue-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  width: 22px;
+  height: 22px;
+  margin-bottom: 14px;
+  color: var(--blue-primary);
 }
+.coach-module__i svg { width: 100%; height: 100%; }
 .coach-module__h {
   font-family: "Geist", "Inter", sans-serif;
   font-size: 14px;
@@ -2844,26 +2803,56 @@ a, button { -webkit-tap-highlight-color: transparent; }
 }
 .coach-module__p { font-size: 12.5px; line-height: 1.55; color: var(--muted); margin: 0; }
 
-/* "Coming Soon" pill — subtle, neutral, green-dotted */
+/* Brand wall — fiber/ISP names rendered as a clean editorial grid.
+   No logos (we don't have licensed SVGs) — just confident wordmark text. */
+.brand-wall {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  overflow: hidden;
+}
+@media (min-width: 640px) { .brand-wall { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .brand-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.brand-wall__item {
+  background: #FFFFFF;
+  padding: 22px 16px;
+  font-family: "Newsreader", "Instrument Serif", "Fraunces", Georgia, serif;
+  font-size: clamp(15px, 1.4vw, 17.5px);
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 200ms ease, color 200ms ease, transform 320ms var(--ease-spring);
+  font-variation-settings: "opsz" 36;
+}
+.brand-wall__item:hover {
+  background: var(--blue-light);
+  color: var(--blue-deep);
+  transform: translateY(-1px);
+}
+
+/* "Coming Soon" — pared down to a thin inline label, not a pill. */
 .soon-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #F5F7FA;
-  color: var(--muted);
-  border: 1px solid var(--rule);
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--muted);
   line-height: 1;
 }
 .soon-badge__dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--blue-primary);
   box-shadow: 0 0 0 0 rgba(62,163,148,0.55);
