@@ -1,5 +1,22 @@
 node_modules/
 dist/
-.env.local
+
+# Environment secrets — never commit any .env variant
+.env
+.env.*
+!.env.example
+
 *.tsbuildinfo
 .claude/
+
+# Python artifacts (safety net — real backend lives on backend/fastapi branch)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

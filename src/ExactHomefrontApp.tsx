@@ -22,12 +22,70 @@ var SAGE = "#8FB09B";
 var GOLD = "#F5B942";             // primary CTA gold (Book a Call)
 var GOLD_DEEP = "#E0A42A";
 var GOLD_SOFT = "#FCEAC0";
+// HFS brand green — primary action color (matches the teal-green in the HFS logo).
+// Kept the BLUE_* names because they're used everywhere internally as the
+// semantic "primary action" tokens; the hex values carry the brand.
+var BLUE_PRIMARY = "#3EA394";     // HFS green — buttons, focus rings, active nav
+var BLUE_DEEP = "#2A8277";        // deeper green — hover/pressed states
+var BLUE_SOFT = "#DFF2EE";        // soft tint — badge backgrounds, card surfaces
+var BLUE_LIGHT = "#F1FBF8";       // light panel bg (HFS Coach section)
 var CLAY = "#C25A3D";
 var FOREST = SIGNAL;
 var FOREST_SOFT = SIGNAL_SOFT;
-var BLUE = INK;
-var BLUE_SOFT = SIGNAL_SOFT;
 var LOGO = "/logo-transparent.png";
+
+// ── Rep-portal API helpers ─────────────────────────────────────────
+// Every protected call MUST go through apiFetch so the Bearer token
+// is attached automatically. Never bypass this to hit the portal API
+// directly from a component.
+function getApiBase() {
+  if (typeof import.meta !== "undefined" && import.meta && import.meta.env && import.meta.env.VITE_API_URL) {
+    return String(import.meta.env.VITE_API_URL).replace(/\/$/, "");
+  }
+  return "/api";
+}
+
+function getStoredToken() {
+  if (typeof window === "undefined") return null;
+  try {
+    var expiry = window.localStorage.getItem("hfs_token_expires_at") || window.sessionStorage.getItem("hfs_token_expires_at");
+    if (expiry && Date.now() > Number(expiry)) {
+      // Expired — clear it so we don't send a stale token
+      window.localStorage.removeItem("hfs_access_token");
+      window.localStorage.removeItem("hfs_token_expires_at");
+      window.sessionStorage.removeItem("hfs_access_token");
+      window.sessionStorage.removeItem("hfs_token_expires_at");
+      return null;
+    }
+    return window.localStorage.getItem("hfs_access_token") || window.sessionStorage.getItem("hfs_access_token");
+  } catch (e) { return null; }
+}
+
+function clearStoredToken() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem("hfs_access_token");
+    window.localStorage.removeItem("hfs_token_expires_at");
+    window.sessionStorage.removeItem("hfs_access_token");
+    window.sessionStorage.removeItem("hfs_token_expires_at");
+  } catch (e) {}
+}
+
+function apiFetch(path, options) {
+  var opts = options || {};
+  var headers = Object.assign({ Accept: "application/json" }, opts.headers || {});
+  var token = getStoredToken();
+  if (token) headers["Authorization"] = "Bearer " + token;
+  return fetch(getApiBase() + path, Object.assign({}, opts, {
+    headers: headers,
+    // `credentials: include` also sends the HttpOnly cookie as a fallback,
+    // so the backend accepts either transport.
+    credentials: "include"
+  })).then(function(res) {
+    if (res.status === 401) clearStoredToken();
+    return res;
+  });
+}
 var INSTAGRAM_URL = "https://www.instagram.com/homefrontsolutions/";
 var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
@@ -1415,6 +1473,7 @@ function getPathForRoute(name, slug) {
   if (name === "contact") return "/contact";
   if (name === "privacy") return "/privacy";
   if (name === "terms") return "/terms";
+  if (name === "rep-login") return "/rep-login";
   return "/";
 }
 
@@ -1755,6 +1814,7 @@ function getRouteFromPath(pathname) {
   if (cleanPath === "/contact") return { name: "contact", slug: null };
   if (cleanPath === "/privacy") return { name: "privacy", slug: null };
   if (cleanPath === "/terms") return { name: "terms", slug: null };
+  if (cleanPath === "/rep-login" || cleanPath === "/login" || cleanPath === "/signin") return { name: "rep-login", slug: null };
   if (parts[0] === "careers" && parts[1] && parts[2] === "apply" && parts[3] === "thank-you") {
     return { name: "thank-you", slug: parts[1] };
   }
@@ -1960,11 +2020,16 @@ function Header(props) {
             onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
             target={BOOKING_URL ? "_blank" : undefined}
             rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-            className="btn-gold inline-flex items-center gap-2 px-5 rounded-full"
+            className="btn-blue inline-flex items-center gap-2 px-5 rounded-full"
             style={{ cursor: "pointer", minHeight: 42, fontSize: 13.5, letterSpacing: "-0.005em" }}
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="16" rx="2"/>
+              <path d="M3 9 H21"/>
+              <path d="M8 3 V6"/>
+              <path d="M16 3 V6"/>
+            </svg>
             Book a Call
-            <span aria-hidden="true">→</span>
           </a>
         </nav>
         <button
@@ -2011,11 +2076,17 @@ function Footer(props) {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     color: "#E7ECF2", transition: "background 200ms ease, border-color 200ms ease, color 200ms ease"
   };
-  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(245,185,66,0.15)"; e.currentTarget.style.borderColor = "#F5B942"; e.currentTarget.style.color = "#F5B942"; };
+  var socialHoverIn = function(e) { e.currentTarget.style.background = "rgba(62,163,148,0.18)"; e.currentTarget.style.borderColor = "#5FB8A5"; e.currentTarget.style.color = "#96D7C6"; };
   var socialHoverOut = function(e) { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; e.currentTarget.style.color = "#E7ECF2"; };
   return (
-    <footer className="footer-navy">
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 pb-8">
+    <footer className="footer-navy footer-v2">
+      {/* Soft US-map silhouette peeks through from the right */}
+      <span className="footer-v2__map" aria-hidden="true">
+        <svg viewBox="0 0 260 140" width="260" height="140" fill="currentColor">
+          {[[20,58],[36,56],[52,58],[68,52],[84,46],[100,44],[118,42],[134,40],[152,40],[170,42],[188,46],[206,52],[224,60],[32,74],[50,72],[68,68],[86,66],[104,64],[122,62],[140,62],[158,64],[176,66],[194,70],[212,74],[228,80],[46,90],[64,86],[82,82],[100,80],[118,80],[136,82],[154,84],[172,86],[190,88],[206,92],[64,104],[82,100],[100,98],[118,98],[136,100],[154,102],[172,104],[84,116],[102,114],[120,114],[138,116],[156,118]].map(function(p,i){ return <circle key={i} cx={p[0]} cy={p[1]} r="2.6"/>; })}
+        </svg>
+      </span>
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 pb-8 relative" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-10 mb-10">
           {/* Brand + tagline + social */}
           <div className="md:col-span-4">
@@ -2023,7 +2094,7 @@ function Footer(props) {
               <BrandLockup onDark={true} />
             </a>
             <p className="max-w-sm mt-5" style={{ fontSize: 13.5, lineHeight: 1.6, color: "#9BA7B2" }}>
-              Home services growth, built face to face.
+              Nationwide door-to-door growth for the home services that power modern life.
             </p>
             <div className="flex items-center gap-3 mt-6">
               <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" style={socialItem} onMouseEnter={socialHoverIn} onMouseLeave={socialHoverOut} aria-label="Facebook">
@@ -2054,38 +2125,41 @@ function Footer(props) {
             </ul>
           </div>
 
-          {/* For Partners */}
-          <div className="md:col-span-2">
-            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>For Partners</p>
+          {/* Services */}
+          <div className="md:col-span-3">
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Services</p>
             <ul className="space-y-0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              <li><a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Become a Partner</a></li>
-              <li><a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Partner Login</a></li>
-              <li><a href="/insights" onClick={function(e) { handleNavClick(e, props.go, "insights"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Resources</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Fiber Internet</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Home Security</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Solar</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Water Filtration</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Roofing</a></li>
+              <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Home Services</a></li>
             </ul>
           </div>
 
-          {/* Let's Connect */}
-          <div className="md:col-span-4">
-            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Let's Connect</p>
+          {/* Contact Us */}
+          <div className="md:col-span-3">
+            <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Contact Us</p>
             <ul className="space-y-2.5" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></svg>
-                </span>
-                <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4 H9 L11 9 L8 11 C 9 14, 10 15, 13 16 L15 13 L20 15 V19 A2 2 0 0 1 18 21 C 10 21, 3 14, 3 6 A 2 2 0 0 1 5 4 Z"/></svg>
+                <span style={{ color: "#5FB8A5", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4 H9 L11 9 L8 11 C 9 14, 10 15, 13 16 L15 13 L20 15 V19 A2 2 0 0 1 18 21 C 10 21, 3 14, 3 6 A 2 2 0 0 1 5 4 Z"/></svg>
                 </span>
                 <a href="tel:3364209379" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>(336) 420-9379</a>
               </li>
               <li className="flex items-start gap-2.5">
-                <span style={{ color: "#F5B942", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+                <span style={{ color: "#5FB8A5", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7 L12 13 L21 7"/></svg>
+                </span>
+                <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: "#CBD4DD", fontSize: 13.5, transition: "color 200ms ease" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>info@homefrontsolutionsllc.com</a>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span style={{ color: "#5FB8A5", flexShrink: 0, marginTop: 3 }} aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
                 </span>
                 <span style={{ color: "#CBD4DD", fontSize: 13.5, lineHeight: 1.55 }}>
-                  High Point, NC<br/>Serving markets nationwide
+                  Greensboro, NC<br/>Serving markets nationwide.
                 </span>
               </li>
             </ul>
@@ -2093,7 +2167,7 @@ function Footer(props) {
         </div>
 
         <div className="pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2026 Home Front Solutions, LLC. All rights reserved.</div>
+          <div style={{ fontSize: 12.5, color: "#8A96A0" }}>© 2026 Home Front Solutions LLC. All rights reserved.</div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2" style={{ fontSize: 12.5 }}>
             <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Privacy Policy</a>
             <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }} style={{ cursor: "pointer", color: "#8A96A0" }} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Terms of Service</a>
@@ -2173,10 +2247,203 @@ function StatIcon(props) {
   var kind = props.kind;
   var common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
   if (kind === "globe") return <svg {...common}><circle cx="12" cy="12" r="9"/><path d="M3 12 H21"/><path d="M12 3 C 15 6.5, 15 17.5, 12 21"/><path d="M12 3 C 9 6.5, 9 17.5, 12 21"/></svg>;
+  if (kind === "pin")    return <svg {...common}><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>;
   if (kind === "cats")   return <svg {...common}><rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/></svg>;
   if (kind === "brain")  return <svg {...common}><path d="M8 5 C 5 5, 4 8, 5 10 C 3.5 11.5, 4 14, 6 14.5 C 6 17, 8.5 18.5, 11 18 V 6 C 10 5, 9 5, 8 5 Z"/><path d="M16 5 C 19 5, 20 8, 19 10 C 20.5 11.5, 20 14, 18 14.5 C 18 17, 15.5 18.5, 13 18 V 6 C 14 5, 15 5, 16 5 Z"/></svg>;
-  if (kind === "chart")  return <svg {...common}><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>;
+  if (kind === "sparkle") return <svg {...common}><path d="M12 3 L13.6 9 L20 11 L13.6 13 L12 19 L10.4 13 L4 11 L10.4 9 Z"/><path d="M18 4 L18.6 6 L20.8 6.8 L18.6 7.6 L18 9.8 L17.4 7.6 L15.2 6.8 L17.4 6 Z" opacity="0.7"/></svg>;
+  if (kind === "chart")  return <svg {...common}><path d="M4 19 V8"/><path d="M10 19 V11"/><path d="M16 19 V4"/><path d="M2 19 H22"/><path d="M4 11 L10 7 L16 9" opacity="0.75"/></svg>;
   return null;
+}
+
+// HFS Coach module mini-card icons
+function CoachModuleIcon(props) {
+  var kind = props.kind;
+  var common = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "mic")    return <svg {...common}><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11 V12 A7 7 0 0 0 19 12 V11"/><path d="M12 19 V22"/><path d="M8 22 H16"/></svg>;
+  if (kind === "chat")   return <svg {...common}><path d="M3 6 H21 V16 H10 L5 20 V16 H3 Z"/><path d="M7 10 H16" opacity="0.55"/><path d="M7 13 H13" opacity="0.55"/></svg>;
+  if (kind === "trophy") return <svg {...common}><path d="M7 4 H17 V9 A5 5 0 0 1 7 9 Z"/><path d="M7 6 H3 V8 A4 4 0 0 0 7 12"/><path d="M17 6 H21 V8 A4 4 0 0 1 17 12"/><path d="M10 14 H14 L13 19 H11 Z"/><path d="M8 22 H16"/></svg>;
+  if (kind === "chart")  return <svg {...common}><rect x="3" y="4.5" width="18" height="14" rx="1.2"/><path d="M6 14 L10 10 L13 12 L17 7"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/><path d="M7 21 H17"/></svg>;
+  return null;
+}
+
+// Career-perk icons used in the recruiting band
+function PerkIcon(props) {
+  var kind = props.kind;
+  var common = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "wallet")  return <svg {...common}><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10 H21"/><circle cx="17" cy="14.5" r="1" fill="currentColor"/></svg>;
+  if (kind === "badge")   return <svg {...common}><circle cx="12" cy="9" r="5"/><path d="M7 14 L6 21 L12 18 L18 21 L17 14"/></svg>;
+  if (kind === "ladder")  return <svg {...common}><path d="M7 3 V21"/><path d="M17 3 V21"/><path d="M7 7 H17"/><path d="M7 12 H17"/><path d="M7 17 H17"/></svg>;
+  if (kind === "support") return <svg {...common}><path d="M4 15 V12 A8 8 0 0 1 20 12 V15"/><rect x="2" y="13" width="4" height="6" rx="1"/><rect x="18" y="13" width="4" height="6" rx="1"/><path d="M20 18 C 20 20, 17 21, 14 21"/></svg>;
+  return null;
+}
+
+// Why-Home-Front icons (shield, house, US map silhouette, badge)
+function WhyIcon(props) {
+  var kind = props.kind;
+  var common = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.55, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
+  if (kind === "shield") return (<svg {...common}><path d="M12 3 L20 6 V12 C 20 16.5, 16.5 19.5, 12 21 C 7.5 19.5, 4 16.5, 4 12 V6 Z"/><path d="M8.5 12 L11 14.3 L15.5 9.6"/></svg>);
+  if (kind === "house")  return (<svg {...common}><path d="M3 11 L12 3.5 L21 11 V20 A1 1 0 0 1 20 21 H4 A1 1 0 0 1 3 20 Z"/><path d="M9 21 V13 H15 V21"/></svg>);
+  if (kind === "map")    return (
+    <svg width="44" height="28" viewBox="0 0 260 140" fill="currentColor" aria-hidden="true">
+      {[[20,58],[36,56],[52,58],[68,52],[84,46],[100,44],[118,42],[134,40],[152,40],[170,42],[188,46],[206,52],[224,60],[32,74],[50,72],[68,68],[86,66],[104,64],[122,62],[140,62],[158,64],[176,66],[194,70],[212,74],[228,80],[46,90],[64,86],[82,82],[100,80],[118,80],[136,82],[154,84],[172,86],[190,88],[206,92],[64,104],[82,100],[100,98],[118,98],[136,100],[154,102],[172,104],[84,116],[102,114],[120,114],[138,116],[156,118]].map(function(p,i){ return <circle key={i} cx={p[0]} cy={p[1]} r="3.2"/>; })}
+    </svg>
+  );
+  if (kind === "badge")  return (<svg {...common}><circle cx="12" cy="9" r="5.2"/><path d="M9.8 9 L11.2 10.3 L14.2 7.5" strokeWidth="1.6"/><path d="M7.5 14 L6 21 L12 18 L18 21 L16.5 14"/></svg>);
+  return null;
+}
+
+// FAQ row used in the new 2-column grid
+function FaqRow2(props) {
+  var _o = useState(false); var open = _o[0]; var setOpen = _o[1];
+  return (
+    <div className="faq2" data-open={open ? "true" : "false"}>
+      <button type="button" className="faq2__trigger" onClick={function() { setOpen(!open); }} aria-expanded={open}>
+        <span>{props.q}</span>
+        <svg className="faq2__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div className="faq2__body">{props.a}</div>
+    </div>
+  );
+}
+
+// HFS Coach™ — new mockup-matching dashboard with real line chart + avatar leaderboard
+function CoachMockV2() {
+  var _t = useState("dashboard"); var tab = _t[0]; var setTab = _t[1];
+  var _pw = useState("this"); var which = _pw[0]; var setWhich = _pw[1];
+
+  var stats = [
+    { label: "Doors Knocked", value: "152" },
+    { label: "Conversations", value: "98" },
+    { label: "Appointments",  value: "36" },
+    { label: "Close Rate",    value: "36.7%" }
+  ];
+
+  var thisWeek = [42, 64, 56, 88, 74, 112, 134];
+  var lastWeek = [36, 48, 44, 62, 70, 88, 96];
+  var labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  var max = 160, pad = 10, chartW = 360, chartH = 120;
+  function toPath(arr) {
+    var step = (chartW - pad * 2) / (arr.length - 1);
+    return arr.map(function(v, i) {
+      var x = pad + i * step;
+      var y = chartH - pad - (v / max) * (chartH - pad * 2);
+      return (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+    }).join(" ");
+  }
+
+  var leaders = [
+    { name: "A. Martinez", appts: 48, init: "AM" },
+    { name: "J. Thompson", appts: 43, init: "JT" },
+    { name: "M. Johnson",  appts: 39, init: "MJ" }
+  ];
+
+  var navItems = [
+    { id: "dashboard", label: "Dashboard", icon: "grid" },
+    { id: "reps",      label: "Reps",      icon: "users" },
+    { id: "coaching",  label: "Coaching",  icon: "headset" },
+    { id: "roleplays", label: "Roleplays", icon: "chat" },
+    { id: "reports",   label: "Reports",   icon: "doc" },
+    { id: "tools",     label: "Tools",     icon: "wrench" },
+    { id: "leader",    label: "Leaderboard", icon: "trophy" }
+  ];
+
+  return (
+    <div className="coach2">
+      <aside className="coach2__side">
+        <div className="coach2__brand">
+          <span className="coach2__brand-dot" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11 L12 3.5 L21 11 V20 H3 Z"/></svg>
+          </span>
+          HFS Coach
+        </div>
+        <ul className="coach2__nav">
+          {navItems.map(function(item) {
+            var active = tab === item.id;
+            return (
+              <li key={item.id} className={active ? "is-active" : ""} onClick={function() { setTab(item.id); }} role="button" tabIndex={0}
+                onKeyDown={function(e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setTab(item.id); } }}>
+                <span className="coach2__nav-i" aria-hidden="true">
+                  {item.icon === "grid"    && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>}
+                  {item.icon === "users"   && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="3"/><path d="M3 19 C 4 16, 6 14.5, 9 14.5 C 12 14.5, 14 16, 15 19"/><circle cx="17" cy="9" r="2.6"/><path d="M15 15 C 17 15, 20 16, 21 19"/></svg>}
+                  {item.icon === "headset" && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15 V12 A8 8 0 0 1 20 12 V15"/><rect x="2" y="13" width="4" height="6" rx="1"/><rect x="18" y="13" width="4" height="6" rx="1"/></svg>}
+                  {item.icon === "chat"    && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6 H21 V16 H9 L5 20 V16 H3 Z"/></svg>}
+                  {item.icon === "doc"     && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3 H14 L19 8 V21 H5 Z"/><path d="M14 3 V8 H19"/></svg>}
+                  {item.icon === "wrench"  && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3 A5 5 0 0 1 18 11 L8 21 L3 16 L13 6 A5 5 0 0 1 15 3 Z"/></svg>}
+                  {item.icon === "trophy"  && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4 H17 V9 A5 5 0 0 1 7 9 Z"/><path d="M7 6 H3 V8 A4 4 0 0 0 7 12"/><path d="M17 6 H21 V8 A4 4 0 0 1 17 12"/><path d="M10 14 H14 L13 19 H11 Z"/></svg>}
+                </span>
+                {item.label}
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+
+      <div className="coach2__main">
+        <div className="coach2__top">Today's Overview</div>
+
+        <div className="coach2__stats">
+          {stats.map(function(s) {
+            return (
+              <div key={s.label} className="coach2__stat">
+                <div className="coach2__stat-label">{s.label}</div>
+                <div className="coach2__stat-value">{s.value}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="coach2__grid">
+          <div className="coach2__card">
+            <div className="coach2__card-head"><span className="coach2__card-title">Performance Trend</span></div>
+            <svg viewBox={"0 0 " + chartW + " " + chartH} className="coach2__chart" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#3EA394" stopOpacity="0.22"/>
+                  <stop offset="100%" stopColor="#3EA394" stopOpacity="0"/>
+                </linearGradient>
+              </defs>
+              {[0,1,2,3].map(function(i) {
+                var y = pad + ((chartH - pad * 2) / 3) * i;
+                return <line key={i} x1={pad} x2={chartW - pad} y1={y} y2={y} stroke="#E3E8ED" strokeWidth="1" strokeDasharray="2 4"/>;
+              })}
+              <path d={toPath(thisWeek) + " L" + (chartW - pad) + "," + (chartH - pad) + " L" + pad + "," + (chartH - pad) + " Z"} fill="url(#trendFill)"/>
+              <path d={toPath(thisWeek)} fill="none" stroke="#3EA394" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round"/>
+              {thisWeek.map(function(v, i) {
+                var step = (chartW - pad * 2) / (thisWeek.length - 1);
+                var x = pad + i * step;
+                var y = chartH - pad - (v / max) * (chartH - pad * 2);
+                return <circle key={i} cx={x} cy={y} r="3" fill="#FFFFFF" stroke="#3EA394" strokeWidth="2"/>;
+              })}
+              {which === "last" && <path d={toPath(lastWeek)} fill="none" stroke="#8A96A0" strokeWidth="1.8" strokeDasharray="4 3" strokeLinecap="round"/>}
+            </svg>
+            <div className="coach2__chart-legend">
+              {labels.map(function(l) { return <span key={l}>{l}</span>; })}
+            </div>
+            <div className="coach2__chart-tabs">
+              <button type="button" className={which === "this" ? "is-active" : ""} onClick={function() { setWhich("this"); }}>This Week</button>
+              <button type="button" className={which === "last" ? "is-active" : ""} onClick={function() { setWhich("last"); }}>Last Week</button>
+            </div>
+          </div>
+
+          <div className="coach2__card">
+            <div className="coach2__card-head"><span className="coach2__card-title">Rep Leaderboard</span><span className="coach2__card-sub">Appts</span></div>
+            <ul className="coach2__lb">
+              {leaders.map(function(r, i) {
+                return (
+                  <li key={r.name}>
+                    <span className="coach2__lb-rank">{i + 1}</span>
+                    <span className="coach2__lb-avatar" aria-hidden="true">{r.init}</span>
+                    <span className="coach2__lb-name">{r.name}</span>
+                    <span className="coach2__lb-val">{r.appts}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // Step-flow icons — door-with-knock, two-handed handshake, dashboard chart
@@ -2563,32 +2830,34 @@ function CheckDot() {
 
 // Shared navy hero band for every non-home page so the whole site carries the
 // same premium navy + gold energy as the landing page.
+// Shared page hero — white/light band with navy headline, blue eyebrow,
+// teal italic accent, and optional blue CTAs. Matches the new home style.
 function PageHero(props) {
   var eyebrow = props.eyebrow;
   var title = props.title;
   var subtitle = props.subtitle;
-  var accentWord = props.accentWord;     // optional — renders in italic gold if provided
+  var accentWord = props.accentWord;     // optional — renders in italic teal if provided
   var actions = props.actions;           // optional ReactNode for CTAs
   return (
-    <section className="hero-navy page-hero">
-      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-16 md:pb-20">
+    <section className="page-hero-light">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-20 pb-14 md:pb-16">
         {eyebrow && (
-          <div className="page-hero__eyebrow" aria-label={eyebrow}>{eyebrow}</div>
+          <div className="page-hero-light__eyebrow">{eyebrow}</div>
         )}
-        <h1 className="page-hero__title" style={{ fontFamily: "Geist, Inter, sans-serif" }}>
+        <h1 className="page-hero-light__title">
           {title}
           {accentWord ? (
             <>
               {" "}
-              <span className="page-hero__accent" style={{ ...serif }}>{accentWord}</span>
+              <span className="page-hero-light__accent" style={{ ...serif }}>{accentWord}</span>
             </>
           ) : null}
         </h1>
         {subtitle && (
-          <p className="page-hero__subtitle">{subtitle}</p>
+          <p className="page-hero-light__subtitle">{subtitle}</p>
         )}
         {actions && (
-          <div className="page-hero__actions">{actions}</div>
+          <div className="page-hero-light__actions">{actions}</div>
         )}
       </div>
     </section>
@@ -2622,144 +2891,121 @@ function HomePage(props) {
     { kind: "home",     label: "Home Services" }
   ];
   var stats = [
-    { icon: "globe", label: "Markets Launched",     value: "28+" },
-    { icon: "cats",  label: "Service Categories",   value: "6+" },
-    { icon: "brain", label: "AI-Powered Training",  value: "100%" },
-    { icon: "chart", label: "Performance Reporting", value: "Real-Time" }
+    { icon: "pin",    label: "Markets Launched",     value: "28+" },
+    { icon: "cats",   label: "Service Categories",   value: "6+" },
+    { icon: "sparkle",label: "AI-Powered Training",  value: "100%" },
+    { icon: "chart",  label: "Reporting",            value: "Real-Time" }
   ];
   var steps = [
-    { num: "01", icon: "door",  title: "We knock every door.",       body: "Branded, badged reps cover your territory — face-to-face conversations at every home on the route." },
-    { num: "02", icon: "shake", title: "We close with confidence.",  body: "Trained to present, handle objections, and convert right at the doorstep — installs, not just signatures." },
-    { num: "03", icon: "bar",   title: "You own the numbers.",        body: "Live dashboards track knocks, conversations, closes, and activations in real time — no black box." }
+    { num: "1", icon: "door",  title: "We knock every door.",      body: "Professional reps. Real conversations. We introduce your offer to the right homes at the right time." },
+    { num: "2", icon: "shake", title: "We close with confidence.", body: "Our reps qualify, present, and close with clarity — backed by proven scripts and live support." },
+    { num: "3", icon: "bar",   title: "You own the numbers.",      body: "Real-time reporting, verified leads, and appointments you can track from door to deal." }
   ];
-  var trainingPerks = [
-    "Product Knowledge", "Compliance",
-    "Pitch Mastery",     "Field Simulation",
-    "Objection Handling", "Tools / CRM"
+  var coachModules = [
+    { icon: "mic",    title: "Live call coaching",        body: "Every pitch scored in real time. Weak spots flagged before the next door." },
+    { icon: "chat",   title: "AI roleplay",               body: "Practice the objection at 11pm. Knock it at 9am." },
+    { icon: "trophy", title: "Market leaderboards",        body: "See where you sit. Who&rsquo;s ahead. What&rsquo;s working this week." },
+    { icon: "chart",  title: "Dashboards that drive work", body: "Live knocks, closes, and installs — not a monthly slide deck." }
   ];
   var cities = [
-    { region: "Greensboro",     slug: "greensboro-nc",     img: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=700&q=80" },
-    { region: "High Point",     slug: "high-point-nc",     img: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=700&q=80" },
-    { region: "Winston-Salem",  slug: "winston-salem-nc",  img: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=700&q=80" },
-    { region: "Charlotte",      slug: "charlotte-nc",      img: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=700&q=80" },
-    { region: "Raleigh",        slug: "raleigh-nc",        img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=700&q=80" },
-    { region: "Piedmont Triad", slug: "piedmont-triad-nc", img: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=80" }
+    { region: "Greensboro",     slug: "greensboro-nc" },
+    { region: "High Point",     slug: "high-point-nc" },
+    { region: "Winston-Salem",  slug: "winston-salem-nc" },
+    { region: "Charlotte",      slug: "charlotte-nc" },
+    { region: "Raleigh",        slug: "raleigh-nc" },
+    { region: "Piedmont Triad", slug: "piedmont-triad-nc" }
   ];
   var values = [
-    { icon: "user",  title: "Honest\nin-person service",   body: "We treat every homeowner with respect and integrity." },
-    { icon: "house", title: "Strong\nhome-service offers", body: "Top brands. High value. Solutions that help." },
-    { icon: "pin",   title: "Locally rooted,\nnationally trusted", body: "We know the neighborhoods. We deliver national results." },
-    { icon: "badge", title: "Trained,\ncertified reps", body: "We invest in our team so they can build a real career." }
+    { icon: "shield", title: "Honest in-person service", body: "Real conversations. Real trust. That's how we build long-term customer relationships." },
+    { icon: "house",  title: "Strong home-service offers", body: "We represent products people need and want — from internet to security, solar, and more." },
+    { icon: "map",    title: "Locally rooted.\nNationally trusted.", body: "Local teams with national standards and support." },
+    { icon: "badge",  title: "Trained. Certified. Supported.", body: "Our reps are trained to win and supported to grow." }
   ];
   var faqs = [
-    { q: "Do I need prior sales experience?", a: "No. Most of our top reps started with zero sales experience. Our paid training covers product knowledge, pitch delivery, objection handling, compliance, and live field simulation before your first real door." },
-    { q: "How does pay and commission work?",  a: "All field roles are commission-based with weekly payouts. First-year reps typically earn $100K–$185K depending on market, product line, and production. Commission is uncapped." },
-    { q: "What products and services will I sell?", a: "You will represent one or more of: fiber internet, home security, solar, water filtration, roofing, and other home services. Product mix depends on the market you are hired into." },
-    { q: "What does a typical day look like?", a: "Morning training and route planning, 4 to 6 hours of door-to-door field activity in a defined neighborhood territory, and CRM wrap-up at end of shift. Most reps are in the field Monday through Saturday on a flexible schedule." }
+    { q: "Do I need sales experience to join?", a: "No. Most of our top reps started with zero sales experience. Paid certification before your first real door covers product knowledge, pitch delivery, objection handling, and live field simulation. Bring drive and coachability — we handle the rest." },
+    { q: "How much can I earn?", a: "First-year reps typically clear $80K–$150K on uncapped commission paid weekly. Top producers regularly break $180K in year one. Team leads and area managers move into the $250K+ range." },
+    { q: "What's the promotion path?", a: "Every manager at HFS was promoted out of production. Hit the numbers, coach the next rep, and the next role opens: Field Rep → Team Lead → Area Manager. No politics, no favorites." },
+    { q: "What does the training look like?", a: "Six modules, five days, fully paid. You'll practice on HFS Coach (our AI roleplay platform) and ride along with a team lead before you own a territory. Coaching continues daily in the field." },
+    { q: "Where do you operate?", a: "28+ U.S. markets and growing. Headquartered in the Carolinas with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
+    { q: "How do I get started?", a: "Reps: apply online — most applications get a recruiter response within one business day. Brands: book a 30-minute discovery call and we'll scope a pilot market." }
   ];
 
   return (
     <>
-      {/* ── HERO (navy) ─────────────────────────────────────────── */}
-      <section id="home-hero" className="hero-navy">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-24 md:pb-32 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          <div className="lg:col-span-7">
-            <h1 className="display" style={{ fontSize: "clamp(2.6rem, 6.2vw, 4.75rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              <span className="word-reveal word-reveal--inline">Home services</span>{" "}
-              <span className="word-reveal word-reveal--inline" style={{ animationDelay: "90ms" }}>growth, built</span>{" "}
-              <span className="word-reveal word-reveal--inline" style={{ animationDelay: "200ms", color: GOLD, fontStyle: "italic", fontWeight: 500, ...serif }}>face to face.</span>
-            </h1>
-            <p className="mt-7 max-w-xl word-reveal" style={{ animationDelay: "380ms", fontSize: 16, lineHeight: 1.7, color: "rgba(245,247,250,0.78)" }}>
-              Nationwide door-to-door teams built for fiber internet — plus security, solar, and home services. Six-figure first-year earnings, paid certification, trained reps at your homeowners' doors.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "500ms" }}>
-              <Magnetic strength={0.2}>
-                <a
-                  href="/careers"
-                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-gold inline-flex items-center justify-center gap-2 px-8 rounded-full font-medium"
-                  style={{ cursor: "pointer", minHeight: 56, fontSize: 15.5, letterSpacing: "-0.005em" }}
-                  aria-label="Join the Home Front Solutions team"
-                >
-                  Join the Team
-                  <span aria-hidden="true">→</span>
-                </a>
-              </Magnetic>
+      {/* ── HERO (white background, navy stat bar strip at bottom) ─── */}
+      <section id="home-hero" className="home-hero">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-14 pb-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            <div className="lg:col-span-6">
+              <h1 className="home-hero__title">
+                <span className="word-reveal word-reveal--inline">Face-to-face sales</span>{" "}
+                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "120ms" }}>that grow</span>{" "}
+                <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "240ms" }}>home service brands.</span>
+              </h1>
+              <p className="home-hero__lead word-reveal" style={{ animationDelay: "400ms" }}>
+                Real conversations. Real customers. Real growth. Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win.
+              </p>
+              <div className="mt-7 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "480ms" }}>
+                <Magnetic strength={0.2}>
+                  <a
+                    href="/careers"
+                    onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                    className="btn-blue inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
+                    aria-label="Join the Home Front Solutions team"
+                  >
+                    Join the Team
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2}>
+                  <a
+                    href={BOOKING_URL || "/contact"}
+                    onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                    target={BOOKING_URL ? "_blank" : undefined}
+                    rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                    className="btn-outline inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
+                    aria-label="Partner with Home Front Solutions"
+                  >
+                    Partner With Us
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </Magnetic>
+              </div>
+              <div className="mt-6 flex items-center gap-2.5 word-reveal" style={{ animationDelay: "600ms" }}>
+                <span className="home-hero__trust-dot" aria-hidden="true">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+                </span>
+                <span className="home-hero__trust-label">Trusted by leading brands. Proven in communities nationwide.</span>
+              </div>
             </div>
 
-            <div className="trust-row mt-8 word-reveal" style={{ animationDelay: "640ms" }}>
-              {["Proven Field Execution", "AI-Powered Training", "Real-Time Reporting"].map(function(item) {
-                return (
-                  <span key={item} className="trust-row__item">
-                    <span className="trust-check" aria-hidden="true">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
-                    </span>
-                    {item}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Hero portrait — single rep knocking a door (lead action shot) */}
-          <div className="lg:col-span-5 word-reveal" style={{ animationDelay: "260ms" }}>
-            <div className="hero-portrait">
-              {/* Soft residential silhouette behind the portrait */}
-              <svg
-                className="hero-collage__house"
-                viewBox="0 0 400 400"
-                preserveAspectRatio="xMidYMid meet"
-                aria-hidden="true"
-              >
-                <defs>
-                  <linearGradient id="houseLine" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%"  stopColor="rgba(245,185,66,0.35)" />
-                    <stop offset="100%" stopColor="rgba(245,185,66,0)" />
-                  </linearGradient>
-                </defs>
-                <path d="M60 230 L200 100 L340 230 L340 360 L60 360 Z" fill="none" stroke="url(#houseLine)" strokeWidth="1.4" />
-                <rect x="180" y="250" width="40" height="110" fill="none" stroke="url(#houseLine)" strokeWidth="1.4" />
-                <circle cx="212" cy="305" r="2" fill="rgba(245,185,66,0.7)" />
-                <rect x="95"  y="260" width="55" height="55" fill="none" stroke="url(#houseLine)" strokeWidth="1.2" />
-                <rect x="250" y="260" width="55" height="55" fill="none" stroke="url(#houseLine)" strokeWidth="1.2" />
-                <path d="M200 400 C 200 380, 200 370, 200 360" fill="none" stroke="rgba(245,185,66,0.3)" strokeWidth="6" strokeLinecap="round" />
-              </svg>
-
-              <div className="hero-portrait__blob" aria-hidden="true" />
-              <div className="hero-portrait__dot" aria-hidden="true" />
-
-              <figure className="hero-portrait__frame m-0">
+            <div className="lg:col-span-6 word-reveal" style={{ animationDelay: "280ms" }}>
+              <div className="home-hero__photo">
                 <img
                   src="/rep-knock-1.jpg"
-                  alt="Home Front Solutions rep in navy polo knocking on a homeowner's front door"
+                  alt="Home Front Solutions rep knocking on a front door"
                   loading="eager"
                   decoding="async"
                   onError={function(e) {
-                    /* No founder fallback — go straight to the illustrated rep-at-door placeholder */
                     e.currentTarget.style.display = "none";
-                    e.currentTarget.parentElement.classList.add("hero-portrait__frame--fallback");
+                    e.currentTarget.parentElement.classList.add("home-hero__photo--fallback");
                   }}
                 />
-                {/* Illustrated knock overlay sits on the photo */}
-                <KnockOverlay size={104} position="bottom-right" />
-              </figure>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── STAT BAR (white card overlaps the hero/white divide) ──── */}
-      <section className="relative" style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12" style={{ marginTop: "-48px" }}>
-          <div className="stat-bar reveal">
+          {/* Navy stat-bar strip seated at the bottom of the hero */}
+          <div className="home-stat-bar reveal">
             {stats.map(function(s) {
               return (
-                <div key={s.label} className="stat-bar__cell">
-                  <span className="stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
+                <div key={s.label} className="home-stat-bar__cell">
+                  <span className="home-stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
                   <div>
-                    <div className="stat-bar__label">{s.label}</div>
-                    <div className="stat-bar__value">{s.value}</div>
+                    <div className="home-stat-bar__value">{s.value}</div>
+                    <div className="home-stat-bar__label">{s.label}</div>
                   </div>
                 </div>
               );
@@ -2768,27 +3014,25 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── SERVICE CATEGORIES ─────────────────────────────────── */}
+      {/* ── SERVICES WE REPRESENT ─────────────────────────────── */}
       <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-28 pb-16 md:pb-20">
-          <div className="reveal">
-            <div className="eyebrow-teal mb-3">Our Service Categories</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.6vw, 2.7rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Home solutions people trust.
-            </h2>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-16 md:pb-20">
+          <div className="reveal text-center max-w-2xl mx-auto mb-10">
+            <h2 className="section-h2">The brands we knock for.</h2>
+            <p className="section-sub">Six categories. One disciplined field team.</p>
           </div>
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-5 reveal" data-delay="1">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 reveal" data-delay="1">
             {services.map(function(s) {
               return (
                 <a
                   key={s.kind}
                   href="/what-we-do"
                   onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}
-                  className="svc-card"
+                  className="svc-tile"
                   aria-label={s.label + " — explore service"}
                 >
-                  <span className="svc-card__icon"><SvcIcon kind={s.kind} /></span>
-                  <span className="svc-card__label">{s.label}</span>
+                  <span className="svc-tile__icon"><SvcIcon kind={s.kind} /></span>
+                  <span className="svc-tile__label">{s.label}</span>
                 </a>
               );
             })}
@@ -2796,141 +3040,285 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS (light gray band, 3-card layout) ────── */}
-      <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12 md:mb-16">
-            <div className="eyebrow-teal mb-3">How It Works</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.95rem, 3.6vw, 2.75rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Simple. Disciplined. Scalable.
-            </h2>
-            <p className="mt-5" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7 }}>
-              Three disciplines that run every market the same way — and show up in the numbers every day.
+      {/* ── WHY FACE-TO-FACE STILL WINS — persuasion block ── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24" style={{ borderTop: "1px solid " + RULE }}>
+          <div className="reveal grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end mb-12">
+            <div className="lg:col-span-7">
+              <h2 className="section-h2">Why face-to-face still wins.</h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="section-sub" style={{ marginTop: 0 }}>
+                Clicks and impressions don&rsquo;t install fiber, set alarms, or mount panels. People do — and the home is still the most personal purchase your customer makes.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
+            <article className="reason-card">
+              <span className="reason-card__i" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+              </span>
+              <h3 className="reason-card__h">Trust moves faster in person.</h3>
+              <p className="reason-card__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
+            </article>
+
+            <article className="reason-card">
+              <span className="reason-card__i" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6 C 4 4.5, 5 4, 6 4 H18 C 19 4, 20 4.5, 20 6 V16 C 20 17, 19 17.5, 18 17.5 H10 L5 21 L5 17.5 C 4.5 17.5, 4 17, 4 16 Z"/><path d="M8 9 H16"/><path d="M8 13 H13"/></svg>
+              </span>
+              <h3 className="reason-card__h">Real objections, handled on the spot.</h3>
+              <p className="reason-card__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
+            </article>
+
+            <article className="reason-card">
+              <span className="reason-card__i" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19 V8"/><path d="M10 19 V12"/><path d="M16 19 V4"/><path d="M2 19 H22"/><path d="M4 11 L10 7 L16 9" opacity="0.7"/></svg>
+              </span>
+              <h3 className="reason-card__h">You pay for installs, not impressions.</h3>
+              <p className="reason-card__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ─────────────────────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-10">
+            <h2 className="section-h2">The growth process.</h2>
+            <p className="section-sub">Three disciplines. One market. Measured every day.</p>
+          </div>
+          <div className="how-flow reveal" data-delay="1">
+            {(function() {
+              var out = [];
+              steps.forEach(function(step, i) {
+                out.push(
+                  <article key={"s-" + step.num} className="how-card">
+                    <div className="how-card__head">
+                      <span className="how-card__num" aria-hidden="true">{step.num}</span>
+                      <div>
+                        <h3 className="how-card__title">{step.title}</h3>
+                        <p className="how-card__body">{step.body}</p>
+                      </div>
+                    </div>
+                    <span className="how-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
+                  </article>
+                );
+                if (i < steps.length - 1) {
+                  out.push(
+                    <span key={"a-" + i} className="how-arrow" aria-hidden="true">
+                      <svg width="34" height="14" viewBox="0 0 34 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeDasharray="3 4">
+                        <path d="M2 7 H28"/>
+                        <path d="M24 3 L28 7 L24 11" strokeDasharray="0"/>
+                      </svg>
+                    </span>
+                  );
+                }
+              });
+              return out;
+            })()}
+          </div>
+        </div>
+      </section>
+
+      {/* ── YOUR CAREER WITH HFS — recruiting-heavy section ─── */}
+      <section className="career-band">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12">
+            <div className="career-band__eyebrow">For Sales Reps</div>
+            <h2 className="section-h2" style={{ color: "#F5F7FA" }}>Your career. Your earnings.</h2>
+            <p className="section-sub" style={{ color: "rgba(245,247,250,0.72)", marginTop: 10 }}>
+              Paid training. Weekly commission. Promotion from within. No politics, no favorites — hit the numbers, the next role opens.
             </p>
           </div>
-          <div className="step-grid reveal" data-delay="1">
-            {steps.map(function(step) {
+          <div className="career-ladder reveal" data-delay="1">
+            {[
+              { tag: "Month 1", title: "Paid certification", body: "Six-module training before your first real door. Product knowledge, pitch mastery, objection handling, compliance.", earn: "Paid" },
+              { tag: "Year 1",  title: "Field Rep",          body: "Own a territory. Weekly commission. Top producers clear $150K in year one.",                                    earn: "$80K – $150K+" },
+              { tag: "Year 2",  title: "Team Lead",          body: "Promote from within. Build and coach a 4–6 rep team while keeping your own pipeline.",                          earn: "$150K – $250K" },
+              { tag: "Year 3+", title: "Area Manager",       body: "Own the market. Own the P&L. Report directly to ownership.",                                                    earn: "$250K+" }
+            ].map(function(step, i) {
               return (
-                <article key={step.num} className="step-card">
-                  <div className="step-card__head">
-                    <span className="step-card__num" aria-hidden="true">{step.num}</span>
-                    <span className="step-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
-                  </div>
-                  <h3 className="step-card__title" style={{ fontFamily: "Geist, Inter, sans-serif" }}>{step.title}</h3>
-                  <p className="step-card__body">{step.body}</p>
+                <article key={step.tag} className="career-card">
+                  <span className="career-card__pip" aria-hidden="true">{i + 1}</span>
+                  <div className="career-card__tag">{step.tag}</div>
+                  <h3 className="career-card__title">{step.title}</h3>
+                  <p className="career-card__body">{step.body}</p>
+                  <div className="career-card__earn">{step.earn}</div>
                 </article>
+              );
+            })}
+          </div>
+          <div className="reveal mt-10 flex flex-wrap justify-center gap-5" data-delay="2">
+            {[
+              { icon: "wallet",  label: "Weekly commission" },
+              { icon: "badge",   label: "Paid certification" },
+              { icon: "ladder",  label: "Promotion from within" },
+              { icon: "support", label: "Live coaching + AI support" }
+            ].map(function(p) {
+              return (
+                <span key={p.label} className="career-pill">
+                  <span className="career-pill__i" aria-hidden="true"><PerkIcon kind={p.icon} /></span>
+                  {p.label}
+                </span>
+              );
+            })}
+          </div>
+          <div className="reveal mt-10 text-center" data-delay="3">
+            <a
+              href="/careers"
+              onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+              className="btn-blue inline-flex items-center gap-2 px-7 rounded-full font-medium"
+              style={{ minHeight: 52, fontSize: 15 }}
+            >
+              Apply in 5 minutes
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HFS COACH™ — light-blue panel with interactive dashboard ── */}
+      <section className="coach-panel">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          <div className="lg:col-span-5 reveal">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="coach-panel__eyebrow">AI-Powered Advantage</div>
+              <span className="soon-badge" aria-label="Coming soon">
+                <span className="soon-badge__dot" aria-hidden="true" />
+                Coming Soon
+              </span>
+            </div>
+            <h2 className="section-h2">HFS Coach <span style={{ color: MUTED, fontWeight: 500 }}>/</span> Rep Portal<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
+            <p className="mt-4 mb-6" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "38ch" }}>
+              Our AI training platform and rep portal. Real-time call feedback, AI roleplays, leaderboards, and live dashboards — launching for active reps soon.
+            </p>
+            <div className="coach-modules">
+              {coachModules.map(function(m) {
+                return (
+                  <div key={m.title} className="coach-module">
+                    <span className="coach-module__i" aria-hidden="true"><CoachModuleIcon kind={m.icon} /></span>
+                    <h4 className="coach-module__h">{m.title}</h4>
+                    <p className="coach-module__p" dangerouslySetInnerHTML={{ __html: m.body }} />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="/rep-login"
+                onClick={function(e) { handleNavClick(e, props.go, "rep-login"); }}
+                className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+                Rep Sign In
+              </a>
+              <a
+                href="/careers"
+                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Join the waitlist
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+          <div className="lg:col-span-7 reveal" data-delay="1">
+            <CoachMockV2 />
+          </div>
+        </div>
+      </section>
+
+      {/* ── REP STORIES — real quotes from the field ───────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12">
+            <h2 className="section-h2">Built by reps. Run by reps.</h2>
+            <p className="section-sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
+            {[
+              { init: "AM", name: "Alex Martinez",    city: "Charlotte, NC",    earn: "$184K year 1", quote: "Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months." },
+              { init: "JT", name: "Jordan Thompson", city: "Greensboro, NC",   earn: "$156K year 1", quote: "Every manager I work with actually knocks doors. There's no layer between me and the decision-makers. When I need help at 8pm, someone picks up." },
+              { init: "MJ", name: "Maya Johnson",    city: "Winston-Salem, NC", earn: "$142K year 1", quote: "HFS Coach changed the game for me. I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door. My close rate jumped 30%." }
+            ].map(function(t) {
+              return (
+                <figure key={t.name} className="rep-card">
+                  <div className="rep-card__head">
+                    <span className="rep-card__avatar" aria-hidden="true">{t.init}</span>
+                    <div>
+                      <div className="rep-card__name">{t.name}</div>
+                      <div className="rep-card__city">{t.city}</div>
+                    </div>
+                    <span className="rep-card__earn">{t.earn}</span>
+                  </div>
+                  <blockquote className="rep-card__quote">&ldquo;{t.quote}&rdquo;</blockquote>
+                </figure>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* ── TRAINING (navy bg, left copy + right HFS Coach mockup) ─ */}
-      <section style={{ background: NAVY, color: "#F5F7FA" }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          <div className="lg:col-span-5 reveal">
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#2FA39E", fontWeight: 600, marginBottom: 14 }}>AI-Powered Coaching</div>
-            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.05, letterSpacing: "-0.028em", color: "#F5F7FA", fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Training that creates closers.
-            </h2>
-            <p className="mt-5 max-w-md" style={{ fontSize: 15.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.7 }}>
-              Our AI-powered platform coaches reps in real time, so they perform better in the field — faster.
-            </p>
-            <div className="mt-7 grid grid-cols-2 gap-x-6 gap-y-3.5">
-              {trainingPerks.map(function(t) {
-                return (
-                  <div key={t} className="flex items-center gap-2.5" style={{ color: "rgba(245,247,250,0.88)", fontSize: 14 }}>
-                    <CheckDot />
-                    <span>{t}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-9">
-              <a
-                href="/why-us"
-                onClick={function(e) { handleNavClick(e, props.go, "why-us"); }}
-                className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ background: SIGNAL, color: "#FFFFFF", minHeight: 48, fontSize: 14, border: "none", boxShadow: "0 10px 22px rgba(30,109,107,0.4)" }}
-                onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
-                onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
-              >
-                Learn More About Our Training
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
+      {/* ── WHERE WE HIRE — pill chips ───────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-9">
+            <span className="hiring-badge" aria-label="Now hiring">
+              <span className="hiring-badge__dot" aria-hidden="true" />
+              Now hiring · {JOBS.length} open roles
+            </span>
+            <h2 className="section-h2 mt-3">Where We Hire</h2>
+            <p className="section-sub">Local teams. National impact. Apply in five minutes.</p>
           </div>
-
-          {/* HFS Coach dashboard — interactive mockup */}
-          <div className="lg:col-span-7 reveal" data-delay="1">
-            <CoachMock />
+          <div className="flex flex-wrap justify-center gap-3 reveal" data-delay="1">
+            {cities.map(function(c) {
+              return (
+                <a
+                  key={c.slug}
+                  href={getPathForRoute("market", c.slug)}
+                  onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
+                  className="city-pill"
+                >
+                  <span className="city-pill__pin" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+                  </span>
+                  <span>{c.region}</span>
+                </a>
+              );
+            })}
+          </div>
+          <div className="mt-8 text-center">
+            <a
+              href="/careers"
+              onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+              className="btn-outline-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ minHeight: 46, fontSize: 14 }}
+            >
+              View Open Positions
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
       </section>
 
-      {/* ── WHERE WE HIRE (city grid) ──────────────────────────── */}
-      <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          <div className="lg:col-span-4 reveal">
-            <div className="eyebrow-teal mb-3">Where We Hire</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Local opportunities.<br/>Real communities.
-            </h2>
+      {/* ── WHY HOME FRONT (4 value cards with shield/house/map/badge) ── */}
+      <section style={{ background: PAPER_DEEP }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-12">
+            <h2 className="section-h2">Built for operators that need more than clicks.</h2>
+            <p className="section-sub">Stronger brands. Stronger teams. Measured in installs, not impressions.</p>
           </div>
-          <div className="lg:col-span-8 reveal" data-delay="1">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {cities.map(function(c) {
-                return (
-                  <a
-                    key={c.slug}
-                    href={getPathForRoute("market", c.slug)}
-                    onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
-                    className="city-card"
-                    aria-label={c.region + " — view market"}
-                  >
-                    <div className="city-card__img" style={{ backgroundImage: "url(" + c.img + ")" }} />
-                    <div className="city-card__overlay" aria-hidden="true" />
-                    <span className="city-card__pin" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/></svg>
-                    </span>
-                    <span className="city-card__label">{c.region}</span>
-                  </a>
-                );
-              })}
-            </div>
-            <div className="mt-8 text-center">
-              <a
-                href="/careers"
-                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ background: "#FFFFFF", color: INK, border: "1px solid " + RULE, minHeight: 46, fontSize: 14 }}
-                onMouseEnter={function(e) { e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }}
-                onMouseLeave={function(e) { e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}
-              >
-                View All Open Positions
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHY HOME FRONT (4 value cards) ─────────────────────── */}
-      <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-6 pb-20 md:pb-28">
-          <div className="reveal">
-            <div className="eyebrow-teal mb-3">Why Home Front</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Built on people. Driven by results.
-            </h2>
-          </div>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
             {values.map(function(v) {
               return (
-                <div key={v.title} className="val-card">
-                  <span className="val-card__icon" aria-hidden="true"><ValIcon kind={v.icon} /></span>
-                  <h3 style={{ fontSize: 16.5, fontWeight: 600, color: INK, lineHeight: 1.25, letterSpacing: "-0.012em", whiteSpace: "pre-line" }}>{v.title}</h3>
-                  <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.6 }}>{v.body}</p>
+                <div key={v.title} className="why-card">
+                  <span className="why-card__icon" aria-hidden="true"><WhyIcon kind={v.icon} /></span>
+                  <h3 className="why-card__title" style={{ whiteSpace: "pre-line" }}>{v.title}</h3>
+                  <p className="why-card__body">{v.body}</p>
                 </div>
               );
             })}
@@ -2938,73 +3326,58 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── FAQ (light gray band) ─────────────────────────────── */}
-      <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          <div className="lg:col-span-4 reveal">
-            <div className="eyebrow-teal mb-3">FAQ</div>
-            <h2 className="display" style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.028em", color: INK, fontWeight: 600, fontFamily: "Geist, Inter, sans-serif" }}>
-              Questions? We've got answers.
-            </h2>
+      {/* ── FAQ (2-column grid) ──────────────────────────────── */}
+      <section style={{ background: PAPER }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
+          <div className="reveal text-center max-w-2xl mx-auto mb-10">
+            <h2 className="section-h2">Frequently Asked Questions</h2>
           </div>
-          <div className="lg:col-span-8 reveal" data-delay="1">
-            <div style={{ borderTop: "1px solid " + RULE }}>
-              {faqs.map(function(f) {
-                return <FaqRow key={f.q} q={f.q} a={f.a} />;
-              })}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 reveal" data-delay="1">
+            {faqs.map(function(f) {
+              return <FaqRow2 key={f.q} q={f.q} a={f.a} />;
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── DUAL CTA BAND (Brands / People) ───────────────────── */}
+      {/* ── DUAL CTA BAND (teal left, blue right) ────────────── */}
       <section style={{ background: PAPER }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-28">
-          <div className="dual-cta reveal">
-            <div className="dual-cta__panel dual-cta__panel--left">
-              <span className="dual-cta__icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
+          <div className="dual-split reveal">
+            <div className="dual-split__panel dual-split__panel--teal">
+              <span className="dual-split__icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
               </span>
-              <div className="dual-cta__body">
-                <h3 style={{ ...serif, fontSize: "clamp(1.35rem, 2vw, 1.65rem)", fontWeight: 500, color: "#F5F7FA", letterSpacing: "-0.018em", lineHeight: 1.2 }}>
-                  For Brands That<br/>Need Field Growth
-                </h3>
-                <p className="mt-3" style={{ fontSize: 13.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.65 }}>
-                  Scale customer acquisition with disciplined field execution, real-time data, and results you can measure.
-                </p>
+              <div>
+                <h3 className="dual-split__title">For Brands That<br/>Need Field Growth</h3>
+                <p className="dual-split__body">Scale your reach. Increase appointments. Grow your business — door to door.</p>
                 <a
                   href={BOOKING_URL || "/contact"}
                   onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                   target={BOOKING_URL ? "_blank" : undefined}
                   rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                  className="mt-4 inline-flex items-center gap-2 px-5 rounded-full font-medium"
-                  style={{ background: SIGNAL, color: "#FFFFFF", minHeight: 44, fontSize: 13.5, border: "none", boxShadow: "0 10px 22px rgba(30,109,107,0.36)" }}
-                  onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
+                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
+                  style={{ minHeight: 42, fontSize: 13.5 }}
                 >
-                  Schedule a Discovery Call
+                  Partner With Us
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
-            <div className="dual-cta__panel dual-cta__panel--right">
-              <span className="dual-cta__icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20 C 5 16, 8 14.5, 12 14.5 C 16 14.5, 19 16, 20 20"/></svg>
+            <div className="dual-split__panel dual-split__panel--blue">
+              <span className="dual-split__icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3 19 C 4 16, 6 14.5, 9 14.5 C 12 14.5, 14 16, 15 19"/><circle cx="17" cy="9" r="3"/><path d="M15 14.8 C 18 14.5, 20 15.5, 21 19"/></svg>
               </span>
-              <div className="dual-cta__body">
-                <h3 style={{ ...serif, fontSize: "clamp(1.35rem, 2vw, 1.65rem)", fontWeight: 500, color: "#F5F7FA", letterSpacing: "-0.018em", lineHeight: 1.2 }}>
-                  For People Who<br/>Want To Work
-                </h3>
-                <p className="mt-3" style={{ fontSize: 13.5, color: "rgba(245,247,250,0.72)", lineHeight: 1.65 }}>
-                  Join a team, get elite training, and build real income and leadership opportunities.
-                </p>
+              <div>
+                <h3 className="dual-split__title">For People Who<br/>Want To Work</h3>
+                <p className="dual-split__body">Build a career with purpose. Competitive pay. Growth opportunities. Local teams.</p>
                 <a
                   href="/careers"
                   onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-gold mt-4 inline-flex items-center gap-2 px-5 rounded-full"
-                  style={{ minHeight: 44, fontSize: 13.5 }}
+                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
+                  style={{ minHeight: 42, fontSize: 13.5 }}
                 >
-                  View Open Positions
+                  Join the Team
                   <span aria-hidden="true">→</span>
                 </a>
               </div>
@@ -3035,7 +3408,7 @@ function WhatWeDoPage(props) {
           ].map(function(item) {
             return (
               <div key={item.n}>
-                <span className="text-xs" style={{ color: GOLD_DEEP, fontWeight: 700, letterSpacing: "0.1em" }}>{item.n}</span>
+                <span className="text-xs" style={{ color: BLUE_PRIMARY, fontWeight: 700, letterSpacing: "0.1em" }}>{item.n}</span>
                 <h2 className="mt-2 mb-3" style={{ ...serif, fontSize: 24, color: INK, letterSpacing: "-0.02em" }}>{item.t}</h2>
                 <p className="text-sm leading-relaxed" style={{ color: MUTED }}>{item.d}</p>
               </div>
@@ -3071,7 +3444,7 @@ function WhyUsPage(props) {
           {principles.map(function(r, i) {
             return (
               <div key={r.t}>
-                <div style={{ ...monoKicker, color: i % 2 === 0 ? SIGNAL : GOLD_DEEP, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>{String(i + 1).padStart(2, "0")}</div>
                 <h3 className="mb-3" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>{r.t}</h3>
                 <p style={{ fontSize: 15, lineHeight: 1.72, color: MUTED }}>{r.d}</p>
               </div>
@@ -3085,7 +3458,7 @@ function WhyUsPage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-14 reveal">
             <div className="lg:col-span-7">
-              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>How we run it</div>
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 18 }}>How we run it</div>
               <h2 className="display" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
                 Three things, every day, the same way.
               </h2>
@@ -3118,7 +3491,7 @@ function WhyUsPage(props) {
       <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 items-start">
           <div className="lg:col-span-6 reveal">
-            <div style={{ ...monoKicker, color: GOLD_DEEP, marginBottom: 18 }}>How we train</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 18 }}>How we train</div>
             <h2 className="display mb-6" style={{ fontSize: "clamp(2.1rem, 4.2vw, 3.1rem)", lineHeight: 1, letterSpacing: "-0.032em", color: INK }}>
               Reps practice on AI before they ever knock a real door.
             </h2>
@@ -3130,7 +3503,7 @@ function WhyUsPage(props) {
             </p>
           </div>
           <div className="lg:col-span-6 reveal" data-delay="1">
-            <div style={{ ...monoKicker, color: SIGNAL_DEEP, marginBottom: 22 }}>Six-module certification</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 22 }}>Six-module certification</div>
             <ol className="space-y-0" style={{ borderTop: "1px solid " + RULE, listStyle: "none", margin: 0, padding: 0 }}>
               {[
                 ["The product", "Offer basics, who it's for, pricing, and install flow."],
@@ -3142,7 +3515,7 @@ function WhyUsPage(props) {
               ].map(function(item, i) {
                 return (
                   <li key={item[0]} className="grid items-start" style={{ gridTemplateColumns: "44px minmax(0,1fr)", gap: 20, padding: "20px 0", borderBottom: "1px solid " + RULE }}>
-                    <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                     <div>
                       <div style={{ ...serif, fontSize: 18, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{item[0]}</div>
                       <div className="mt-1.5" style={{ fontSize: 13.5, lineHeight: 1.6, color: MUTED }}>{item[1]}</div>
@@ -3159,7 +3532,7 @@ function WhyUsPage(props) {
       <section className="max-w-[1280px] mx-auto px-6 md:px-12 py-24 md:py-32" style={{ borderTop: "1px solid " + RULE }}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           <div className="lg:col-span-4 reveal">
-            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 18 }}>Frequently asked</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 18 }}>Frequently asked</div>
             <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
               Real questions, straight answers.
             </h2>
@@ -3171,7 +3544,7 @@ function WhyUsPage(props) {
             {HOME_FAQS.map(function(item, i) {
               return (
                 <div key={item.q} className="grid items-start" style={{ gridTemplateColumns: "44px minmax(0,1fr)", gap: 24, padding: "28px 0", borderBottom: "1px solid " + RULE }}>
-                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                  <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                   <div>
                     <h3 className="mb-3" style={{ ...serif, fontSize: "clamp(1.225rem, 2vw, 1.5rem)", lineHeight: 1.18, color: INK, letterSpacing: "-0.018em", fontWeight: 440 }}>{item.q}</h3>
                     <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>{item.a}</p>
@@ -3234,7 +3607,7 @@ function CareersIndexPage(props) {
             <a
               href="#open-positions"
               onClick={function(e) { e.preventDefault(); var el = document.getElementById("open-positions"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-              className="btn-gold inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
               See open roles
@@ -3245,10 +3618,8 @@ function CareersIndexPage(props) {
               onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
               target={BOOKING_URL ? "_blank" : undefined}
               rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-              className="inline-flex items-center gap-2 px-6 rounded-full font-medium"
-              style={{ background: "transparent", color: "#F5F7FA", border: "1px solid rgba(245,247,250,0.32)", minHeight: 48, fontSize: 14 }}
-              onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(245,247,250,0.08)"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.6)"; }}
-              onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(245,247,250,0.32)"; }}
+              className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              style={{ minHeight: 48, fontSize: 14 }}
             >
               Talk to us
             </a>
@@ -3277,12 +3648,12 @@ function CareersIndexPage(props) {
           </div>
           <aside className="lg:col-span-5 reveal" data-delay="1">
             <figure style={{ background: SURF, border: "1px solid " + RULE, borderRadius: 20, padding: 32 }}>
-              <div style={{ ...monoKicker, color: GOLD_DEEP, marginBottom: 22 }}>From the founder</div>
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 22 }}>From the founder</div>
               <blockquote style={{ ...serif, fontSize: 19, lineHeight: 1.4, color: INK, letterSpacing: "-0.015em", fontWeight: 420, margin: 0 }}>
                 We hire for character first, experience second. Show up, stay coachable, treat people with respect. We'll handle the training, the territory, and the support.
               </blockquote>
               <figcaption className="mt-6 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid " + RULE }}>
-                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + GOLD + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
+                <span aria-hidden="true" style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg," + BLUE_PRIMARY + " 0%," + INK + " 100%)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "#F5F1E7", ...serif, fontSize: 13, fontWeight: 500 }}>MM</span>
                 <span>
                   <span className="block" style={{ fontSize: 13, color: INK, fontWeight: 600 }}>Muizz Muhammad</span>
                   <span className="block" style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>Founder</span>
@@ -3298,7 +3669,7 @@ function CareersIndexPage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="flex flex-wrap items-end justify-between gap-6 mb-12 reveal">
             <div>
-              <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 16 }}>Open positions · {JOBS.length} roles</div>
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 16 }}>Open positions · {JOBS.length} roles</div>
               <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
                 Currently hiring.
               </h2>
@@ -3320,7 +3691,7 @@ function CareersIndexPage(props) {
                         <span>·</span>
                         <span>{job.type}</span>
                         <span>·</span>
-                        <span style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
+                        <span style={{ color: BLUE_DEEP, fontWeight: 600 }}>{job.earningRange}/yr</span>
                       </div>
                       <p className="mt-3 max-w-2xl hidden md:block" style={{ fontSize: 14, color: MUTED, lineHeight: 1.65 }}>{job.pitch}</p>
                     </div>
@@ -3388,7 +3759,7 @@ function CareersIndexPage(props) {
                 onMouseLeave={function(e) { e.currentTarget.style.background = SURF; }}
               >
                 <div className="flex items-center justify-between mb-8">
-                  <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")} / {market.region}</span>
+                  <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")} / {market.region}</span>
                   <span aria-hidden="true" style={{ fontSize: 16, color: MUTED, transition: "transform 260ms ease", display: "inline-block" }}>→</span>
                 </div>
                 <h3 className="mb-3" style={{ ...serif, fontSize: 22, lineHeight: 1.14, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{market.headline || market.region}</h3>
@@ -3556,7 +3927,7 @@ function JobDetailPage(props) {
       <section className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-12 md:pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
           <div className="lg:col-span-8 reveal">
-            <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 20 }}>{job.location} · {job.type}</div>
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 20 }}>{job.location} · {job.type}</div>
             <h1 className="display mb-6" style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.5rem)", lineHeight: 0.96, letterSpacing: "-0.038em", color: INK }}>{job.title}</h1>
             <p className="max-w-3xl" style={{ fontSize: "clamp(1.05rem, 1.3vw, 1.18rem)", color: MUTED, lineHeight: 1.62 }}>
               {job.pitch} Built for people who want real upside, real territory responsibility, and a clean path into leadership if they can produce.
@@ -3580,13 +3951,13 @@ function JobDetailPage(props) {
           <aside className="lg:col-span-4 reveal" data-delay="1">
             <div className="relative overflow-hidden" style={{ background: SIGNAL_DEEP, color: "#F5F1E7", borderRadius: 20, padding: 28 }}>
               <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(520px 300px at 80% 0%, rgba(143,176,155,0.28), transparent 60%), radial-gradient(420px 240px at 10% 100%, rgba(217,166,60,0.18), transparent 60%)" }} />
-              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, " + SAGE + ", " + GOLD + ")" }} />
+              <div aria-hidden="true" style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, " + BLUE_PRIMARY + ", " + BLUE_DEEP + ")" }} />
               <div className="relative">
                 <div style={{ ...monoKicker, color: SAGE, marginBottom: 24 }}>The role, plainly</div>
                 <blockquote style={{ ...serif, fontSize: 22, lineHeight: 1.25, letterSpacing: "-0.018em", color: "#F5F1E7", fontWeight: 420, margin: 0 }}>
                   Real product. Straight commission. Leadership that actually shows up in the field with you.
                 </blockquote>
-                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 52, fontSize: 15, boxShadow: "0 10px 24px rgba(217,166,60,0.32)" }} onMouseEnter={function(e) { e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="btn-blue mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 52, fontSize: 15 }}>
                   Apply for this role
                   <span aria-hidden="true">→</span>
                 </a>
@@ -3610,7 +3981,7 @@ function JobDetailPage(props) {
                 {job.responsibilities.map(function(item, i) {
                   return (
                     <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.responsibilities.length - 1 ? "none" : "1px solid " + RULE }}>
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                       <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
@@ -3624,7 +3995,7 @@ function JobDetailPage(props) {
                 {job.qualifications.map(function(item, i) {
                   return (
                     <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.qualifications.length - 1 ? "none" : "1px solid " + RULE }}>
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                       <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
@@ -3638,7 +4009,7 @@ function JobDetailPage(props) {
                 {job.benefits.map(function(item, i) {
                   return (
                     <li key={i} className="grid items-start gap-5" style={{ gridTemplateColumns: "40px minmax(0,1fr)", padding: "16px 0", borderBottom: i === job.benefits.length - 1 ? "none" : "1px solid " + RULE }}>
-                      <span style={{ ...monoKicker, color: SIGNAL }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{String(i + 1).padStart(2, "0")}</span>
                       <span style={{ fontSize: 15.5, lineHeight: 1.65, color: INK }}>{item}</span>
                     </li>
                   );
@@ -3699,7 +4070,7 @@ function JobDetailPage(props) {
                       onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(14,14,12,0.18)"; }}
                       onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = RULE; }}
                     >
-                      <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>{article.eyebrow}</div>
+                      <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>{article.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 19, lineHeight: 1.18, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{article.title}</div>
                       <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{article.description}</p>
                     </a>
@@ -3712,7 +4083,7 @@ function JobDetailPage(props) {
           <aside className="lg:col-span-4">
             <div className="lg:sticky lg:top-32">
               <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
-                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>Apply</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>Apply</div>
                 <h3 className="mb-4" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>Ready to join the team?</h3>
                 <p style={{ fontSize: 14.5, color: MUTED, lineHeight: 1.68, marginBottom: 24 }}>Application takes about 5 minutes. We respond within 48 hours with direct next steps if there's a fit.</p>
                 <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
@@ -4310,7 +4681,7 @@ function MarketPage(props) {
                   {marketProof.map(function(item) {
                     return (
                       <div key={item.label} className="p-5" style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16 }}>
-                        <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{item.label}</div>
+                        <div className="text-[10px] uppercase mb-2" style={{ color: BLUE_PRIMARY, letterSpacing: "0.14em", fontWeight: 800 }}>{item.label}</div>
                         <div className="text-sm leading-[1.8]" style={{ color: INK, fontWeight: 600 }}>{item.value}</div>
                       </div>
                     );
@@ -4393,7 +4764,7 @@ function MarketPage(props) {
                       className="p-5 text-left block"
                       style={{ background: "#fff", border: "1px solid " + RULE, borderRadius: 16, cursor: "pointer" }}
                     >
-                      <div className="text-[10px] uppercase mb-2" style={{ color: SIGNAL, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
+                      <div className="text-[10px] uppercase mb-2" style={{ color: BLUE_PRIMARY, letterSpacing: "0.14em", fontWeight: 800 }}>{article.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 22, lineHeight: 1.08, color: INK }}>{article.title}</div>
                       <p className="mt-3 text-sm leading-[1.8]" style={{ color: MUTED }}>{article.description}</p>
                     </a>
@@ -4528,7 +4899,7 @@ function InsightsIndexPage(props) {
           <section key={topic.id} id={"topic-" + topic.id} className="max-w-[1280px] mx-auto px-6 md:px-12 pt-14 md:pt-20 pb-4 scroll-mt-24">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-10 reveal">
               <div className="lg:col-span-7">
-                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 14 }}>{topic.kicker}</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>{topic.kicker}</div>
                 <h2 className="display" style={{ fontSize: "clamp(1.8rem, 3.2vw, 2.4rem)", lineHeight: 1.04, letterSpacing: "-0.03em", color: INK }}>{topic.name}</h2>
               </div>
               <div className="lg:col-span-5">
@@ -4552,7 +4923,7 @@ function InsightsIndexPage(props) {
                       onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.paddingLeft = "26px"; }}
                     >
                       <div className="flex items-center justify-between mb-7">
-                        <span style={{ ...monoKicker, color: SIGNAL }}>{article.eyebrow}</span>
+                        <span style={{ ...monoKicker, color: BLUE_PRIMARY }}>{article.eyebrow}</span>
                         <span aria-hidden="true" style={{ fontSize: 14, color: SIGNAL }}>→</span>
                       </div>
                       <h3 style={{ ...serif, fontSize: 21, lineHeight: 1.16, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>{article.title}</h3>
@@ -4667,7 +5038,7 @@ function ArticlePage(props) {
                       onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(14,14,12,0.18)"; }}
                       onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = RULE; }}
                     >
-                      <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 12 }}>{item.eyebrow}</div>
+                      <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 12 }}>{item.eyebrow}</div>
                       <div style={{ ...serif, fontSize: 19, lineHeight: 1.18, letterSpacing: "-0.018em", color: INK, fontWeight: 440 }}>{item.title}</div>
                       <p className="mt-3" style={{ fontSize: 13.5, color: MUTED, lineHeight: 1.65 }}>{item.description}</p>
                     </a>
@@ -4852,7 +5223,7 @@ function ContactPage(props) {
                 Pick a time that works. We'll jump on a 30-minute call to learn about your markets, current field performance, and what you'd need us to run. No decks, no pitch. Straight conversation.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: GOLD, color: INK, border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(217,166,60,0.34)" }} onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.background = GOLD_DEEP; e.currentTarget.style.color = "#FFFFFF"; }} onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = GOLD; e.currentTarget.style.color = INK; }}>
+                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-white inline-flex items-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 54, fontSize: 15 }}>
                   {BOOKING_URL ? "Pick a time" : "Send a message"}
                   <span aria-hidden="true">→</span>
                 </a>
@@ -4894,7 +5265,7 @@ function ContactPage(props) {
               ].map(function(row, i, arr) {
                 var content = (
                   <div className="grid items-start" style={{ gridTemplateColumns: "120px minmax(0,1fr)", gap: 24, padding: "22px 0", borderBottom: i === arr.length - 1 ? "none" : "1px solid " + RULE }}>
-                    <dt style={{ ...monoKicker, color: SIGNAL, lineHeight: 1.5 }}>{row.kicker}</dt>
+                    <dt style={{ ...monoKicker, color: BLUE_PRIMARY, lineHeight: 1.5 }}>{row.kicker}</dt>
                     <dd className="m-0" style={{ ...serif, fontSize: 19, lineHeight: 1.3, letterSpacing: "-0.015em", color: INK, fontWeight: 440 }}>{row.value}</dd>
                   </div>
                 );
@@ -4949,7 +5320,7 @@ function ContactPage(props) {
 
                 {submitError && (
                   <div role="alert" className="mt-6 p-4 rounded-lg" style={{ background: "rgba(194,90,61,0.08)", border: "1px solid rgba(194,90,61,0.3)", color: "#8A3E28", fontSize: 14 }}>
-                    {submitError} <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 600 }}>info@homefrontsolutionsllc.com</a>
+                    {submitError} <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: BLUE_DEEP, fontWeight: 600 }}>info@homefrontsolutionsllc.com</a>
                   </div>
                 )}
 
@@ -4967,12 +5338,12 @@ function ContactPage(props) {
                   )}
                 </button>
                 <p className="mt-4" style={{ fontSize: 12.5, color: MUTED }}>
-                  Or email us directly at <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: SIGNAL_DEEP, fontWeight: 500 }}>info@homefrontsolutionsllc.com</a>
+                  Or email us directly at <a href="mailto:info@homefrontsolutionsllc.com" style={{ color: BLUE_DEEP, fontWeight: 500 }}>info@homefrontsolutionsllc.com</a>
                 </p>
               </form>
             ) : (
               <div style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
-                <div style={{ ...monoKicker, color: SIGNAL, marginBottom: 16 }}>Received</div>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 16 }}>Received</div>
                 <h3 style={{ ...serif, fontSize: 28, lineHeight: 1.18, letterSpacing: "-0.025em", color: INK, fontWeight: 440 }}>Thank you.</h3>
                 <p className="mt-4" style={{ fontSize: 15, color: MUTED, lineHeight: 1.72 }}>We'll be in touch within 24 hours.</p>
               </div>
@@ -5093,6 +5464,198 @@ function TermsPage(props) {
       </div>
     </section>
     </>
+  );
+}
+
+// ── REP LOGIN PAGE ───────────────────────────────────────────────
+// Frontend-only login screen for the HFS Coach rep portal.
+// POSTs to the FastAPI backend at VITE_API_URL/auth/login (or /api/auth/login).
+// Backend lives on the `backend/fastapi` branch.
+function RepLoginPage(props) {
+  var _f = useState({ email: "", password: "", remember: true });
+  var form = _f[0]; var setForm = _f[1];
+  var _s = useState({ pending: false, error: null, success: false });
+  var state = _s[0]; var setState = _s[1];
+
+  function update(field) {
+    return function(e) {
+      var v = field === "remember" ? e.target.checked : e.target.value;
+      setForm(function(prev) { var next = Object.assign({}, prev); next[field] = v; return next; });
+    };
+  }
+
+  function submit(e) {
+    e.preventDefault();
+    if (state.pending) return;
+
+    // Lightweight client-side validation
+    var emailTrim = (form.email || "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) {
+      setState({ pending: false, error: "Please enter a valid email", success: false });
+      return;
+    }
+    if (!form.password || form.password.length < 6) {
+      setState({ pending: false, error: "Password must be at least 6 characters", success: false });
+      return;
+    }
+
+    setState({ pending: true, error: null, success: false });
+
+    // Backend lives on the `backend/fastapi` branch.
+    // Point VITE_API_URL at it when you deploy, otherwise fall back to /api.
+    var apiBase = (typeof import.meta !== "undefined" && import.meta && import.meta.env && import.meta.env.VITE_API_URL) ? import.meta.env.VITE_API_URL : "/api";
+    fetch(apiBase.replace(/\/$/, "") + "/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ email: emailTrim, password: form.password, remember: form.remember }),
+      credentials: "include"
+    })
+      .then(function(res) {
+        if (res.ok) return res.json().then(function(d) { return { ok: true, data: d }; });
+        return res.json().then(function(d) { return { ok: false, data: d }; }).catch(function() { return { ok: false, data: { detail: "Invalid email or password" } }; });
+      })
+      .then(function(r) {
+        if (r.ok) {
+          setState({ pending: false, error: null, success: true });
+          // Persist the access_token for future Bearer calls (API, mobile wrappers, etc.).
+          // The browser portal itself can keep using the HttpOnly cookie — this is belt-and-suspenders.
+          if (r.data && r.data.access_token && typeof window !== "undefined") {
+            try {
+              var storage = form.remember ? window.localStorage : window.sessionStorage;
+              storage.setItem("hfs_access_token", r.data.access_token);
+              if (r.data.expires_in) storage.setItem("hfs_token_expires_at", String(Date.now() + r.data.expires_in * 1000));
+            } catch (err) { /* storage disabled — cookie is still set, keep going */ }
+          }
+          // Redirect to the portal on success (portal app lives on the backend)
+          setTimeout(function() {
+            if (r.data && r.data.redirect) window.location.href = r.data.redirect;
+            else window.location.href = "/portal";
+          }, 400);
+        } else {
+          setState({ pending: false, error: (r.data && (r.data.detail || r.data.message)) || "Invalid email or password", success: false });
+        }
+      })
+      .catch(function() {
+        setState({
+          pending: false,
+          error: "The rep portal isn't live yet — we're launching soon. Meanwhile, email info@homefrontsolutionsllc.com if you need access.",
+          success: false
+        });
+      });
+  }
+
+  return (
+    <section className="rep-login">
+      {/* Left panel — navy brand + pitch */}
+      <aside className="rep-login__brand">
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="rep-login__home" aria-label="Back to Home Front Solutions">
+          <BrandLockup onDark={true} />
+        </a>
+        <div className="rep-login__pitch">
+          <span className="rep-login__tag">
+            <span className="rep-login__tag-dot" aria-hidden="true" />
+            Rep Portal · Coming Soon
+          </span>
+          <h1 className="rep-login__title">
+            Welcome back.
+          </h1>
+          <p className="rep-login__sub">
+            HFS Coach — real-time call feedback, AI roleplays, leaderboards, and the dashboard your team lead sees. All in one place.
+          </p>
+          <ul className="rep-login__list">
+            {[
+              "Track knocks, conversations, and closes",
+              "Practice pitches with AI, get graded in real time",
+              "See where you sit on the market leaderboard",
+              "Book ride-alongs with your team lead"
+            ].map(function(line) {
+              return (
+                <li key={line}>
+                  <span className="rep-login__check" aria-hidden="true">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
+                  </span>
+                  {line}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </aside>
+
+      {/* Right panel — sign-in card */}
+      <div className="rep-login__panel">
+        <div className="rep-login__card">
+          <h2 className="rep-login__heading">Rep Sign In</h2>
+          <p className="rep-login__helper">Sign in to the HFS Coach rep portal. Don't have an account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply to join the team</a>.</p>
+
+          <form onSubmit={submit} noValidate className="mt-6">
+            {/* Honeypot */}
+            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} />
+
+            <label htmlFor="rl-email" className="rep-login__label">Email</label>
+            <input
+              id="rl-email"
+              type="email"
+              autoComplete="email"
+              inputMode="email"
+              required
+              value={form.email}
+              onChange={update("email")}
+              placeholder="you@homefrontsolutionsllc.com"
+              className="rep-login__input"
+              aria-invalid={!!state.error}
+            />
+
+            <label htmlFor="rl-password" className="rep-login__label mt-5">Password</label>
+            <input
+              id="rl-password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={form.password}
+              onChange={update("password")}
+              placeholder="Your password"
+              className="rep-login__input"
+              aria-invalid={!!state.error}
+            />
+
+            <div className="flex items-center justify-between mt-5">
+              <label className="rep-login__remember">
+                <input type="checkbox" checked={form.remember} onChange={update("remember")} />
+                <span>Remember me</span>
+              </label>
+              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="rep-login__forgot">Forgot password?</a>
+            </div>
+
+            {state.error && (
+              <div role="alert" className="rep-login__alert">{state.error}</div>
+            )}
+            {state.success && (
+              <div role="status" className="rep-login__success">Signed in. Redirecting to the portal…</div>
+            )}
+
+            <button type="submit" disabled={state.pending} className="btn-blue rep-login__submit">
+              {state.pending ? (
+                <>
+                  <span aria-hidden="true" className="rep-login__spinner" />
+                  Signing in…
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <span aria-hidden="true">→</span>
+                </>
+              )}
+            </button>
+
+            <p className="rep-login__notice">
+              New hire? Check your email for a setup link from <strong style={{ color: INK }}>noreply@homefrontsolutionsllc.com</strong>. No account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply here</a>.
+            </p>
+          </form>
+        </div>
+        <p className="rep-login__footer">© 2026 Home Front Solutions LLC · <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }}>Privacy</a> · <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }}>Terms</a></p>
+      </div>
+    </section>
   );
 }
 
@@ -5836,8 +6399,7 @@ export default function App(props) {
     setRoute(nextRoute);
   }
 
-  var routesWithDarkHero = ["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"];
-  var rootBg = routesWithDarkHero.indexOf(route.name) !== -1 ? NAVY : PAPER;
+  var rootBg = PAPER;
   return (
     <div style={{ fontFamily: "'Aptos', 'Segoe UI', system-ui, sans-serif", background: rootBg, color: INK, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <style>{`
@@ -5930,7 +6492,7 @@ export default function App(props) {
       }}>Skip to main content</a>
 
       <ScrollProgress />
-      <Header go={go} route={route} onDark={["home", "what-we-do", "why-us", "partners", "careers", "insights", "contact", "privacy", "terms"].indexOf(route.name) !== -1} />
+      {route.name !== "rep-login" && <Header go={go} route={route} onDark={false} />}
 
       <main id="main" key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER, outline: "none" }}>
         {route.name === "home" && <HomePage go={go} />}
@@ -5947,15 +6509,16 @@ export default function App(props) {
         {route.name === "contact" && <ContactPage go={go} />}
         {route.name === "privacy" && <PrivacyPage go={go} />}
         {route.name === "terms" && <TermsPage go={go} />}
+        {route.name === "rep-login" && <RepLoginPage go={go} />}
       </main>
 
-      <Footer go={go} />
+      {route.name !== "rep-login" && <Footer go={go} />}
 
       {/* Floating scroll-to-top — fades in after ~600 px of scroll */}
-      <ScrollTop />
+      {route.name !== "rep-login" && <ScrollTop />}
 
       {/* Sticky mobile CTA dock — phones only, hides when native nav menu is open */}
-      <MobileStickyCTA go={go} route={route} />
+      {route.name !== "rep-login" && <MobileStickyCTA go={go} route={route} />}
     </div>
   );
 }
