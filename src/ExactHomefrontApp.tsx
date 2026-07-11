@@ -1376,6 +1376,18 @@ var MARKET_FAQS = {
   ]
 };
 
+// The six Q&As RENDERED on the homepage FAQ section. The home route's FAQPage
+// JSON-LD maps over this same array so schema.org markup always matches the
+// visible content (Google requires FAQ markup to be visible on the page).
+var HOME_PAGE_FAQS = [
+  { q: "Do I need sales experience to join?", a: "No. Most of our top reps started with zero sales experience. Paid certification before your first real door covers product knowledge, pitch delivery, objection handling, and live field simulation. Bring drive and coachability — we handle the rest." },
+  { q: "How much can I earn?", a: "First-year reps typically clear $80K–$150K on uncapped commission paid weekly. Top producers regularly break $180K in year one. Team leads and area managers move into the $250K+ range." },
+  { q: "What's the promotion path?", a: "Every manager at HFS was promoted out of production. Hit the numbers, coach the next rep, and the next role opens: Field Rep → Team Lead → Area Manager. No politics, no favorites." },
+  { q: "What does the training look like?", a: "Six modules, five days, fully paid. You'll practice on HFS Coach (our AI roleplay platform) and ride along with a team lead before you own a territory. Coaching continues daily in the field." },
+  { q: "Where do you operate?", a: "28+ U.S. markets and growing. Headquartered in the Carolinas with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
+  { q: "How do I get started?", a: "Reps: apply online — most applications get a recruiter response within one business day. Brands: book a 30-minute discovery call and we'll scope a pilot market." }
+];
+
 var HOME_FAQS = [
   {
     q: "How do these roles work?",
@@ -2902,22 +2914,26 @@ function FaqRow(props) {
 
 // ── Homepage ───────────────────────────────────────────────────────────
 function HomePage(props) {
+  // Descriptors stay inside the scope /partners claims: in-home lead generation
+  // and direct sales conversations — no testing, inspection, or install-speed claims.
   var services = [
     { kind: "fiber",    label: "Fiber Internet",   desc: "Launch-market door campaigns for regional fiber builds." },
-    { kind: "security", label: "Home Security",    desc: "Consultative installs sold on the porch, not the phone." },
+    { kind: "security", label: "Home Security",    desc: "Consultative sales on the porch, not the phone." },
     { kind: "solar",    label: "Solar",            desc: "Qualified appointments for design-and-install partners." },
-    { kind: "water",    label: "Water Filtration", desc: "In-home water tests that convert to same-week installs." },
-    { kind: "roofing",  label: "Roofing",          desc: "Storm-season canvassing with insurance-ready inspections." },
+    { kind: "water",    label: "Water Filtration", desc: "In-home conversations for water-quality brands." },
+    { kind: "roofing",  label: "Roofing",          desc: "Storm, replacement, and home-exterior campaigns." },
     { kind: "home",     label: "Home Services",    desc: "Adjacent offers your customers already ask us about." }
   ];
+  // Every cell is a REAL number the site backs elsewhere (careers copy, FAQ,
+  // service index) — big serif numerals invite scrutiny, so no padded non-metrics.
   var stats = [
-    { icon: "pin",    label: "Markets Launched",     value: "28+" },
-    { icon: "cats",   label: "Service Categories",   value: "6+" },
-    { icon: "sparkle",label: "AI-Powered Training",  value: "100%" },
-    { icon: "chart",  label: "Reporting",            value: "Real-Time" }
+    { label: "Markets launched",      value: "28+" },
+    { label: "Service categories",    value: "6" },
+    { label: "Top rep, year one",     value: "$150K+" },
+    { label: "Paid certification",    value: "5-day" }
   ];
   var steps = [
-    { num: "1", icon: "door",  title: "We knock every door.",      body: "Professional reps. Real conversations. We introduce your offer to the right homes at the right time." },
+    { num: "1", icon: "door",  title: "We knock every door.",      body: "Trained reps introduce your offer to the right homes at the right time." },
     { num: "2", icon: "shake", title: "We close with confidence.", body: "Our reps qualify, present, and close with clarity — backed by proven scripts and live support." },
     { num: "3", icon: "bar",   title: "You own the numbers.",      body: "Real-time reporting, verified leads, and appointments you can track from door to deal." }
   ];
@@ -2941,14 +2957,8 @@ function HomePage(props) {
     { icon: "map",    title: "Locally rooted.\nNationally trusted.", body: "Local teams with national standards and support." },
     { icon: "badge",  title: "Trained. Certified. Supported.", body: "Our reps are trained to win and supported to grow." }
   ];
-  var faqs = [
-    { q: "Do I need sales experience to join?", a: "No. Most of our top reps started with zero sales experience. Paid certification before your first real door covers product knowledge, pitch delivery, objection handling, and live field simulation. Bring drive and coachability — we handle the rest." },
-    { q: "How much can I earn?", a: "First-year reps typically clear $80K–$150K on uncapped commission paid weekly. Top producers regularly break $180K in year one. Team leads and area managers move into the $250K+ range." },
-    { q: "What's the promotion path?", a: "Every manager at HFS was promoted out of production. Hit the numbers, coach the next rep, and the next role opens: Field Rep → Team Lead → Area Manager. No politics, no favorites." },
-    { q: "What does the training look like?", a: "Six modules, five days, fully paid. You'll practice on HFS Coach (our AI roleplay platform) and ride along with a team lead before you own a territory. Coaching continues daily in the field." },
-    { q: "Where do you operate?", a: "28+ U.S. markets and growing. Headquartered in the Carolinas with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
-    { q: "How do I get started?", a: "Reps: apply online — most applications get a recruiter response within one business day. Brands: book a 30-minute discovery call and we'll scope a pilot market." }
-  ];
+  // Rendered + schema'd from the same module-scope array (see HOME_PAGE_FAQS).
+  var faqs = HOME_PAGE_FAQS;
 
   return (
     <>
@@ -2958,7 +2968,7 @@ function HomePage(props) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             <div className="lg:col-span-6">
               <div className="mono-kicker word-reveal" style={{ color: "var(--signal)", letterSpacing: "0.08em", marginBottom: 18 }}>
-                Door-to-door growth partner · est. Carolinas
+                Door-to-door growth partner · founded in the Carolinas
               </div>
               <h1 className="display" style={{ fontSize: "clamp(2.7rem, 5.6vw, 4.4rem)", lineHeight: 0.98, letterSpacing: "-0.035em", color: INK, maxWidth: "15ch" }}>
                 <span className="word-reveal word-reveal--inline">Face-to-face sales</span>{" "}
@@ -2966,7 +2976,7 @@ function HomePage(props) {
                 <span className="word-reveal word-reveal--inline" style={{ animationDelay: "240ms", fontStyle: "italic", color: "var(--signal)" }}>home service brands.</span>
               </h1>
               <p className="home-hero__lead word-reveal" style={{ animationDelay: "400ms" }}>
-                Real conversations. Real customers. Real growth. Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win.
+                Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win — one real conversation at a time.
               </p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "480ms" }}>
                 <Magnetic strength={0.2}>
@@ -2978,7 +2988,6 @@ function HomePage(props) {
                     aria-label="Join the Home Front Solutions team"
                   >
                     Join the Team
-                    <span aria-hidden="true">→</span>
                   </a>
                 </Magnetic>
                 <Magnetic strength={0.2}>
@@ -3035,10 +3044,10 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-16 md:pb-20">
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">01 · What we sell</div>
+              <div className="hfx-head__kicker">What we sell</div>
               <h2 className="hfx-head__h">The brands we knock for.</h2>
             </div>
-            <p className="hfx-head__sub">Six categories, one disciplined field team — every offer vetted before a rep ever carries it to a door.</p>
+            <p className="hfx-head__sub">Every offer is vetted before a rep carries it to a door.</p>
           </div>
           <div className="hfx-index reveal" data-delay="1">
             {services.map(function(s, i) {
@@ -3048,7 +3057,6 @@ function HomePage(props) {
                   href="/what-we-do"
                   onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}
                   className="hfx-index__row"
-                  aria-label={s.label + " — explore service"}
                 >
                   <span className="hfx-index__num">{"0" + (i + 1)}</span>
                   <span className="hfx-index__name">{s.label}</span>
@@ -3068,7 +3076,7 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24" style={{ borderTop: "1px solid " + RULE }}>
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">02 · Why the door</div>
+              <div className="hfx-head__kicker">Why the door</div>
               <h2 className="hfx-head__h">Why face-to-face still wins.</h2>
             </div>
             <p className="hfx-head__sub">
@@ -3078,17 +3086,14 @@ function HomePage(props) {
 
           <div className="hfx-reasons reveal" data-delay="1">
             <article className="hfx-reason">
-              <span className="hfx-reason__num">A</span>
               <h3 className="hfx-reason__h">Trust moves faster in person.</h3>
               <p className="hfx-reason__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
             </article>
             <article className="hfx-reason">
-              <span className="hfx-reason__num">B</span>
               <h3 className="hfx-reason__h">Real objections, handled on the spot.</h3>
               <p className="hfx-reason__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
             </article>
             <article className="hfx-reason">
-              <span className="hfx-reason__num">C</span>
               <h3 className="hfx-reason__h">You pay for installs, not impressions.</h3>
               <p className="hfx-reason__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
             </article>
@@ -3101,10 +3106,9 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">03 · How it runs</div>
               <h2 className="hfx-head__h">The growth process.</h2>
             </div>
-            <p className="hfx-head__sub">One market at a time, measured every day — from the first knock to the install report on your desk.</p>
+            <p className="hfx-head__sub">One market at a time, measured every day.</p>
           </div>
           <div className="hfx-steps reveal" data-delay="1">
             {steps.map(function(step) {
@@ -3125,7 +3129,7 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="hfx-head hfx-head--dark reveal">
             <div>
-              <div className="hfx-head__kicker">04 · For sales reps</div>
+              <div className="hfx-head__kicker">For sales reps</div>
               <h2 className="hfx-head__h">Your career. Your earnings.</h2>
             </div>
             <p className="hfx-head__sub">
@@ -3159,7 +3163,7 @@ function HomePage(props) {
               Apply in 5 minutes
               <span aria-hidden="true">→</span>
             </a>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(245,247,250,0.55)" }}>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(245,247,250,0.75)" }}>
               Weekly commission · paid certification · live + AI coaching
             </span>
           </div>
@@ -3171,7 +3175,7 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 reveal">
             <div className="flex items-center gap-3 mb-3">
-              <div className="hfx-head__kicker" style={{ marginBottom: 0 }}>05 · The advantage</div>
+              <div className="hfx-head__kicker" style={{ marginBottom: 0 }}>The advantage</div>
               <span className="soon-badge" aria-label="Coming soon">
                 <span className="soon-badge__dot" aria-hidden="true" />
                 Coming Soon
@@ -3186,7 +3190,7 @@ function HomePage(props) {
                 return (
                   <div key={m.title} className="coach-module">
                     <span className="coach-module__i" aria-hidden="true"><CoachModuleIcon kind={m.icon} /></span>
-                    <h4 className="coach-module__h">{m.title}</h4>
+                    <h3 className="coach-module__h">{m.title}</h3>
                     <p className="coach-module__p" dangerouslySetInnerHTML={{ __html: m.body }} />
                   </div>
                 );
@@ -3209,7 +3213,6 @@ function HomePage(props) {
                 style={{ minHeight: 46, fontSize: 14 }}
               >
                 Join the waitlist
-                <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
@@ -3224,7 +3227,7 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">06 · From the field</div>
+              <div className="hfx-head__kicker">From the field</div>
               <h2 className="hfx-head__h">Built by reps. Run by reps.</h2>
             </div>
             <p className="hfx-head__sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
@@ -3243,7 +3246,7 @@ function HomePage(props) {
             </figure>
             <div className="hfx-tile hfx-tile--stat">
               <div className="hfx-tile__big">30%</div>
-              <div className="hfx-tile__biglabel">Close-rate lift after HFS Coach roleplays</div>
+              <div className="hfx-tile__biglabel">Maya’s close-rate lift in the HFS Coach beta</div>
             </div>
             <figure className="hfx-tile hfx-tile--paper">
               <blockquote className="hfx-tile__quote">&ldquo;Every manager I work with actually knocks doors. There&rsquo;s no layer between me and the decision-makers. When I need help at 8pm, someone picks up.&rdquo;</blockquote>
@@ -3253,11 +3256,10 @@ function HomePage(props) {
                   <div className="hfx-tile__name">Jordan Thompson</div>
                   <div className="hfx-tile__meta">Field Rep · Greensboro, NC</div>
                 </div>
-                <span className="hfx-tile__earn">$156K yr 1</span>
               </figcaption>
             </figure>
             <figure className="hfx-tile hfx-tile--quiet">
-              <blockquote className="hfx-tile__quote">&ldquo;I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door. My close rate jumped 30%.&rdquo;</blockquote>
+              <blockquote className="hfx-tile__quote">&ldquo;I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door.&rdquo;</blockquote>
               <figcaption className="hfx-tile__who">
                 <span className="hfx-tile__avatar" aria-hidden="true">MJ</span>
                 <div>
@@ -3276,15 +3278,14 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">07 · Markets</div>
               <h2 className="hfx-head__h">Where we hire.</h2>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 14, paddingBottom: 4 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, paddingBottom: 4 }}>
               <span className="hiring-badge" aria-label="Now hiring">
                 <span className="hiring-badge__dot" aria-hidden="true" />
                 Now hiring · {JOBS.length} open roles
               </span>
-              <span className="hfx-head__sub" style={{ paddingBottom: 0 }}>Local teams, national standards — apply in five minutes.</span>
+              <span className="hfx-head__sub" style={{ paddingBottom: 0 }}>Local teams with national standards. Apply in five minutes.</span>
             </div>
           </div>
           <div className="flex flex-wrap gap-3 reveal" data-delay="1">
@@ -3296,9 +3297,6 @@ function HomePage(props) {
                   onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
                   className="city-pill"
                 >
-                  <span className="city-pill__pin" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
-                  </span>
                   <span>{c.region}</span>
                 </a>
               );
@@ -3322,10 +3320,10 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">08 · The standard</div>
+              <div className="hfx-head__kicker">The standard</div>
               <h2 className="hfx-head__h">Built for operators that need more than clicks.</h2>
             </div>
-            <p className="hfx-head__sub">Measured in installs and retention — not impressions.</p>
+            <p className="hfx-head__sub">The bar we hold every market to.</p>
           </div>
           <div className="hfx-ops reveal" data-delay="1">
             {values.map(function(v) {
@@ -3348,8 +3346,7 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
           <div className="hfx-head reveal">
             <div>
-              <div className="hfx-head__kicker">09 · Questions</div>
-              <h2 className="hfx-head__h">Asked at most doors.</h2>
+              <h2 className="hfx-head__h">Questions, answered.</h2>
             </div>
             <p className="hfx-head__sub">The six questions reps and partners ask before they say yes.</p>
           </div>
@@ -3365,33 +3362,35 @@ function HomePage(props) {
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
           <div className="hfx-cta reveal">
+            {/* Reps get the dominant panel — consistent with the hero's primary CTA. */}
             <div className="hfx-cta__panel hfx-cta__panel--navy">
+              <div className="hfx-cta__kicker">For future reps</div>
+              <h3 className="hfx-cta__title">Earn like an owner, starting week one.</h3>
+              <p className="hfx-cta__body">Paid certification, weekly commission, and a team that promotes from within. Most applications get a recruiter response within one business day.</p>
+              <a
+                href="/careers"
+                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                className="btn-white mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Apply in 5 minutes
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+            <div className="hfx-cta__panel hfx-cta__panel--paper">
               <div className="hfx-cta__kicker">For operators</div>
               <h3 className="hfx-cta__title">Put a disciplined field team on your next market.</h3>
-              <p className="hfx-cta__body">Scope a pilot in one 30-minute call — territory, offer, launch date, and the numbers you&rsquo;ll see every week.</p>
+              <p className="hfx-cta__body">Scope a pilot in one 30-minute call.</p>
               <a
                 href={BOOKING_URL || "/contact"}
                 onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                 target={BOOKING_URL ? "_blank" : undefined}
                 rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                className="btn-white mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                className="btn-blue mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
                 style={{ minHeight: 46, fontSize: 14 }}
               >
                 Book a discovery call
                 <span aria-hidden="true">→</span>
-              </a>
-            </div>
-            <div className="hfx-cta__panel hfx-cta__panel--paper">
-              <div className="hfx-cta__kicker">For future reps</div>
-              <h3 className="hfx-cta__title">Earn like an owner, starting week one.</h3>
-              <p className="hfx-cta__body">Paid certification, weekly commission, and a team that promotes from within.</p>
-              <a
-                href="/careers"
-                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="btn-blue mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ minHeight: 46, fontSize: 14 }}
-              >
-                Join the Team
               </a>
             </div>
           </div>
@@ -5942,11 +5941,14 @@ function buildSeoPayload(route) {
 
   var schemas = [localBizSchema, organizationSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
 
-  if (route.name === "home") {
+  if (route.name === "home" || route.name === "why-us") {
+    // Each route's FAQPage schema maps over the array that is actually VISIBLE
+    // on that page (home renders HOME_PAGE_FAQS; why-us renders HOME_FAQS).
+    var faqSource = route.name === "home" ? HOME_PAGE_FAQS : HOME_FAQS;
     schemas.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      mainEntity: HOME_FAQS.map(function(item) {
+      mainEntity: faqSource.map(function(item) {
         return {
           "@type": "Question",
           name: item.q,
