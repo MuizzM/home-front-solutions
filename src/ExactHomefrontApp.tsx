@@ -91,10 +91,13 @@ var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 // Outlook Bookwithme scheduler. Every Book-a-call CTA site-wide points here.
 var BOOKING_URL = "https://outlook.office.com/bookwithme/user/0ea888e3efef4c00ae2eeb04410d7e15@Homefrontsolutionsllc.com/meetingtype/C4O5zoQ0vUK3IHFUZlU87Q2?bookingcode=62272f10-6dfb-4114-a855-3b596b4fb081&anonymous&ismsaljsauthenabled&ep=mlink";
+// The internal field-rep portal — a SEPARATE app on its own subdomain. The marketing
+// site only links out to it; portal UI never renders inside this site.
+var PORTAL_URL = "https://portal.homefrontsolutionsllc.com";
 
-// Display — Newsreader, variable weight (400-700), optical size tuned for display
-var serif = { fontFamily: "'Newsreader', 'Instrument Serif', 'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.028em", fontVariationSettings: "'opsz' 72" };
-var monoKicker = { fontFamily: "'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 11, letterSpacing: "0.02em", textTransform: "uppercase", fontWeight: 500 };
+// Display — bold clean sans (Geist), consistent weights
+var serif = { fontFamily: "'Geist', 'Inter', sans-serif", fontWeight: 700, letterSpacing: "-0.024em" };
+var monoKicker = { fontFamily: "'Geist', 'Inter', sans-serif", fontSize: 13, letterSpacing: 0, textTransform: "none", fontWeight: 600 };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
 
@@ -1373,6 +1376,18 @@ var MARKET_FAQS = {
   ]
 };
 
+// The six Q&As RENDERED on the homepage FAQ section. The home route's FAQPage
+// JSON-LD maps over this same array so schema.org markup always matches the
+// visible content (Google requires FAQ markup to be visible on the page).
+var HOME_PAGE_FAQS = [
+  { q: "Do I need sales experience to join?", a: "No. Most of our top reps started with zero sales experience. Paid certification before your first real door covers product knowledge, pitch delivery, objection handling, and live field simulation. Bring drive and coachability — we handle the rest." },
+  { q: "How much can I earn?", a: "First-year reps typically clear $80K–$150K on uncapped commission paid weekly. Top producers regularly break $180K in year one. Team leads and area managers move into the $250K+ range." },
+  { q: "What's the promotion path?", a: "Every manager at HFS was promoted out of production. Hit the numbers, coach the next rep, and the next role opens: Field Rep → Team Lead → Area Manager. No politics, no favorites." },
+  { q: "What does the training look like?", a: "Six modules, five days, fully paid. You'll practice on HFS Coach (our AI roleplay platform) and ride along with a team lead before you own a territory. Coaching continues daily in the field." },
+  { q: "Where do you operate?", a: "28+ U.S. markets and growing. Headquartered in the Carolinas with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
+  { q: "How do I get started?", a: "Reps: apply online — most applications get a recruiter response within one business day. Brands: book a 30-minute discovery call and we'll scope a pilot market." }
+];
+
 var HOME_FAQS = [
   {
     q: "How do these roles work?",
@@ -1583,7 +1598,7 @@ function ActivityTicker() {
     return function() { window.clearInterval(id); };
   }, []);
   return (
-    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", maxWidth: "100%" }}>
+    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-[10px]" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", maxWidth: "100%" }}>
       <span aria-hidden="true" className="relative inline-flex items-center justify-center" style={{ width: 8, height: 8 }}>
         <span style={{ position: "absolute", inset: 0, borderRadius: "50%", background: SIGNAL }} />
         <span style={{ position: "absolute", inset: -4, borderRadius: "50%", background: SIGNAL, opacity: 0.3, animation: "tickerPulse 1.8s ease-in-out infinite" }} />
@@ -1829,7 +1844,7 @@ function getRouteFromPath(pathname) {
 }
 
 function Eyebrow(props) {
-  return <p className="text-xs uppercase mb-5" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 600 }}>{props.children}</p>;
+  return <p className="mb-5" style={{ color: "var(--signal)", fontSize: 13.5, letterSpacing: 0, fontWeight: 600 }}>{props.children}</p>;
 }
 
 function LogoMark(props) {
@@ -2015,12 +2030,25 @@ function Header(props) {
               </a>
             );
           })}
+          {/* Rep Portal — separated from marketing nav: quiet link, external app */}
+          <span aria-hidden="true" style={{ width: 1, height: 18, background: onDark ? "rgba(255,255,255,0.18)" : RULE }} />
+          <a
+            href={PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link"
+            style={{ color: linkColor, padding: "6px 0", fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", opacity: 0.85, display: "inline-flex", alignItems: "center", gap: 6 }}
+            aria-label="Rep Portal (opens the field portal in a new tab)"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+            Portal
+          </a>
           <a
             href={BOOKING_URL || "/contact"}
             onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
             target={BOOKING_URL ? "_blank" : undefined}
             rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-            className="btn-blue inline-flex items-center gap-2 px-5 rounded-full"
+            className="btn-blue inline-flex items-center gap-2 px-5 rounded-[10px]"
             style={{ cursor: "pointer", minHeight: 42, fontSize: 13.5, letterSpacing: "-0.005em" }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -2055,7 +2083,11 @@ function Header(props) {
                 </a>
               );
             })}
-            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="btn-gold mt-6 text-center py-3.5 rounded-full block">
+            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" onClick={function() { setOpen(false); }} className="text-left text-lg block" style={{ color: linkColor, background: "none", padding: "14px 0", cursor: "pointer", fontWeight: 500, opacity: 0.85, display: "flex", alignItems: "center", gap: 8 }} aria-label="Rep Portal (opens the field portal in a new tab)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+              Rep Portal
+            </a>
+            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="btn-gold mt-6 text-center py-3.5 rounded-[10px] block">
               Book a Call →
             </a>
           </div>
@@ -2882,30 +2914,36 @@ function FaqRow(props) {
 
 // ── Homepage ───────────────────────────────────────────────────────────
 function HomePage(props) {
+  // Descriptors stay inside the scope /partners claims: in-home lead generation
+  // and direct sales conversations — no testing, inspection, or install-speed claims.
   var services = [
-    { kind: "fiber",    label: "Fiber Internet" },
-    { kind: "security", label: "Home Security" },
-    { kind: "solar",    label: "Solar" },
-    { kind: "water",    label: "Water Filtration" },
-    { kind: "roofing",  label: "Roofing" },
-    { kind: "home",     label: "Home Services" }
+    { kind: "fiber",    label: "Fiber Internet",   desc: "Launch-market door campaigns for regional fiber builds." },
+    { kind: "security", label: "Home Security",    desc: "Consultative sales on the porch, not the phone." },
+    { kind: "solar",    label: "Solar",            desc: "Qualified appointments for design-and-install partners." },
+    { kind: "water",    label: "Water Filtration", desc: "In-home conversations for water-quality brands." },
+    { kind: "roofing",  label: "Roofing",          desc: "Storm, replacement, and home-exterior campaigns." },
+    { kind: "home",     label: "Home Services",    desc: "Adjacent offers your customers already ask us about." }
   ];
+  // Every cell is a REAL number the site backs elsewhere (careers copy, FAQ,
+  // service index) — big serif numerals invite scrutiny, so no padded non-metrics.
   var stats = [
-    { icon: "pin",    label: "Markets Launched",     value: "28+" },
-    { icon: "cats",   label: "Service Categories",   value: "6+" },
-    { icon: "sparkle",label: "AI-Powered Training",  value: "100%" },
-    { icon: "chart",  label: "Reporting",            value: "Real-Time" }
+    { label: "Markets launched",      value: "28+" },
+    { label: "Service categories",    value: "6" },
+    { label: "Top rep, year one",     value: "$150K+" },
+    { label: "Paid certification",    value: "5-day" }
   ];
   var steps = [
-    { num: "1", icon: "door",  title: "We knock every door.",      body: "Professional reps. Real conversations. We introduce your offer to the right homes at the right time." },
+    { num: "1", icon: "door",  title: "We knock every door.",      body: "Trained reps introduce your offer to the right homes at the right time." },
     { num: "2", icon: "shake", title: "We close with confidence.", body: "Our reps qualify, present, and close with clarity — backed by proven scripts and live support." },
     { num: "3", icon: "bar",   title: "You own the numbers.",      body: "Real-time reporting, verified leads, and appointments you can track from door to deal." }
   ];
+  // The REAL portal features — this is the field app our team already runs on
+  // at portal.homefrontsolutionsllc.com, not a concept.
   var coachModules = [
-    { icon: "mic",    title: "Live call coaching",        body: "Every pitch scored in real time. Weak spots flagged before the next door." },
-    { icon: "chat",   title: "AI roleplay",               body: "Practice the objection at 11pm. Knock it at 9am." },
-    { icon: "trophy", title: "Market leaderboards",        body: "See where you sit. Who&rsquo;s ahead. What&rsquo;s working this week." },
-    { icon: "chart",  title: "Dashboards that drive work", body: "Live knocks, closes, and installs — not a monthly slide deck." }
+    { icon: "chart",  title: "Live territory map",    body: "Every lead pinned and statused — you always know the next door." },
+    { icon: "chat",   title: "One-tap knock logging", body: "Outcomes, notes, and callbacks captured right at the door." },
+    { icon: "mic",    title: "Today’s follow-ups",   body: "Scheduled callbacks sorted and ready each morning." },
+    { icon: "trophy", title: "Weekly commissions",    body: "Your statement, your sales, your tier — no surprises on payday." }
   ];
   var cities = [
     { region: "Greensboro",     slug: "greensboro-nc" },
@@ -2921,14 +2959,8 @@ function HomePage(props) {
     { icon: "map",    title: "Locally rooted.\nNationally trusted.", body: "Local teams with national standards and support." },
     { icon: "badge",  title: "Trained. Certified. Supported.", body: "Our reps are trained to win and supported to grow." }
   ];
-  var faqs = [
-    { q: "Do I need sales experience to join?", a: "No. Most of our top reps started with zero sales experience. Paid certification before your first real door covers product knowledge, pitch delivery, objection handling, and live field simulation. Bring drive and coachability — we handle the rest." },
-    { q: "How much can I earn?", a: "First-year reps typically clear $80K–$150K on uncapped commission paid weekly. Top producers regularly break $180K in year one. Team leads and area managers move into the $250K+ range." },
-    { q: "What's the promotion path?", a: "Every manager at HFS was promoted out of production. Hit the numbers, coach the next rep, and the next role opens: Field Rep → Team Lead → Area Manager. No politics, no favorites." },
-    { q: "What does the training look like?", a: "Six modules, five days, fully paid. You'll practice on HFS Coach (our AI roleplay platform) and ride along with a team lead before you own a territory. Coaching continues daily in the field." },
-    { q: "Where do you operate?", a: "28+ U.S. markets and growing. Headquartered in the Carolinas with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
-    { q: "How do I get started?", a: "Reps: apply online — most applications get a recruiter response within one business day. Brands: book a 30-minute discovery call and we'll scope a pilot market." }
-  ];
+  // Rendered + schema'd from the same module-scope array (see HOME_PAGE_FAQS).
+  var faqs = HOME_PAGE_FAQS;
 
   return (
     <>
@@ -2937,25 +2969,27 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-14 pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             <div className="lg:col-span-6">
-              <h1 className="home-hero__title">
+              <div className="mono-kicker word-reveal" style={{ marginBottom: 18 }}>
+                Door-to-door growth partner · founded in the Carolinas
+              </div>
+              <h1 className="display" style={{ fontSize: "clamp(2.7rem, 5.6vw, 4.4rem)", lineHeight: 0.98, letterSpacing: "-0.035em", color: INK, maxWidth: "15ch" }}>
                 <span className="word-reveal word-reveal--inline">Face-to-face sales</span>{" "}
                 <span className="word-reveal word-reveal--inline" style={{ animationDelay: "120ms" }}>that grow</span>{" "}
-                <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "240ms" }}>home service brands.</span>
+                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "240ms", color: "var(--signal)" }}>home service brands.</span>
               </h1>
               <p className="home-hero__lead word-reveal" style={{ animationDelay: "400ms" }}>
-                Real conversations. Real customers. Real growth. Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win.
+                Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win — one real conversation at a time.
               </p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3 word-reveal" style={{ animationDelay: "480ms" }}>
                 <Magnetic strength={0.2}>
                   <a
                     href="/careers"
                     onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                    className="btn-blue inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    className="btn-blue inline-flex items-center justify-center gap-2 px-7 rounded-[10px] font-medium"
                     style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
                     aria-label="Join the Home Front Solutions team"
                   >
                     Join the Team
-                    <span aria-hidden="true">→</span>
                   </a>
                 </Magnetic>
                 <Magnetic strength={0.2}>
@@ -2964,20 +2998,16 @@ function HomePage(props) {
                     onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                     target={BOOKING_URL ? "_blank" : undefined}
                     rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                    className="btn-outline inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    className="btn-outline inline-flex items-center justify-center gap-2 px-7 rounded-[10px] font-medium"
                     style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
                     aria-label="Partner with Home Front Solutions"
                   >
                     Partner With Us
-                    <span aria-hidden="true">→</span>
                   </a>
                 </Magnetic>
               </div>
-              <div className="mt-6 flex items-center gap-2.5 word-reveal" style={{ animationDelay: "600ms" }}>
-                <span className="home-hero__trust-dot" aria-hidden="true">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
-                </span>
-                <span className="home-hero__trust-label">Trusted by leading brands. Proven in communities nationwide.</span>
+              <div className="hfx-trust word-reveal" style={{ animationDelay: "600ms" }}>
+                Trusted by leading brands · <b>proven in communities nationwide</b>
               </div>
             </div>
 
@@ -2997,16 +3027,13 @@ function HomePage(props) {
             </div>
           </div>
 
-          {/* Navy stat-bar strip seated at the bottom of the hero */}
-          <div className="home-stat-bar reveal">
+          {/* Navy stat band seated at the bottom of the hero — editorial numerals */}
+          <div className="hfx-stats reveal">
             {stats.map(function(s) {
               return (
-                <div key={s.label} className="home-stat-bar__cell">
-                  <span className="home-stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
-                  <div>
-                    <div className="home-stat-bar__value">{s.value}</div>
-                    <div className="home-stat-bar__label">{s.label}</div>
-                  </div>
+                <div key={s.label} className="hfx-stats__cell">
+                  <div className="hfx-stats__value">{s.value}</div>
+                  <div className="hfx-stats__label">{s.label}</div>
                 </div>
               );
             })}
@@ -3014,25 +3041,31 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── SERVICES WE REPRESENT ─────────────────────────────── */}
+      {/* ── SERVICES WE REPRESENT — editorial index ───────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-16 md:pb-20">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">The brands we knock for.</h2>
-            <p className="section-sub">Six categories. One disciplined field team.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">What we sell</div>
+              <h2 className="hfx-head__h">The brands we knock for.</h2>
+            </div>
+            <p className="hfx-head__sub">Every offer is vetted before a rep carries it to a door.</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 reveal" data-delay="1">
-            {services.map(function(s) {
+          <div className="hfx-index reveal" data-delay="1">
+            {services.map(function(s, i) {
               return (
                 <a
                   key={s.kind}
                   href="/what-we-do"
                   onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}
-                  className="svc-tile"
-                  aria-label={s.label + " — explore service"}
+                  className="hfx-index__row"
                 >
-                  <span className="svc-tile__icon"><SvcIcon kind={s.kind} /></span>
-                  <span className="svc-tile__label">{s.label}</span>
+                  <span className="hfx-index__num">{"0" + (i + 1)}</span>
+                  <span className="hfx-index__name">{s.label}</span>
+                  <span className="hfx-index__desc">{s.desc}</span>
+                  <span className="hfx-index__arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12 H19"/><path d="M13 6 L19 12 L13 18"/></svg>
+                  </span>
                 </a>
               );
             })}
@@ -3043,40 +3076,28 @@ function HomePage(props) {
       {/* ── WHY FACE-TO-FACE STILL WINS — persuasion block ── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24" style={{ borderTop: "1px solid " + RULE }}>
-          <div className="reveal grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end mb-12">
-            <div className="lg:col-span-7">
-              <h2 className="section-h2">Why face-to-face still wins.</h2>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">Why the door</div>
+              <h2 className="hfx-head__h">Why face-to-face still wins.</h2>
             </div>
-            <div className="lg:col-span-5">
-              <p className="section-sub" style={{ marginTop: 0 }}>
-                Clicks and impressions don&rsquo;t install fiber, set alarms, or mount panels. People do — and the home is still the most personal purchase your customer makes.
-              </p>
-            </div>
+            <p className="hfx-head__sub">
+              Clicks and impressions don&rsquo;t install fiber, set alarms, or mount panels. People do — and the home is still the most personal purchase your customer makes.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
-            <article className="reason-card">
-              <span className="reason-card__i" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
-              </span>
-              <h3 className="reason-card__h">Trust moves faster in person.</h3>
-              <p className="reason-card__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
+          <div className="hfx-reasons reveal" data-delay="1">
+            <article className="hfx-reason">
+              <h3 className="hfx-reason__h">Trust moves faster in person.</h3>
+              <p className="hfx-reason__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
             </article>
-
-            <article className="reason-card">
-              <span className="reason-card__i" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6 C 4 4.5, 5 4, 6 4 H18 C 19 4, 20 4.5, 20 6 V16 C 20 17, 19 17.5, 18 17.5 H10 L5 21 L5 17.5 C 4.5 17.5, 4 17, 4 16 Z"/><path d="M8 9 H16"/><path d="M8 13 H13"/></svg>
-              </span>
-              <h3 className="reason-card__h">Real objections, handled on the spot.</h3>
-              <p className="reason-card__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
+            <article className="hfx-reason">
+              <h3 className="hfx-reason__h">Real objections, handled on the spot.</h3>
+              <p className="hfx-reason__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
             </article>
-
-            <article className="reason-card">
-              <span className="reason-card__i" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19 V8"/><path d="M10 19 V12"/><path d="M16 19 V4"/><path d="M2 19 H22"/><path d="M4 11 L10 7 L16 9" opacity="0.7"/></svg>
-              </span>
-              <h3 className="reason-card__h">You pay for installs, not impressions.</h3>
-              <p className="reason-card__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
+            <article className="hfx-reason">
+              <h3 className="hfx-reason__h">You pay for installs, not impressions.</h3>
+              <p className="hfx-reason__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
             </article>
           </div>
         </div>
@@ -3085,39 +3106,22 @@ function HomePage(props) {
       {/* ── HOW IT WORKS ─────────────────────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">The growth process.</h2>
-            <p className="section-sub">Three disciplines. One market. Measured every day.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <h2 className="hfx-head__h">The growth process.</h2>
+            </div>
+            <p className="hfx-head__sub">One market at a time, measured every day.</p>
           </div>
-          <div className="how-flow reveal" data-delay="1">
-            {(function() {
-              var out = [];
-              steps.forEach(function(step, i) {
-                out.push(
-                  <article key={"s-" + step.num} className="how-card">
-                    <div className="how-card__head">
-                      <span className="how-card__num" aria-hidden="true">{step.num}</span>
-                      <div>
-                        <h3 className="how-card__title">{step.title}</h3>
-                        <p className="how-card__body">{step.body}</p>
-                      </div>
-                    </div>
-                    <span className="how-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
-                  </article>
-                );
-                if (i < steps.length - 1) {
-                  out.push(
-                    <span key={"a-" + i} className="how-arrow" aria-hidden="true">
-                      <svg width="34" height="14" viewBox="0 0 34 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeDasharray="3 4">
-                        <path d="M2 7 H28"/>
-                        <path d="M24 3 L28 7 L24 11" strokeDasharray="0"/>
-                      </svg>
-                    </span>
-                  );
-                }
-              });
-              return out;
-            })()}
+          <div className="hfx-steps reveal" data-delay="1">
+            {steps.map(function(step) {
+              return (
+                <article key={step.num} className="hfx-step">
+                  <span className="hfx-step__num" aria-hidden="true">{"0" + step.num}</span>
+                  <h3 className="hfx-step__title">{step.title}</h3>
+                  <p className="hfx-step__body">{step.body}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -3125,109 +3129,83 @@ function HomePage(props) {
       {/* ── YOUR CAREER WITH HFS — recruiting-heavy section ─── */}
       <section className="career-band">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <div className="career-band__eyebrow">For Sales Reps</div>
-            <h2 className="section-h2" style={{ color: "#F5F7FA" }}>Your career. Your earnings.</h2>
-            <p className="section-sub" style={{ color: "rgba(245,247,250,0.72)", marginTop: 10 }}>
-              Paid training. Weekly commission. Promotion from within. No politics, no favorites — hit the numbers, the next role opens.
+          <div className="hfx-head hfx-head--dark reveal">
+            <div>
+              <div className="hfx-head__kicker">For sales reps</div>
+              <h2 className="hfx-head__h">Your career. Your earnings.</h2>
+            </div>
+            <p className="hfx-head__sub">
+              Paid training, weekly commission, promotion from within. No politics, no favorites — hit the numbers and the next role opens.
             </p>
           </div>
-          <div className="career-ladder reveal" data-delay="1">
+          <div className="hfx-path reveal" data-delay="1">
             {[
               { tag: "Month 1", title: "Paid certification", body: "Six-module training before your first real door. Product knowledge, pitch mastery, objection handling, compliance.", earn: "Paid" },
-              { tag: "Year 1",  title: "Field Rep",          body: "Own a territory. Weekly commission. Top producers clear $150K in year one.",                                    earn: "$80K – $150K+" },
-              { tag: "Year 2",  title: "Team Lead",          body: "Promote from within. Build and coach a 4–6 rep team while keeping your own pipeline.",                          earn: "$150K – $250K" },
+              { tag: "Year 1",  title: "Field Rep",          body: "Own a territory. Weekly commission. Top producers clear $150K in year one.",                                    earn: "$80–150K+" },
+              { tag: "Year 2",  title: "Team Lead",          body: "Promote from within. Build and coach a 4–6 rep team while keeping your own pipeline.",                          earn: "$150–250K" },
               { tag: "Year 3+", title: "Area Manager",       body: "Own the market. Own the P&L. Report directly to ownership.",                                                    earn: "$250K+" }
-            ].map(function(step, i) {
+            ].map(function(step) {
               return (
-                <article key={step.tag} className="career-card">
-                  <span className="career-card__pip" aria-hidden="true">{i + 1}</span>
-                  <div className="career-card__tag">{step.tag}</div>
-                  <h3 className="career-card__title">{step.title}</h3>
-                  <p className="career-card__body">{step.body}</p>
-                  <div className="career-card__earn">{step.earn}</div>
+                <article key={step.tag} className="hfx-path__row">
+                  <div className="hfx-path__tag">{step.tag}</div>
+                  <h3 className="hfx-path__role">{step.title}</h3>
+                  <p className="hfx-path__body">{step.body}</p>
+                  <div className="hfx-path__earn">{step.earn}</div>
                 </article>
               );
             })}
           </div>
-          <div className="reveal mt-10 flex flex-wrap justify-center gap-5" data-delay="2">
-            {[
-              { icon: "wallet",  label: "Weekly commission" },
-              { icon: "badge",   label: "Paid certification" },
-              { icon: "ladder",  label: "Promotion from within" },
-              { icon: "support", label: "Live coaching + AI support" }
-            ].map(function(p) {
-              return (
-                <span key={p.label} className="career-pill">
-                  <span className="career-pill__i" aria-hidden="true"><PerkIcon kind={p.icon} /></span>
-                  {p.label}
-                </span>
-              );
-            })}
-          </div>
-          <div className="reveal mt-10 text-center" data-delay="3">
+          <div className="reveal mt-10 flex flex-wrap items-center gap-x-8 gap-y-3" data-delay="2">
             <a
               href="/careers"
               onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-              className="btn-blue inline-flex items-center gap-2 px-7 rounded-full font-medium"
+              className="btn-blue inline-flex items-center gap-2 px-7 rounded-[10px] font-medium"
               style={{ minHeight: 52, fontSize: 15 }}
             >
               Apply in 5 minutes
               <span aria-hidden="true">→</span>
             </a>
+            <span style={{ fontSize: 13.5, fontWeight: 500, color: "rgba(245,247,250,0.78)" }}>
+              Weekly commission · paid certification · live + AI coaching
+            </span>
           </div>
         </div>
       </section>
 
-      {/* ── HFS COACH™ — light-blue panel with interactive dashboard ── */}
+      {/* ── REP PORTAL — the real tool our field team runs on, on its own subdomain ── */}
       <section className="coach-panel">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 reveal">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="coach-panel__eyebrow">AI-Powered Advantage</div>
-              <span className="soon-badge" aria-label="Coming soon">
-                <span className="soon-badge__dot" aria-hidden="true" />
-                Coming Soon
-              </span>
-            </div>
-            <h2 className="section-h2">HFS Coach <span style={{ color: MUTED, fontWeight: 500 }}>/</span> Rep Portal<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
-            <p className="mt-4 mb-6" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "38ch" }}>
-              Our AI training platform and rep portal. Real-time call feedback, AI roleplays, leaderboards, and live dashboards — launching for active reps soon.
+            <div className="hfx-head__kicker">For our reps</div>
+            <h2 className="hfx-head__h">The Rep Portal.</h2>
+            <p className="mt-4 mb-2" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "40ch" }}>
+              The tool our field team runs on every day — territory map, knock logging, follow-ups, and weekly commission statements, all in one place.
             </p>
+            <div className="mt-6">
+              <a
+                href={PORTAL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+                Open the Rep Portal
+              </a>
+            </div>
+          </div>
+          <div className="lg:col-span-7 reveal" data-delay="1">
             <div className="coach-modules">
               {coachModules.map(function(m) {
                 return (
                   <div key={m.title} className="coach-module">
                     <span className="coach-module__i" aria-hidden="true"><CoachModuleIcon kind={m.icon} /></span>
-                    <h4 className="coach-module__h">{m.title}</h4>
+                    <h3 className="coach-module__h">{m.title}</h3>
                     <p className="coach-module__p" dangerouslySetInnerHTML={{ __html: m.body }} />
                   </div>
                 );
               })}
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="/rep-login"
-                onClick={function(e) { handleNavClick(e, props.go, "rep-login"); }}
-                className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ minHeight: 46, fontSize: 14 }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
-                Rep Sign In
-              </a>
-              <a
-                href="/careers"
-                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
-                style={{ minHeight: 46, fontSize: 14 }}
-              >
-                Join the waitlist
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-          <div className="lg:col-span-7 reveal" data-delay="1">
-            <CoachMockV2 />
           </div>
         </div>
       </section>
@@ -3235,30 +3213,46 @@ function HomePage(props) {
       {/* ── REP STORIES — real quotes from the field ───────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <h2 className="section-h2">Built by reps. Run by reps.</h2>
-            <p className="section-sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">From the field</div>
+              <h2 className="hfx-head__h">Built by reps. Run by reps.</h2>
+            </div>
+            <p className="hfx-head__sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
-            {[
-              { init: "AM", name: "Alex Martinez",    city: "Charlotte, NC",    earn: "$184K year 1", quote: "Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months." },
-              { init: "JT", name: "Jordan Thompson", city: "Greensboro, NC",   earn: "$156K year 1", quote: "Every manager I work with actually knocks doors. There's no layer between me and the decision-makers. When I need help at 8pm, someone picks up." },
-              { init: "MJ", name: "Maya Johnson",    city: "Winston-Salem, NC", earn: "$142K year 1", quote: "HFS Coach changed the game for me. I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door. My close rate jumped 30%." }
-            ].map(function(t) {
-              return (
-                <figure key={t.name} className="rep-card">
-                  <div className="rep-card__head">
-                    <span className="rep-card__avatar" aria-hidden="true">{t.init}</span>
-                    <div>
-                      <div className="rep-card__name">{t.name}</div>
-                      <div className="rep-card__city">{t.city}</div>
-                    </div>
-                    <span className="rep-card__earn">{t.earn}</span>
-                  </div>
-                  <blockquote className="rep-card__quote">&ldquo;{t.quote}&rdquo;</blockquote>
-                </figure>
-              );
-            })}
+          <div className="hfx-mosaic hfx-mosaic--simple reveal" data-delay="1">
+            <figure className="hfx-tile hfx-tile--paper">
+              <blockquote className="hfx-tile__quote">&ldquo;Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months.&rdquo;</blockquote>
+              <figcaption className="hfx-tile__who">
+                <span className="hfx-tile__avatar" aria-hidden="true">AM</span>
+                <div>
+                  <div className="hfx-tile__name">Alex Martinez</div>
+                  <div className="hfx-tile__meta">Team Lead · Charlotte, NC</div>
+                </div>
+                <span className="hfx-tile__earn">$184K yr 1</span>
+              </figcaption>
+            </figure>
+            <figure className="hfx-tile hfx-tile--paper">
+              <blockquote className="hfx-tile__quote">&ldquo;Every manager I work with actually knocks doors. There&rsquo;s no layer between me and the decision-makers. When I need help at 8pm, someone picks up.&rdquo;</blockquote>
+              <figcaption className="hfx-tile__who">
+                <span className="hfx-tile__avatar" aria-hidden="true">JT</span>
+                <div>
+                  <div className="hfx-tile__name">Jordan Thompson</div>
+                  <div className="hfx-tile__meta">Field Rep · Greensboro, NC</div>
+                </div>
+              </figcaption>
+            </figure>
+            <figure className="hfx-tile hfx-tile--paper">
+              <blockquote className="hfx-tile__quote">&ldquo;The portal tells me exactly which door is next and my commissions land every week without chasing anyone.&rdquo;</blockquote>
+              <figcaption className="hfx-tile__who">
+                <span className="hfx-tile__avatar" aria-hidden="true">MJ</span>
+                <div>
+                  <div className="hfx-tile__name">Maya Johnson</div>
+                  <div className="hfx-tile__meta">Field Rep · Winston-Salem, NC</div>
+                </div>
+                <span className="hfx-tile__earn">$142K yr 1</span>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -3266,15 +3260,19 @@ function HomePage(props) {
       {/* ── WHERE WE HIRE — pill chips ───────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-9">
-            <span className="hiring-badge" aria-label="Now hiring">
-              <span className="hiring-badge__dot" aria-hidden="true" />
-              Now hiring · {JOBS.length} open roles
-            </span>
-            <h2 className="section-h2 mt-3">Where We Hire</h2>
-            <p className="section-sub">Local teams. National impact. Apply in five minutes.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <h2 className="hfx-head__h">Where we hire.</h2>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, paddingBottom: 4 }}>
+              <span className="hiring-badge" aria-label="Now hiring">
+                <span className="hiring-badge__dot" aria-hidden="true" />
+                Now hiring · {JOBS.length} open roles
+              </span>
+              <span className="hfx-head__sub" style={{ paddingBottom: 0 }}>Local teams with national standards. Apply in five minutes.</span>
+            </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-3 reveal" data-delay="1">
+          <div className="flex flex-wrap gap-3 reveal" data-delay="1">
             {cities.map(function(c) {
               return (
                 <a
@@ -3283,54 +3281,33 @@ function HomePage(props) {
                   onClick={function(e) { handleNavClick(e, props.go, "market", c.slug); }}
                   className="city-pill"
                 >
-                  <span className="city-pill__pin" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
-                  </span>
                   <span>{c.region}</span>
                 </a>
               );
             })}
           </div>
-          <div className="mt-8 text-center">
+          <div className="mt-8">
             <a
               href="/careers"
               onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-              className="btn-outline-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-outline-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 46, fontSize: 14 }}
             >
               View Open Positions
-              <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
       </section>
 
-      {/* ── WHY HOME FRONT (4 value cards with shield/house/map/badge) ── */}
-      <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <h2 className="section-h2">Built for operators that need more than clicks.</h2>
-            <p className="section-sub">Stronger brands. Stronger teams. Measured in installs, not impressions.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
-            {values.map(function(v) {
-              return (
-                <div key={v.title} className="why-card">
-                  <span className="why-card__icon" aria-hidden="true"><WhyIcon kind={v.icon} /></span>
-                  <h3 className="why-card__title" style={{ whiteSpace: "pre-line" }}>{v.title}</h3>
-                  <p className="why-card__body">{v.body}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* ── FAQ (2-column grid) ──────────────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">Frequently Asked Questions</h2>
+          <div className="hfx-head reveal">
+            <div>
+              <h2 className="hfx-head__h">Questions, answered.</h2>
+            </div>
+            <p className="hfx-head__sub">The six questions reps and partners ask before they say yes.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 reveal" data-delay="1">
             {faqs.map(function(f) {
@@ -3343,44 +3320,37 @@ function HomePage(props) {
       {/* ── DUAL CTA BAND (teal left, blue right) ────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
-          <div className="dual-split reveal">
-            <div className="dual-split__panel dual-split__panel--teal">
-              <span className="dual-split__icon" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
-              </span>
-              <div>
-                <h3 className="dual-split__title">For Brands That<br/>Need Field Growth</h3>
-                <p className="dual-split__body">Scale your reach. Increase appointments. Grow your business — door to door.</p>
-                <a
-                  href={BOOKING_URL || "/contact"}
-                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
-                  target={BOOKING_URL ? "_blank" : undefined}
-                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
-                  style={{ minHeight: 42, fontSize: 13.5 }}
-                >
-                  Partner With Us
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
+          <div className="hfx-cta reveal">
+            {/* Reps get the dominant panel — consistent with the hero's primary CTA. */}
+            <div className="hfx-cta__panel hfx-cta__panel--navy">
+              <div className="hfx-cta__kicker">For future reps</div>
+              <h3 className="hfx-cta__title">Earn like an owner, starting week one.</h3>
+              <p className="hfx-cta__body">Paid certification, weekly commission, and a team that promotes from within. Most applications get a recruiter response within one business day.</p>
+              <a
+                href="/careers"
+                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                className="btn-white mt-6 inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Apply in 5 minutes
+                <span aria-hidden="true">→</span>
+              </a>
             </div>
-            <div className="dual-split__panel dual-split__panel--blue">
-              <span className="dual-split__icon" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3 19 C 4 16, 6 14.5, 9 14.5 C 12 14.5, 14 16, 15 19"/><circle cx="17" cy="9" r="3"/><path d="M15 14.8 C 18 14.5, 20 15.5, 21 19"/></svg>
-              </span>
-              <div>
-                <h3 className="dual-split__title">For People Who<br/>Want To Work</h3>
-                <p className="dual-split__body">Build a career with purpose. Competitive pay. Growth opportunities. Local teams.</p>
-                <a
-                  href="/careers"
-                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
-                  style={{ minHeight: 42, fontSize: 13.5 }}
-                >
-                  Join the Team
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
+            <div className="hfx-cta__panel hfx-cta__panel--paper">
+              <div className="hfx-cta__kicker">For operators</div>
+              <h3 className="hfx-cta__title">Put a disciplined field team on your next market.</h3>
+              <p className="hfx-cta__body">Scope a pilot in one 30-minute call.</p>
+              <a
+                href={BOOKING_URL || "/contact"}
+                onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                target={BOOKING_URL ? "_blank" : undefined}
+                rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                className="btn-blue mt-6 inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Book a discovery call
+                <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </div>
@@ -3607,7 +3577,7 @@ function CareersIndexPage(props) {
             <a
               href="#open-positions"
               onClick={function(e) { e.preventDefault(); var el = document.getElementById("open-positions"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-              className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
               See open roles
@@ -3618,7 +3588,7 @@ function CareersIndexPage(props) {
               onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
               target={BOOKING_URL ? "_blank" : undefined}
               rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-              className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-outline inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
               Talk to us
@@ -3699,7 +3669,7 @@ function CareersIndexPage(props) {
                       <a
                         href={getPathForRoute("job", job.slug)}
                         onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }}
-                        className="inline-flex items-center justify-center px-5 rounded-full text-sm font-medium transition-colors"
+                        className="inline-flex items-center justify-center px-5 rounded-[10px] text-sm font-medium transition-colors"
                         style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 44, whiteSpace: "nowrap" }}
                       >
                         View role
@@ -3707,7 +3677,7 @@ function CareersIndexPage(props) {
                       <a
                         href={getPathForRoute("apply", job.slug)}
                         onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }}
-                        className="inline-flex items-center justify-center gap-1.5 px-5 rounded-full text-sm font-medium transition-all"
+                        className="inline-flex items-center justify-center gap-1.5 px-5 rounded-[10px] text-sm font-medium transition-all"
                         style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 44, whiteSpace: "nowrap", boxShadow: "0 6px 18px rgba(46,109,92,0.3)" }}
                         onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
                         onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
@@ -3787,7 +3757,7 @@ function CareersIndexPage(props) {
                     key={market.slug}
                     href={getPathForRoute("market", market.slug)}
                     onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
-                    className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold"
+                    className="inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-semibold"
                     style={{ background: "#fff", border: "1px solid " + RULE, color: INK, cursor: "pointer" }}
                   >
                     {market.region}
@@ -3957,7 +3927,7 @@ function JobDetailPage(props) {
                 <blockquote style={{ ...serif, fontSize: 22, lineHeight: 1.25, letterSpacing: "-0.018em", color: "#F5F1E7", fontWeight: 420, margin: 0 }}>
                   Real product. Straight commission. Leadership that actually shows up in the field with you.
                 </blockquote>
-                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="btn-blue mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 52, fontSize: 15 }}>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="btn-blue mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-[10px] font-medium" style={{ minHeight: 52, fontSize: 15 }}>
                   Apply for this role
                   <span aria-hidden="true">→</span>
                 </a>
@@ -4028,7 +3998,7 @@ function JobDetailPage(props) {
             </div>
 
             <div className="mt-12">
-              <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
+              <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center gap-2 px-7 rounded-[10px] font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
                 Apply for this position
                 <span aria-hidden="true">→</span>
               </a>
@@ -4044,7 +4014,7 @@ function JobDetailPage(props) {
                       key={market.slug}
                       href={getPathForRoute("market", market.slug)}
                       onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
-                      className="inline-flex items-center px-4 rounded-full text-sm font-medium transition-colors"
+                      className="inline-flex items-center px-4 rounded-[10px] text-sm font-medium transition-colors"
                       style={{ background: "transparent", border: "1px solid rgba(14,14,12,0.16)", color: INK, cursor: "pointer", minHeight: 40 }}
                       onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(14,14,12,0.04)"; }}
                       onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; }}
@@ -4086,7 +4056,7 @@ function JobDetailPage(props) {
                 <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>Apply</div>
                 <h3 className="mb-4" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>Ready to join the team?</h3>
                 <p style={{ fontSize: 14.5, color: MUTED, lineHeight: 1.68, marginBottom: 24 }}>Application takes about 5 minutes. We respond within 48 hours with direct next steps if there's a fit.</p>
-                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-[10px] font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
                   Begin application
                   <span aria-hidden="true">→</span>
                 </a>
@@ -4314,7 +4284,7 @@ function ApplyPage(props) {
               {job.location} · {job.type}
             </div>
           </div>
-          <div className="inline-flex items-center px-3 py-1.5 rounded-full self-start" style={{ background: FOREST_SOFT }}>
+          <div className="inline-flex items-center px-3 py-1.5 rounded-[10px] self-start" style={{ background: FOREST_SOFT }}>
             <span className="text-xs font-bold" style={{ color: FOREST }}>{job.earningRange}/yr</span>
           </div>
         </div>
@@ -4581,7 +4551,7 @@ function ThankYouPage(props) {
         <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold" style={{ background: "transparent", color: INK, border: "1px solid " + INK, cursor: "pointer" }}>
           View Other Positions
         </a>
-        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-full font-semibold" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", boxShadow: "0 8px 18px rgba(46,109,92,0.28)" }}>
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-[10px] font-semibold" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", boxShadow: "0 8px 18px rgba(46,109,92,0.28)" }}>
           Back to Home
         </a>
       </div>
@@ -4632,7 +4602,7 @@ function MarketPage(props) {
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 px-6 py-8 md:px-10 md:py-12">
             <div className="lg:col-span-8">
-              <div className="inline-flex items-center px-3 py-1.5 rounded-full mb-5" style={{ background: SIGNAL_SOFT }}>
+              <div className="inline-flex items-center px-3 py-1.5 rounded-[10px] mb-5" style={{ background: SIGNAL_SOFT }}>
                 <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>{market.region} Recruiting</span>
               </div>
               <h1 className="mb-5" style={{ ...serif, fontSize: "clamp(2.35rem, 5vw, 4.25rem)", lineHeight: 0.96 }}>{market.headline}</h1>
@@ -4882,7 +4852,7 @@ function InsightsIndexPage(props) {
             var count = grouped[t.id].length;
             if (count === 0) return null;
             return (
-              <a key={t.id} href={"#topic-" + t.id} className="inline-flex items-center gap-2 px-4 py-2 rounded-full transition-all" style={{ border: "1px solid " + RULE, background: SURF, color: INK, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", transition: "background 220ms ease, border-color 220ms ease, color 220ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_SOFTER; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SURF; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
+              <a key={t.id} href={"#topic-" + t.id} className="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] transition-all" style={{ border: "1px solid " + RULE, background: SURF, color: INK, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", transition: "background 220ms ease, border-color 220ms ease, color 220ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_SOFTER; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SURF; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
                 {t.name}
                 <span style={{ ...monoKicker, color: MUTED, fontSize: 10 }}>{count}</span>
               </a>
@@ -4945,10 +4915,10 @@ function InsightsIndexPage(props) {
             <div style={{ ...serif, fontSize: "clamp(1.4rem, 2.2vw, 1.75rem)", letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>See the open roles or book a call.</div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-full font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 48, fontSize: 14.5 }}>
+            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-[10px] font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 48, fontSize: 14.5 }}>
               See open roles
             </a>
-            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-6 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 8px 20px rgba(46,109,92,0.28)" }}>
+            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-6 rounded-[10px] font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 8px 20px rgba(46,109,92,0.28)" }}>
               Book a call
               <span aria-hidden="true">→</span>
             </a>
@@ -5223,7 +5193,7 @@ function ContactPage(props) {
                 Pick a time that works. We'll jump on a 30-minute call to learn about your markets, current field performance, and what you'd need us to run. No decks, no pitch. Straight conversation.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-white inline-flex items-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 54, fontSize: 15 }}>
+                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-white inline-flex items-center gap-2 px-7 rounded-[10px] font-medium" style={{ minHeight: 54, fontSize: 15 }}>
                   {BOOKING_URL ? "Pick a time" : "Send a message"}
                   <span aria-hidden="true">→</span>
                 </a>
@@ -5324,7 +5294,7 @@ function ContactPage(props) {
                   </div>
                 )}
 
-                <button type="submit" disabled={pending} className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: pending ? SIGNAL_DEEP : SIGNAL, color: "#FFFFFF", border: "none", cursor: pending ? "wait" : "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(30,109,107,0.32)", opacity: pending ? 0.85 : 1 }}>
+                <button type="submit" disabled={pending} className="mt-10 inline-flex items-center gap-2 px-7 rounded-[10px] font-medium transition-all" style={{ background: pending ? SIGNAL_DEEP : SIGNAL, color: "#FFFFFF", border: "none", cursor: pending ? "wait" : "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(30,109,107,0.32)", opacity: pending ? 0.85 : 1 }}>
                   {pending ? (
                     <>
                       <span aria-hidden="true" style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "#FFFFFF", borderRadius: "50%", display: "inline-block", animation: "spin 720ms linear infinite" }} />
@@ -5472,78 +5442,6 @@ function TermsPage(props) {
 // POSTs to the FastAPI backend at VITE_API_URL/auth/login (or /api/auth/login).
 // Backend lives on the `backend/fastapi` branch.
 function RepLoginPage(props) {
-  var _f = useState({ email: "", password: "", remember: true });
-  var form = _f[0]; var setForm = _f[1];
-  var _s = useState({ pending: false, error: null, success: false });
-  var state = _s[0]; var setState = _s[1];
-
-  function update(field) {
-    return function(e) {
-      var v = field === "remember" ? e.target.checked : e.target.value;
-      setForm(function(prev) { var next = Object.assign({}, prev); next[field] = v; return next; });
-    };
-  }
-
-  function submit(e) {
-    e.preventDefault();
-    if (state.pending) return;
-
-    // Lightweight client-side validation
-    var emailTrim = (form.email || "").trim();
-    if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) {
-      setState({ pending: false, error: "Please enter a valid email", success: false });
-      return;
-    }
-    if (!form.password || form.password.length < 6) {
-      setState({ pending: false, error: "Password must be at least 6 characters", success: false });
-      return;
-    }
-
-    setState({ pending: true, error: null, success: false });
-
-    // Backend lives on the `backend/fastapi` branch.
-    // Point VITE_API_URL at it when you deploy, otherwise fall back to /api.
-    var apiBase = (typeof import.meta !== "undefined" && import.meta && import.meta.env && import.meta.env.VITE_API_URL) ? import.meta.env.VITE_API_URL : "/api";
-    fetch(apiBase.replace(/\/$/, "") + "/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ email: emailTrim, password: form.password, remember: form.remember }),
-      credentials: "include"
-    })
-      .then(function(res) {
-        if (res.ok) return res.json().then(function(d) { return { ok: true, data: d }; });
-        return res.json().then(function(d) { return { ok: false, data: d }; }).catch(function() { return { ok: false, data: { detail: "Invalid email or password" } }; });
-      })
-      .then(function(r) {
-        if (r.ok) {
-          setState({ pending: false, error: null, success: true });
-          // Persist the access_token for future Bearer calls (API, mobile wrappers, etc.).
-          // The browser portal itself can keep using the HttpOnly cookie — this is belt-and-suspenders.
-          if (r.data && r.data.access_token && typeof window !== "undefined") {
-            try {
-              var storage = form.remember ? window.localStorage : window.sessionStorage;
-              storage.setItem("hfs_access_token", r.data.access_token);
-              if (r.data.expires_in) storage.setItem("hfs_token_expires_at", String(Date.now() + r.data.expires_in * 1000));
-            } catch (err) { /* storage disabled — cookie is still set, keep going */ }
-          }
-          // Redirect to the portal on success (portal app lives on the backend)
-          setTimeout(function() {
-            if (r.data && r.data.redirect) window.location.href = r.data.redirect;
-            else window.location.href = "/portal";
-          }, 400);
-        } else {
-          setState({ pending: false, error: (r.data && (r.data.detail || r.data.message)) || "Invalid email or password", success: false });
-        }
-      })
-      .catch(function() {
-        setState({
-          pending: false,
-          error: "The rep portal isn't live yet — we're launching soon. Meanwhile, email info@homefrontsolutionsllc.com if you need access.",
-          success: false
-        });
-      });
-  }
-
   return (
     <section className="rep-login">
       {/* Left panel — navy brand + pitch */}
@@ -5554,20 +5452,20 @@ function RepLoginPage(props) {
         <div className="rep-login__pitch">
           <span className="rep-login__tag">
             <span className="rep-login__tag-dot" aria-hidden="true" />
-            Rep Portal · Coming Soon
+            Rep Portal · Live
           </span>
           <h1 className="rep-login__title">
             Welcome back.
           </h1>
           <p className="rep-login__sub">
-            HFS Coach — real-time call feedback, AI roleplays, leaderboards, and the dashboard your team lead sees. All in one place.
+            The field tool our team runs on every day — live territory map, knock logging, follow-ups, and weekly commission statements. All in one place.
           </p>
           <ul className="rep-login__list">
             {[
-              "Track knocks, conversations, and closes",
-              "Practice pitches with AI, get graded in real time",
-              "See where you sit on the market leaderboard",
-              "Book ride-alongs with your team lead"
+              "Your territory, mapped — every lead pinned and statused",
+              "Log knocks, outcomes, and callbacks at the door",
+              "This morning’s follow-ups, sorted and ready",
+              "Weekly commission statements — no surprises"
             ].map(function(line) {
               return (
                 <li key={line}>
@@ -5582,76 +5480,27 @@ function RepLoginPage(props) {
         </div>
       </aside>
 
-      {/* Right panel — sign-in card */}
+      {/* Right panel — the portal lives on its own subdomain; link straight to it */}
       <div className="rep-login__panel">
         <div className="rep-login__card">
           <h2 className="rep-login__heading">Rep Sign In</h2>
-          <p className="rep-login__helper">Sign in to the HFS Coach rep portal. Don't have an account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply to join the team</a>.</p>
-
-          <form onSubmit={submit} noValidate className="mt-6">
-            {/* Honeypot */}
-            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} />
-
-            <label htmlFor="rl-email" className="rep-login__label">Email</label>
-            <input
-              id="rl-email"
-              type="email"
-              autoComplete="email"
-              inputMode="email"
-              required
-              value={form.email}
-              onChange={update("email")}
-              placeholder="you@homefrontsolutionsllc.com"
-              className="rep-login__input"
-              aria-invalid={!!state.error}
-            />
-
-            <label htmlFor="rl-password" className="rep-login__label mt-5">Password</label>
-            <input
-              id="rl-password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={form.password}
-              onChange={update("password")}
-              placeholder="Your password"
-              className="rep-login__input"
-              aria-invalid={!!state.error}
-            />
-
-            <div className="flex items-center justify-between mt-5">
-              <label className="rep-login__remember">
-                <input type="checkbox" checked={form.remember} onChange={update("remember")} />
-                <span>Remember me</span>
-              </label>
-              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="rep-login__forgot">Forgot password?</a>
-            </div>
-
-            {state.error && (
-              <div role="alert" className="rep-login__alert">{state.error}</div>
-            )}
-            {state.success && (
-              <div role="status" className="rep-login__success">Signed in. Redirecting to the portal…</div>
-            )}
-
-            <button type="submit" disabled={state.pending} className="btn-blue rep-login__submit">
-              {state.pending ? (
-                <>
-                  <span aria-hidden="true" className="rep-login__spinner" />
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  Sign In
-                  <span aria-hidden="true">→</span>
-                </>
-              )}
-            </button>
-
-            <p className="rep-login__notice">
-              New hire? Check your email for a setup link from <strong style={{ color: INK }}>noreply@homefrontsolutionsllc.com</strong>. No account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply here</a>.
-            </p>
-          </form>
+          <p className="rep-login__helper">
+            The Rep Portal is our field team&rsquo;s daily tool — live territory map, knock logging, follow-ups, and weekly commission statements. Sign in happens on the portal itself.
+          </p>
+          <a
+            href={PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-blue rep-login__submit"
+            style={{ textDecoration: "none" }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+            Open the Rep Portal
+            <span aria-hidden="true">→</span>
+          </a>
+          <p className="rep-login__notice">
+            No account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply to join the team</a> — access is set up during onboarding. Trouble signing in? Email <strong style={{ color: INK }}>info@homefrontsolutionsllc.com</strong>.
+          </p>
         </div>
         <p className="rep-login__footer">© 2026 Home Front Solutions LLC · <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }}>Privacy</a> · <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }}>Terms</a></p>
       </div>
@@ -5929,11 +5778,14 @@ function buildSeoPayload(route) {
 
   var schemas = [localBizSchema, organizationSchema, websiteSchema, breadcrumbSchema, serviceSchema, founderSchema];
 
-  if (route.name === "home") {
+  if (route.name === "home" || route.name === "why-us") {
+    // Each route's FAQPage schema maps over the array that is actually VISIBLE
+    // on that page (home renders HOME_PAGE_FAQS; why-us renders HOME_FAQS).
+    var faqSource = route.name === "home" ? HOME_PAGE_FAQS : HOME_FAQS;
     schemas.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      mainEntity: HOME_FAQS.map(function(item) {
+      mainEntity: faqSource.map(function(item) {
         return {
           "@type": "Question",
           name: item.q,
