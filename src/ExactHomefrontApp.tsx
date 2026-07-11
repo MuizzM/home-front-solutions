@@ -2937,11 +2937,13 @@ function HomePage(props) {
     { num: "2", icon: "shake", title: "We close with confidence.", body: "Our reps qualify, present, and close with clarity — backed by proven scripts and live support." },
     { num: "3", icon: "bar",   title: "You own the numbers.",      body: "Real-time reporting, verified leads, and appointments you can track from door to deal." }
   ];
+  // The REAL portal features — this is the field app our team already runs on
+  // at portal.homefrontsolutionsllc.com, not a concept.
   var coachModules = [
-    { icon: "mic",    title: "Live call coaching",        body: "Every pitch scored in real time. Weak spots flagged before the next door." },
-    { icon: "chat",   title: "AI roleplay",               body: "Practice the objection at 11pm. Knock it at 9am." },
-    { icon: "trophy", title: "Market leaderboards",        body: "See where you sit. Who&rsquo;s ahead. What&rsquo;s working this week." },
-    { icon: "chart",  title: "Dashboards that drive work", body: "Live knocks, closes, and installs — not a monthly slide deck." }
+    { icon: "chart",  title: "Live territory map",    body: "Every lead pinned and statused — you always know the next door." },
+    { icon: "chat",   title: "One-tap knock logging", body: "Outcomes, notes, and callbacks captured right at the door." },
+    { icon: "mic",    title: "Today’s follow-ups",   body: "Scheduled callbacks sorted and ready each morning." },
+    { icon: "trophy", title: "Weekly commissions",    body: "Your statement, your sales, your tier — no surprises on payday." }
   ];
   var cities = [
     { region: "Greensboro",     slug: "greensboro-nc" },
@@ -3170,21 +3172,29 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── HFS COACH™ — light-blue panel with interactive dashboard ── */}
+      {/* ── REP PORTAL — the real tool our field team runs on, on its own subdomain ── */}
       <section className="coach-panel">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 reveal">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="hfx-head__kicker" style={{ marginBottom: 0 }}>The advantage</div>
-              <span className="soon-badge" aria-label="Coming soon">
-                <span className="soon-badge__dot" aria-hidden="true" />
-                Coming Soon
-              </span>
-            </div>
-            <h2 className="hfx-head__h">HFS Coach <span style={{ color: MUTED, fontWeight: 400 }}>/</span> Rep Portal<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
-            <p className="mt-4 mb-6" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "38ch" }}>
-              Our AI training platform and rep portal. Real-time call feedback, AI roleplays, leaderboards, and live dashboards — launching for active reps soon.
+            <div className="hfx-head__kicker">For our reps</div>
+            <h2 className="hfx-head__h">The Rep Portal.</h2>
+            <p className="mt-4 mb-2" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "40ch" }}>
+              The tool our field team runs on every day — territory map, knock logging, follow-ups, and weekly commission statements, all in one place.
             </p>
+            <div className="mt-6">
+              <a
+                href={PORTAL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+                Open the Rep Portal
+              </a>
+            </div>
+          </div>
+          <div className="lg:col-span-7 reveal" data-delay="1">
             <div className="coach-modules">
               {coachModules.map(function(m) {
                 return (
@@ -3196,28 +3206,6 @@ function HomePage(props) {
                 );
               })}
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="/rep-login"
-                onClick={function(e) { handleNavClick(e, props.go, "rep-login"); }}
-                className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
-                style={{ minHeight: 46, fontSize: 14 }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
-                Rep Sign In
-              </a>
-              <a
-                href="/careers"
-                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="btn-outline inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
-                style={{ minHeight: 46, fontSize: 14 }}
-              >
-                Join the waitlist
-              </a>
-            </div>
-          </div>
-          <div className="lg:col-span-7 reveal" data-delay="1">
-            <CoachMockV2 />
           </div>
         </div>
       </section>
@@ -3232,8 +3220,8 @@ function HomePage(props) {
             </div>
             <p className="hfx-head__sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
           </div>
-          <div className="hfx-mosaic reveal" data-delay="1">
-            <figure className="hfx-tile hfx-tile--feature">
+          <div className="hfx-mosaic hfx-mosaic--simple reveal" data-delay="1">
+            <figure className="hfx-tile hfx-tile--paper">
               <blockquote className="hfx-tile__quote">&ldquo;Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months.&rdquo;</blockquote>
               <figcaption className="hfx-tile__who">
                 <span className="hfx-tile__avatar" aria-hidden="true">AM</span>
@@ -3244,10 +3232,6 @@ function HomePage(props) {
                 <span className="hfx-tile__earn">$184K yr 1</span>
               </figcaption>
             </figure>
-            <div className="hfx-tile hfx-tile--stat">
-              <div className="hfx-tile__big">30%</div>
-              <div className="hfx-tile__biglabel">Maya’s close-rate lift in the HFS Coach beta</div>
-            </div>
             <figure className="hfx-tile hfx-tile--paper">
               <blockquote className="hfx-tile__quote">&ldquo;Every manager I work with actually knocks doors. There&rsquo;s no layer between me and the decision-makers. When I need help at 8pm, someone picks up.&rdquo;</blockquote>
               <figcaption className="hfx-tile__who">
@@ -3258,8 +3242,8 @@ function HomePage(props) {
                 </div>
               </figcaption>
             </figure>
-            <figure className="hfx-tile hfx-tile--quiet">
-              <blockquote className="hfx-tile__quote">&ldquo;I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door.&rdquo;</blockquote>
+            <figure className="hfx-tile hfx-tile--paper">
+              <blockquote className="hfx-tile__quote">&ldquo;The portal tells me exactly which door is next and my commissions land every week without chasing anyone.&rdquo;</blockquote>
               <figcaption className="hfx-tile__who">
                 <span className="hfx-tile__avatar" aria-hidden="true">MJ</span>
                 <div>
@@ -3315,31 +3299,6 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── WHY HOME FRONT (4 value cards with shield/house/map/badge) ── */}
-      <section style={{ background: PAPER_DEEP }}>
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="hfx-head reveal">
-            <div>
-              <div className="hfx-head__kicker">The standard</div>
-              <h2 className="hfx-head__h">Built for operators that need more than clicks.</h2>
-            </div>
-            <p className="hfx-head__sub">The bar we hold every market to.</p>
-          </div>
-          <div className="hfx-ops reveal" data-delay="1">
-            {values.map(function(v) {
-              return (
-                <div key={v.title} className="hfx-ops__row">
-                  <span className="hfx-ops__i" aria-hidden="true"><WhyIcon kind={v.icon} /></span>
-                  <div>
-                    <h3 className="hfx-ops__h">{v.title.replace(/\n/g, " ")}</h3>
-                    <p className="hfx-ops__p">{v.body}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* ── FAQ (2-column grid) ──────────────────────────────── */}
       <section style={{ background: PAPER }}>
@@ -5483,79 +5442,6 @@ function TermsPage(props) {
 // POSTs to the FastAPI backend at VITE_API_URL/auth/login (or /api/auth/login).
 // Backend lives on the `backend/fastapi` branch.
 function RepLoginPage(props) {
-  var _f = useState({ email: "", password: "", remember: true });
-  var form = _f[0]; var setForm = _f[1];
-  var _s = useState({ pending: false, error: null, success: false });
-  var state = _s[0]; var setState = _s[1];
-
-  function update(field) {
-    return function(e) {
-      var v = field === "remember" ? e.target.checked : e.target.value;
-      setForm(function(prev) { var next = Object.assign({}, prev); next[field] = v; return next; });
-    };
-  }
-
-  function submit(e) {
-    e.preventDefault();
-    if (state.pending) return;
-
-    // Lightweight client-side validation
-    var emailTrim = (form.email || "").trim();
-    if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) {
-      setState({ pending: false, error: "Please enter a valid email", success: false });
-      return;
-    }
-    if (!form.password || form.password.length < 6) {
-      setState({ pending: false, error: "Password must be at least 6 characters", success: false });
-      return;
-    }
-
-    setState({ pending: true, error: null, success: false });
-
-    // Backend lives on the `backend/fastapi` branch.
-    // Point VITE_API_URL at it when you deploy, otherwise fall back to /api.
-    var apiBase = (typeof import.meta !== "undefined" && import.meta && import.meta.env && import.meta.env.VITE_API_URL) ? import.meta.env.VITE_API_URL : "/api";
-    fetch(apiBase.replace(/\/$/, "") + "/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ email: emailTrim, password: form.password, remember: form.remember }),
-      credentials: "include"
-    })
-      .then(function(res) {
-        if (res.ok) return res.json().then(function(d) { return { ok: true, data: d }; });
-        return res.json().then(function(d) { return { ok: false, data: d }; }).catch(function() { return { ok: false, data: { detail: "Invalid email or password" } }; });
-      })
-      .then(function(r) {
-        if (r.ok) {
-          setState({ pending: false, error: null, success: true });
-          // Persist the access_token for future Bearer calls (API, mobile wrappers, etc.).
-          // The browser portal itself can keep using the HttpOnly cookie — this is belt-and-suspenders.
-          if (r.data && r.data.access_token && typeof window !== "undefined") {
-            try {
-              var storage = form.remember ? window.localStorage : window.sessionStorage;
-              storage.setItem("hfs_access_token", r.data.access_token);
-              if (r.data.expires_in) storage.setItem("hfs_token_expires_at", String(Date.now() + r.data.expires_in * 1000));
-            } catch (err) { /* storage disabled — cookie is still set, keep going */ }
-          }
-          // Redirect to the portal on success — the portal is a separate app on its
-          // own subdomain, never rendered inside the marketing site.
-          setTimeout(function() {
-            if (r.data && r.data.redirect) window.location.href = r.data.redirect;
-            else window.location.href = PORTAL_URL;
-          }, 400);
-        } else {
-          setState({ pending: false, error: (r.data && (r.data.detail || r.data.message)) || "Invalid email or password", success: false });
-        }
-      })
-      .catch(function() {
-        setState({
-          pending: false,
-          error: "The rep portal isn't live yet — we're launching soon. Meanwhile, email info@homefrontsolutionsllc.com if you need access.",
-          success: false
-        });
-      });
-  }
-
   return (
     <section className="rep-login">
       {/* Left panel — navy brand + pitch */}
@@ -5566,20 +5452,20 @@ function RepLoginPage(props) {
         <div className="rep-login__pitch">
           <span className="rep-login__tag">
             <span className="rep-login__tag-dot" aria-hidden="true" />
-            Rep Portal · Coming Soon
+            Rep Portal · Live
           </span>
           <h1 className="rep-login__title">
             Welcome back.
           </h1>
           <p className="rep-login__sub">
-            HFS Coach — real-time call feedback, AI roleplays, leaderboards, and the dashboard your team lead sees. All in one place.
+            The field tool our team runs on every day — live territory map, knock logging, follow-ups, and weekly commission statements. All in one place.
           </p>
           <ul className="rep-login__list">
             {[
-              "Track knocks, conversations, and closes",
-              "Practice pitches with AI, get graded in real time",
-              "See where you sit on the market leaderboard",
-              "Book ride-alongs with your team lead"
+              "Your territory, mapped — every lead pinned and statused",
+              "Log knocks, outcomes, and callbacks at the door",
+              "This morning’s follow-ups, sorted and ready",
+              "Weekly commission statements — no surprises"
             ].map(function(line) {
               return (
                 <li key={line}>
@@ -5594,76 +5480,27 @@ function RepLoginPage(props) {
         </div>
       </aside>
 
-      {/* Right panel — sign-in card */}
+      {/* Right panel — the portal lives on its own subdomain; link straight to it */}
       <div className="rep-login__panel">
         <div className="rep-login__card">
           <h2 className="rep-login__heading">Rep Sign In</h2>
-          <p className="rep-login__helper">Sign in to the HFS Coach rep portal. Don't have an account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply to join the team</a>.</p>
-
-          <form onSubmit={submit} noValidate className="mt-6">
-            {/* Honeypot */}
-            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} />
-
-            <label htmlFor="rl-email" className="rep-login__label">Email</label>
-            <input
-              id="rl-email"
-              type="email"
-              autoComplete="email"
-              inputMode="email"
-              required
-              value={form.email}
-              onChange={update("email")}
-              placeholder="you@homefrontsolutionsllc.com"
-              className="rep-login__input"
-              aria-invalid={!!state.error}
-            />
-
-            <label htmlFor="rl-password" className="rep-login__label mt-5">Password</label>
-            <input
-              id="rl-password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={form.password}
-              onChange={update("password")}
-              placeholder="Your password"
-              className="rep-login__input"
-              aria-invalid={!!state.error}
-            />
-
-            <div className="flex items-center justify-between mt-5">
-              <label className="rep-login__remember">
-                <input type="checkbox" checked={form.remember} onChange={update("remember")} />
-                <span>Remember me</span>
-              </label>
-              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="rep-login__forgot">Forgot password?</a>
-            </div>
-
-            {state.error && (
-              <div role="alert" className="rep-login__alert">{state.error}</div>
-            )}
-            {state.success && (
-              <div role="status" className="rep-login__success">Signed in. Redirecting to the portal…</div>
-            )}
-
-            <button type="submit" disabled={state.pending} className="btn-blue rep-login__submit">
-              {state.pending ? (
-                <>
-                  <span aria-hidden="true" className="rep-login__spinner" />
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  Sign In
-                  <span aria-hidden="true">→</span>
-                </>
-              )}
-            </button>
-
-            <p className="rep-login__notice">
-              New hire? Check your email for a setup link from <strong style={{ color: INK }}>noreply@homefrontsolutionsllc.com</strong>. No account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply here</a>.
-            </p>
-          </form>
+          <p className="rep-login__helper">
+            The Rep Portal is our field team&rsquo;s daily tool — live territory map, knock logging, follow-ups, and weekly commission statements. Sign in happens on the portal itself.
+          </p>
+          <a
+            href={PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-blue rep-login__submit"
+            style={{ textDecoration: "none" }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+            Open the Rep Portal
+            <span aria-hidden="true">→</span>
+          </a>
+          <p className="rep-login__notice">
+            No account yet? <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>Apply to join the team</a> — access is set up during onboarding. Trouble signing in? Email <strong style={{ color: INK }}>info@homefrontsolutionsllc.com</strong>.
+          </p>
         </div>
         <p className="rep-login__footer">© 2026 Home Front Solutions LLC · <a href="/privacy" onClick={function(e) { handleNavClick(e, props.go, "privacy"); }}>Privacy</a> · <a href="/terms" onClick={function(e) { handleNavClick(e, props.go, "terms"); }}>Terms</a></p>
       </div>

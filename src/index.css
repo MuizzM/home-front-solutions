@@ -3503,6 +3503,10 @@ a, button { -webkit-tap-highlight-color: transparent; }
   grid-template-columns: repeat(12, 1fr);
   gap: 14px;
 }
+/* Simple variant: three equal cards, no feature/stat tiles */
+.hfx-mosaic--simple { grid-template-columns: repeat(3, 1fr); }
+.hfx-mosaic--simple .hfx-tile { grid-column: auto; }
+@media (max-width: 899px) { .hfx-mosaic--simple { grid-template-columns: 1fr; } }
 .hfx-tile { border-radius: 16px; padding: 28px; display: flex; flex-direction: column; }
 .hfx-tile--feature {
   grid-column: span 7;
