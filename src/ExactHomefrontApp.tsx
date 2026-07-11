@@ -91,6 +91,9 @@ var LINKEDIN_URL = "https://www.linkedin.com/company/home-front-solutions";
 var FACEBOOK_URL = "https://www.facebook.com/homefrontsolutionsllc";
 // Outlook Bookwithme scheduler. Every Book-a-call CTA site-wide points here.
 var BOOKING_URL = "https://outlook.office.com/bookwithme/user/0ea888e3efef4c00ae2eeb04410d7e15@Homefrontsolutionsllc.com/meetingtype/C4O5zoQ0vUK3IHFUZlU87Q2?bookingcode=62272f10-6dfb-4114-a855-3b596b4fb081&anonymous&ismsaljsauthenabled&ep=mlink";
+// The internal field-rep portal — a SEPARATE app on its own subdomain. The marketing
+// site only links out to it; portal UI never renders inside this site.
+var PORTAL_URL = "https://portal.homefrontsolutionsllc.com";
 
 // Display — Newsreader, variable weight (400-700), optical size tuned for display
 var serif = { fontFamily: "'Newsreader', 'Instrument Serif', 'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.028em", fontVariationSettings: "'opsz' 72" };
@@ -2015,6 +2018,19 @@ function Header(props) {
               </a>
             );
           })}
+          {/* Rep Portal — separated from marketing nav: quiet link, external app */}
+          <span aria-hidden="true" style={{ width: 1, height: 18, background: onDark ? "rgba(255,255,255,0.18)" : RULE }} />
+          <a
+            href={PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link"
+            style={{ color: linkColor, padding: "6px 0", fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", opacity: 0.85, display: "inline-flex", alignItems: "center", gap: 6 }}
+            aria-label="Rep Portal (opens the field portal in a new tab)"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+            Portal
+          </a>
           <a
             href={BOOKING_URL || "/contact"}
             onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
@@ -2055,6 +2071,10 @@ function Header(props) {
                 </a>
               );
             })}
+            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" onClick={function() { setOpen(false); }} className="text-left text-lg block" style={{ color: linkColor, background: "none", padding: "14px 0", cursor: "pointer", fontWeight: 500, opacity: 0.85, display: "flex", alignItems: "center", gap: 8 }} aria-label="Rep Portal (opens the field portal in a new tab)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
+              Rep Portal
+            </a>
             <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="btn-gold mt-6 text-center py-3.5 rounded-full block">
               Book a Call →
             </a>
@@ -2883,12 +2903,12 @@ function FaqRow(props) {
 // ── Homepage ───────────────────────────────────────────────────────────
 function HomePage(props) {
   var services = [
-    { kind: "fiber",    label: "Fiber Internet" },
-    { kind: "security", label: "Home Security" },
-    { kind: "solar",    label: "Solar" },
-    { kind: "water",    label: "Water Filtration" },
-    { kind: "roofing",  label: "Roofing" },
-    { kind: "home",     label: "Home Services" }
+    { kind: "fiber",    label: "Fiber Internet",   desc: "Launch-market door campaigns for regional fiber builds." },
+    { kind: "security", label: "Home Security",    desc: "Consultative installs sold on the porch, not the phone." },
+    { kind: "solar",    label: "Solar",            desc: "Qualified appointments for design-and-install partners." },
+    { kind: "water",    label: "Water Filtration", desc: "In-home water tests that convert to same-week installs." },
+    { kind: "roofing",  label: "Roofing",          desc: "Storm-season canvassing with insurance-ready inspections." },
+    { kind: "home",     label: "Home Services",    desc: "Adjacent offers your customers already ask us about." }
   ];
   var stats = [
     { icon: "pin",    label: "Markets Launched",     value: "28+" },
@@ -2937,10 +2957,13 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-14 pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             <div className="lg:col-span-6">
-              <h1 className="home-hero__title">
+              <div className="mono-kicker word-reveal" style={{ color: "var(--signal)", letterSpacing: "0.08em", marginBottom: 18 }}>
+                Door-to-door growth partner · est. Carolinas
+              </div>
+              <h1 className="display" style={{ fontSize: "clamp(2.7rem, 5.6vw, 4.4rem)", lineHeight: 0.98, letterSpacing: "-0.035em", color: INK, maxWidth: "15ch" }}>
                 <span className="word-reveal word-reveal--inline">Face-to-face sales</span>{" "}
                 <span className="word-reveal word-reveal--inline" style={{ animationDelay: "120ms" }}>that grow</span>{" "}
-                <span className="word-reveal word-reveal--inline home-hero__accent" style={{ animationDelay: "240ms" }}>home service brands.</span>
+                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "240ms", fontStyle: "italic", color: "var(--signal)" }}>home service brands.</span>
               </h1>
               <p className="home-hero__lead word-reveal" style={{ animationDelay: "400ms" }}>
                 Real conversations. Real customers. Real growth. Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win.
@@ -2969,15 +2992,11 @@ function HomePage(props) {
                     aria-label="Partner with Home Front Solutions"
                   >
                     Partner With Us
-                    <span aria-hidden="true">→</span>
                   </a>
                 </Magnetic>
               </div>
-              <div className="mt-6 flex items-center gap-2.5 word-reveal" style={{ animationDelay: "600ms" }}>
-                <span className="home-hero__trust-dot" aria-hidden="true">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="5 12 10 17 19 8"/></svg>
-                </span>
-                <span className="home-hero__trust-label">Trusted by leading brands. Proven in communities nationwide.</span>
+              <div className="hfx-trust word-reveal" style={{ animationDelay: "600ms" }}>
+                Trusted by leading brands · <b>proven in communities nationwide</b>
               </div>
             </div>
 
@@ -2997,16 +3016,13 @@ function HomePage(props) {
             </div>
           </div>
 
-          {/* Navy stat-bar strip seated at the bottom of the hero */}
-          <div className="home-stat-bar reveal">
+          {/* Navy stat band seated at the bottom of the hero — editorial numerals */}
+          <div className="hfx-stats reveal">
             {stats.map(function(s) {
               return (
-                <div key={s.label} className="home-stat-bar__cell">
-                  <span className="home-stat-bar__icon" aria-hidden="true"><StatIcon kind={s.icon} /></span>
-                  <div>
-                    <div className="home-stat-bar__value">{s.value}</div>
-                    <div className="home-stat-bar__label">{s.label}</div>
-                  </div>
+                <div key={s.label} className="hfx-stats__cell">
+                  <div className="hfx-stats__value">{s.value}</div>
+                  <div className="hfx-stats__label">{s.label}</div>
                 </div>
               );
             })}
@@ -3014,25 +3030,32 @@ function HomePage(props) {
         </div>
       </section>
 
-      {/* ── SERVICES WE REPRESENT ─────────────────────────────── */}
+      {/* ── SERVICES WE REPRESENT — editorial index ───────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-20 md:pt-24 pb-16 md:pb-20">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">The brands we knock for.</h2>
-            <p className="section-sub">Six categories. One disciplined field team.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">01 · What we sell</div>
+              <h2 className="hfx-head__h">The brands we knock for.</h2>
+            </div>
+            <p className="hfx-head__sub">Six categories, one disciplined field team — every offer vetted before a rep ever carries it to a door.</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 reveal" data-delay="1">
-            {services.map(function(s) {
+          <div className="hfx-index reveal" data-delay="1">
+            {services.map(function(s, i) {
               return (
                 <a
                   key={s.kind}
                   href="/what-we-do"
                   onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}
-                  className="svc-tile"
+                  className="hfx-index__row"
                   aria-label={s.label + " — explore service"}
                 >
-                  <span className="svc-tile__icon"><SvcIcon kind={s.kind} /></span>
-                  <span className="svc-tile__label">{s.label}</span>
+                  <span className="hfx-index__num">{"0" + (i + 1)}</span>
+                  <span className="hfx-index__name">{s.label}</span>
+                  <span className="hfx-index__desc">{s.desc}</span>
+                  <span className="hfx-index__arrow" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12 H19"/><path d="M13 6 L19 12 L13 18"/></svg>
+                  </span>
                 </a>
               );
             })}
@@ -3043,40 +3066,31 @@ function HomePage(props) {
       {/* ── WHY FACE-TO-FACE STILL WINS — persuasion block ── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24" style={{ borderTop: "1px solid " + RULE }}>
-          <div className="reveal grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-end mb-12">
-            <div className="lg:col-span-7">
-              <h2 className="section-h2">Why face-to-face still wins.</h2>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">02 · Why the door</div>
+              <h2 className="hfx-head__h">Why face-to-face still wins.</h2>
             </div>
-            <div className="lg:col-span-5">
-              <p className="section-sub" style={{ marginTop: 0 }}>
-                Clicks and impressions don&rsquo;t install fiber, set alarms, or mount panels. People do — and the home is still the most personal purchase your customer makes.
-              </p>
-            </div>
+            <p className="hfx-head__sub">
+              Clicks and impressions don&rsquo;t install fiber, set alarms, or mount panels. People do — and the home is still the most personal purchase your customer makes.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
-            <article className="reason-card">
-              <span className="reason-card__i" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21 C 12 21, 5 13.5, 5 9 A 7 7 0 0 1 19 9 C 19 13.5, 12 21, 12 21 Z"/><circle cx="12" cy="9" r="2.4"/></svg>
-              </span>
-              <h3 className="reason-card__h">Trust moves faster in person.</h3>
-              <p className="reason-card__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
+          <div className="hfx-reasons reveal" data-delay="1">
+            <article className="hfx-reason">
+              <span className="hfx-reason__num">A</span>
+              <h3 className="hfx-reason__h">Trust moves faster in person.</h3>
+              <p className="hfx-reason__p">Homeowners say yes to the neighbor on their porch before the ad in their feed. Our reps build that moment, one door at a time — in your colors, with your offer.</p>
             </article>
-
-            <article className="reason-card">
-              <span className="reason-card__i" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 6 C 4 4.5, 5 4, 6 4 H18 C 19 4, 20 4.5, 20 6 V16 C 20 17, 19 17.5, 18 17.5 H10 L5 21 L5 17.5 C 4.5 17.5, 4 17, 4 16 Z"/><path d="M8 9 H16"/><path d="M8 13 H13"/></svg>
-              </span>
-              <h3 className="reason-card__h">Real objections, handled on the spot.</h3>
-              <p className="reason-card__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
+            <article className="hfx-reason">
+              <span className="hfx-reason__num">B</span>
+              <h3 className="hfx-reason__h">Real objections, handled on the spot.</h3>
+              <p className="hfx-reason__p">A price question, a contract concern, a roofline complication — a trained rep solves it in the conversation. A web form never will, and a call-center script rarely does.</p>
             </article>
-
-            <article className="reason-card">
-              <span className="reason-card__i" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19 V8"/><path d="M10 19 V12"/><path d="M16 19 V4"/><path d="M2 19 H22"/><path d="M4 11 L10 7 L16 9" opacity="0.7"/></svg>
-              </span>
-              <h3 className="reason-card__h">You pay for installs, not impressions.</h3>
-              <p className="reason-card__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
+            <article className="hfx-reason">
+              <span className="hfx-reason__num">C</span>
+              <h3 className="hfx-reason__h">You pay for installs, not impressions.</h3>
+              <p className="hfx-reason__p">We&rsquo;re measured on activations and retention, not vanity metrics. If the customer doesn&rsquo;t stay, neither does our fee. The incentives line up with yours.</p>
             </article>
           </div>
         </div>
@@ -3085,39 +3099,23 @@ function HomePage(props) {
       {/* ── HOW IT WORKS ─────────────────────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">The growth process.</h2>
-            <p className="section-sub">Three disciplines. One market. Measured every day.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">03 · How it runs</div>
+              <h2 className="hfx-head__h">The growth process.</h2>
+            </div>
+            <p className="hfx-head__sub">One market at a time, measured every day — from the first knock to the install report on your desk.</p>
           </div>
-          <div className="how-flow reveal" data-delay="1">
-            {(function() {
-              var out = [];
-              steps.forEach(function(step, i) {
-                out.push(
-                  <article key={"s-" + step.num} className="how-card">
-                    <div className="how-card__head">
-                      <span className="how-card__num" aria-hidden="true">{step.num}</span>
-                      <div>
-                        <h3 className="how-card__title">{step.title}</h3>
-                        <p className="how-card__body">{step.body}</p>
-                      </div>
-                    </div>
-                    <span className="how-card__icon" aria-hidden="true"><StepIcon kind={step.icon} /></span>
-                  </article>
-                );
-                if (i < steps.length - 1) {
-                  out.push(
-                    <span key={"a-" + i} className="how-arrow" aria-hidden="true">
-                      <svg width="34" height="14" viewBox="0 0 34 14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeDasharray="3 4">
-                        <path d="M2 7 H28"/>
-                        <path d="M24 3 L28 7 L24 11" strokeDasharray="0"/>
-                      </svg>
-                    </span>
-                  );
-                }
-              });
-              return out;
-            })()}
+          <div className="hfx-steps reveal" data-delay="1">
+            {steps.map(function(step) {
+              return (
+                <article key={step.num} className="hfx-step">
+                  <span className="hfx-step__num" aria-hidden="true">{"0" + step.num}</span>
+                  <h3 className="hfx-step__title">{step.title}</h3>
+                  <p className="hfx-step__body">{step.body}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -3125,47 +3123,33 @@ function HomePage(props) {
       {/* ── YOUR CAREER WITH HFS — recruiting-heavy section ─── */}
       <section className="career-band">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <div className="career-band__eyebrow">For Sales Reps</div>
-            <h2 className="section-h2" style={{ color: "#F5F7FA" }}>Your career. Your earnings.</h2>
-            <p className="section-sub" style={{ color: "rgba(245,247,250,0.72)", marginTop: 10 }}>
-              Paid training. Weekly commission. Promotion from within. No politics, no favorites — hit the numbers, the next role opens.
+          <div className="hfx-head hfx-head--dark reveal">
+            <div>
+              <div className="hfx-head__kicker">04 · For sales reps</div>
+              <h2 className="hfx-head__h">Your career. Your earnings.</h2>
+            </div>
+            <p className="hfx-head__sub">
+              Paid training, weekly commission, promotion from within. No politics, no favorites — hit the numbers and the next role opens.
             </p>
           </div>
-          <div className="career-ladder reveal" data-delay="1">
+          <div className="hfx-path reveal" data-delay="1">
             {[
               { tag: "Month 1", title: "Paid certification", body: "Six-module training before your first real door. Product knowledge, pitch mastery, objection handling, compliance.", earn: "Paid" },
-              { tag: "Year 1",  title: "Field Rep",          body: "Own a territory. Weekly commission. Top producers clear $150K in year one.",                                    earn: "$80K – $150K+" },
-              { tag: "Year 2",  title: "Team Lead",          body: "Promote from within. Build and coach a 4–6 rep team while keeping your own pipeline.",                          earn: "$150K – $250K" },
+              { tag: "Year 1",  title: "Field Rep",          body: "Own a territory. Weekly commission. Top producers clear $150K in year one.",                                    earn: "$80–150K+" },
+              { tag: "Year 2",  title: "Team Lead",          body: "Promote from within. Build and coach a 4–6 rep team while keeping your own pipeline.",                          earn: "$150–250K" },
               { tag: "Year 3+", title: "Area Manager",       body: "Own the market. Own the P&L. Report directly to ownership.",                                                    earn: "$250K+" }
-            ].map(function(step, i) {
+            ].map(function(step) {
               return (
-                <article key={step.tag} className="career-card">
-                  <span className="career-card__pip" aria-hidden="true">{i + 1}</span>
-                  <div className="career-card__tag">{step.tag}</div>
-                  <h3 className="career-card__title">{step.title}</h3>
-                  <p className="career-card__body">{step.body}</p>
-                  <div className="career-card__earn">{step.earn}</div>
+                <article key={step.tag} className="hfx-path__row">
+                  <div className="hfx-path__tag">{step.tag}</div>
+                  <h3 className="hfx-path__role">{step.title}</h3>
+                  <p className="hfx-path__body">{step.body}</p>
+                  <div className="hfx-path__earn">{step.earn}</div>
                 </article>
               );
             })}
           </div>
-          <div className="reveal mt-10 flex flex-wrap justify-center gap-5" data-delay="2">
-            {[
-              { icon: "wallet",  label: "Weekly commission" },
-              { icon: "badge",   label: "Paid certification" },
-              { icon: "ladder",  label: "Promotion from within" },
-              { icon: "support", label: "Live coaching + AI support" }
-            ].map(function(p) {
-              return (
-                <span key={p.label} className="career-pill">
-                  <span className="career-pill__i" aria-hidden="true"><PerkIcon kind={p.icon} /></span>
-                  {p.label}
-                </span>
-              );
-            })}
-          </div>
-          <div className="reveal mt-10 text-center" data-delay="3">
+          <div className="reveal mt-10 flex flex-wrap items-center gap-x-8 gap-y-3" data-delay="2">
             <a
               href="/careers"
               onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
@@ -3175,6 +3159,9 @@ function HomePage(props) {
               Apply in 5 minutes
               <span aria-hidden="true">→</span>
             </a>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(245,247,250,0.55)" }}>
+              Weekly commission · paid certification · live + AI coaching
+            </span>
           </div>
         </div>
       </section>
@@ -3183,14 +3170,14 @@ function HomePage(props) {
       <section className="coach-panel">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           <div className="lg:col-span-5 reveal">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="coach-panel__eyebrow">AI-Powered Advantage</div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="hfx-head__kicker" style={{ marginBottom: 0 }}>05 · The advantage</div>
               <span className="soon-badge" aria-label="Coming soon">
                 <span className="soon-badge__dot" aria-hidden="true" />
                 Coming Soon
               </span>
             </div>
-            <h2 className="section-h2">HFS Coach <span style={{ color: MUTED, fontWeight: 500 }}>/</span> Rep Portal<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
+            <h2 className="hfx-head__h">HFS Coach <span style={{ color: MUTED, fontWeight: 400 }}>/</span> Rep Portal<sup style={{ fontSize: "0.5em", fontWeight: 500, marginLeft: 2 }}>™</sup></h2>
             <p className="mt-4 mb-6" style={{ fontSize: 15.5, color: MUTED, lineHeight: 1.7, maxWidth: "38ch" }}>
               Our AI training platform and rep portal. Real-time call feedback, AI roleplays, leaderboards, and live dashboards — launching for active reps soon.
             </p>
@@ -3235,30 +3222,51 @@ function HomePage(props) {
       {/* ── REP STORIES — real quotes from the field ───────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <h2 className="section-h2">Built by reps. Run by reps.</h2>
-            <p className="section-sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">06 · From the field</div>
+              <h2 className="hfx-head__h">Built by reps. Run by reps.</h2>
+            </div>
+            <p className="hfx-head__sub">Every lead and manager at HFS started on a porch. Here&rsquo;s what the team says.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 reveal" data-delay="1">
-            {[
-              { init: "AM", name: "Alex Martinez",    city: "Charlotte, NC",    earn: "$184K year 1", quote: "Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months." },
-              { init: "JT", name: "Jordan Thompson", city: "Greensboro, NC",   earn: "$156K year 1", quote: "Every manager I work with actually knocks doors. There's no layer between me and the decision-makers. When I need help at 8pm, someone picks up." },
-              { init: "MJ", name: "Maya Johnson",    city: "Winston-Salem, NC", earn: "$142K year 1", quote: "HFS Coach changed the game for me. I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door. My close rate jumped 30%." }
-            ].map(function(t) {
-              return (
-                <figure key={t.name} className="rep-card">
-                  <div className="rep-card__head">
-                    <span className="rep-card__avatar" aria-hidden="true">{t.init}</span>
-                    <div>
-                      <div className="rep-card__name">{t.name}</div>
-                      <div className="rep-card__city">{t.city}</div>
-                    </div>
-                    <span className="rep-card__earn">{t.earn}</span>
-                  </div>
-                  <blockquote className="rep-card__quote">&ldquo;{t.quote}&rdquo;</blockquote>
-                </figure>
-              );
-            })}
+          <div className="hfx-mosaic reveal" data-delay="1">
+            <figure className="hfx-tile hfx-tile--feature">
+              <blockquote className="hfx-tile__quote">&ldquo;Came in with zero sales experience. Paid training made the difference — I was closing in my second week and promoted to team lead inside twelve months.&rdquo;</blockquote>
+              <figcaption className="hfx-tile__who">
+                <span className="hfx-tile__avatar" aria-hidden="true">AM</span>
+                <div>
+                  <div className="hfx-tile__name">Alex Martinez</div>
+                  <div className="hfx-tile__meta">Team Lead · Charlotte, NC</div>
+                </div>
+                <span className="hfx-tile__earn">$184K yr 1</span>
+              </figcaption>
+            </figure>
+            <div className="hfx-tile hfx-tile--stat">
+              <div className="hfx-tile__big">30%</div>
+              <div className="hfx-tile__biglabel">Close-rate lift after HFS Coach roleplays</div>
+            </div>
+            <figure className="hfx-tile hfx-tile--paper">
+              <blockquote className="hfx-tile__quote">&ldquo;Every manager I work with actually knocks doors. There&rsquo;s no layer between me and the decision-makers. When I need help at 8pm, someone picks up.&rdquo;</blockquote>
+              <figcaption className="hfx-tile__who">
+                <span className="hfx-tile__avatar" aria-hidden="true">JT</span>
+                <div>
+                  <div className="hfx-tile__name">Jordan Thompson</div>
+                  <div className="hfx-tile__meta">Field Rep · Greensboro, NC</div>
+                </div>
+                <span className="hfx-tile__earn">$156K yr 1</span>
+              </figcaption>
+            </figure>
+            <figure className="hfx-tile hfx-tile--quiet">
+              <blockquote className="hfx-tile__quote">&ldquo;I practice the pitch with AI on my lunch break, get a score, and fix the weak spots before the next door. My close rate jumped 30%.&rdquo;</blockquote>
+              <figcaption className="hfx-tile__who">
+                <span className="hfx-tile__avatar" aria-hidden="true">MJ</span>
+                <div>
+                  <div className="hfx-tile__name">Maya Johnson</div>
+                  <div className="hfx-tile__meta">Field Rep · Winston-Salem, NC</div>
+                </div>
+                <span className="hfx-tile__earn">$142K yr 1</span>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -3266,15 +3274,20 @@ function HomePage(props) {
       {/* ── WHERE WE HIRE — pill chips ───────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-9">
-            <span className="hiring-badge" aria-label="Now hiring">
-              <span className="hiring-badge__dot" aria-hidden="true" />
-              Now hiring · {JOBS.length} open roles
-            </span>
-            <h2 className="section-h2 mt-3">Where We Hire</h2>
-            <p className="section-sub">Local teams. National impact. Apply in five minutes.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">07 · Markets</div>
+              <h2 className="hfx-head__h">Where we hire.</h2>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, paddingBottom: 4 }}>
+              <span className="hiring-badge" aria-label="Now hiring">
+                <span className="hiring-badge__dot" aria-hidden="true" />
+                Now hiring · {JOBS.length} open roles
+              </span>
+              <span className="hfx-head__sub" style={{ paddingBottom: 0 }}>Local teams, national standards — apply in five minutes.</span>
+            </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-3 reveal" data-delay="1">
+          <div className="flex flex-wrap gap-3 reveal" data-delay="1">
             {cities.map(function(c) {
               return (
                 <a
@@ -3291,7 +3304,7 @@ function HomePage(props) {
               );
             })}
           </div>
-          <div className="mt-8 text-center">
+          <div className="mt-8">
             <a
               href="/careers"
               onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
@@ -3299,7 +3312,6 @@ function HomePage(props) {
               style={{ minHeight: 46, fontSize: 14 }}
             >
               View Open Positions
-              <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
@@ -3308,17 +3320,22 @@ function HomePage(props) {
       {/* ── WHY HOME FRONT (4 value cards with shield/house/map/badge) ── */}
       <section style={{ background: PAPER_DEEP }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-12">
-            <h2 className="section-h2">Built for operators that need more than clicks.</h2>
-            <p className="section-sub">Stronger brands. Stronger teams. Measured in installs, not impressions.</p>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">08 · The standard</div>
+              <h2 className="hfx-head__h">Built for operators that need more than clicks.</h2>
+            </div>
+            <p className="hfx-head__sub">Measured in installs and retention — not impressions.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 reveal" data-delay="1">
+          <div className="hfx-ops reveal" data-delay="1">
             {values.map(function(v) {
               return (
-                <div key={v.title} className="why-card">
-                  <span className="why-card__icon" aria-hidden="true"><WhyIcon kind={v.icon} /></span>
-                  <h3 className="why-card__title" style={{ whiteSpace: "pre-line" }}>{v.title}</h3>
-                  <p className="why-card__body">{v.body}</p>
+                <div key={v.title} className="hfx-ops__row">
+                  <span className="hfx-ops__i" aria-hidden="true"><WhyIcon kind={v.icon} /></span>
+                  <div>
+                    <h3 className="hfx-ops__h">{v.title.replace(/\n/g, " ")}</h3>
+                    <p className="hfx-ops__p">{v.body}</p>
+                  </div>
                 </div>
               );
             })}
@@ -3329,8 +3346,12 @@ function HomePage(props) {
       {/* ── FAQ (2-column grid) ──────────────────────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-20 md:py-24">
-          <div className="reveal text-center max-w-2xl mx-auto mb-10">
-            <h2 className="section-h2">Frequently Asked Questions</h2>
+          <div className="hfx-head reveal">
+            <div>
+              <div className="hfx-head__kicker">09 · Questions</div>
+              <h2 className="hfx-head__h">Asked at most doors.</h2>
+            </div>
+            <p className="hfx-head__sub">The six questions reps and partners ask before they say yes.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 reveal" data-delay="1">
             {faqs.map(function(f) {
@@ -3343,44 +3364,35 @@ function HomePage(props) {
       {/* ── DUAL CTA BAND (teal left, blue right) ────────────── */}
       <section style={{ background: PAPER }}>
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pb-20 md:pb-24">
-          <div className="dual-split reveal">
-            <div className="dual-split__panel dual-split__panel--teal">
-              <span className="dual-split__icon" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20 V8"/><path d="M10 20 V12"/><path d="M16 20 V5"/><path d="M2 20 H22"/></svg>
-              </span>
-              <div>
-                <h3 className="dual-split__title">For Brands That<br/>Need Field Growth</h3>
-                <p className="dual-split__body">Scale your reach. Increase appointments. Grow your business — door to door.</p>
-                <a
-                  href={BOOKING_URL || "/contact"}
-                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
-                  target={BOOKING_URL ? "_blank" : undefined}
-                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
-                  style={{ minHeight: 42, fontSize: 13.5 }}
-                >
-                  Partner With Us
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
+          <div className="hfx-cta reveal">
+            <div className="hfx-cta__panel hfx-cta__panel--navy">
+              <div className="hfx-cta__kicker">For operators</div>
+              <h3 className="hfx-cta__title">Put a disciplined field team on your next market.</h3>
+              <p className="hfx-cta__body">Scope a pilot in one 30-minute call — territory, offer, launch date, and the numbers you&rsquo;ll see every week.</p>
+              <a
+                href={BOOKING_URL || "/contact"}
+                onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                target={BOOKING_URL ? "_blank" : undefined}
+                rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                className="btn-white mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Book a discovery call
+                <span aria-hidden="true">→</span>
+              </a>
             </div>
-            <div className="dual-split__panel dual-split__panel--blue">
-              <span className="dual-split__icon" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="9" r="3.2"/><path d="M3 19 C 4 16, 6 14.5, 9 14.5 C 12 14.5, 14 16, 15 19"/><circle cx="17" cy="9" r="3"/><path d="M15 14.8 C 18 14.5, 20 15.5, 21 19"/></svg>
-              </span>
-              <div>
-                <h3 className="dual-split__title">For People Who<br/>Want To Work</h3>
-                <p className="dual-split__body">Build a career with purpose. Competitive pay. Growth opportunities. Local teams.</p>
-                <a
-                  href="/careers"
-                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="btn-white mt-5 inline-flex items-center gap-2 px-5 rounded-full font-medium"
-                  style={{ minHeight: 42, fontSize: 13.5 }}
-                >
-                  Join the Team
-                  <span aria-hidden="true">→</span>
-                </a>
-              </div>
+            <div className="hfx-cta__panel hfx-cta__panel--paper">
+              <div className="hfx-cta__kicker">For future reps</div>
+              <h3 className="hfx-cta__title">Earn like an owner, starting week one.</h3>
+              <p className="hfx-cta__body">Paid certification, weekly commission, and a team that promotes from within.</p>
+              <a
+                href="/careers"
+                onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
+                className="btn-blue mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                style={{ minHeight: 46, fontSize: 14 }}
+              >
+                Join the Team
+              </a>
             </div>
           </div>
         </div>
@@ -5526,10 +5538,11 @@ function RepLoginPage(props) {
               if (r.data.expires_in) storage.setItem("hfs_token_expires_at", String(Date.now() + r.data.expires_in * 1000));
             } catch (err) { /* storage disabled — cookie is still set, keep going */ }
           }
-          // Redirect to the portal on success (portal app lives on the backend)
+          // Redirect to the portal on success — the portal is a separate app on its
+          // own subdomain, never rendered inside the marketing site.
           setTimeout(function() {
             if (r.data && r.data.redirect) window.location.href = r.data.redirect;
-            else window.location.href = "/portal";
+            else window.location.href = PORTAL_URL;
           }, 400);
         } else {
           setState({ pending: false, error: (r.data && (r.data.detail || r.data.message)) || "Invalid email or password", success: false });
