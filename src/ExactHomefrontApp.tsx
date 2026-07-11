@@ -95,9 +95,9 @@ var BOOKING_URL = "https://outlook.office.com/bookwithme/user/0ea888e3efef4c00ae
 // site only links out to it; portal UI never renders inside this site.
 var PORTAL_URL = "https://portal.homefrontsolutionsllc.com";
 
-// Display — Newsreader, variable weight (400-700), optical size tuned for display
-var serif = { fontFamily: "'Newsreader', 'Instrument Serif', 'Fraunces', Georgia, serif", fontWeight: 500, letterSpacing: "-0.028em", fontVariationSettings: "'opsz' 72" };
-var monoKicker = { fontFamily: "'Geist Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 11, letterSpacing: "0.02em", textTransform: "uppercase", fontWeight: 500 };
+// Display — bold clean sans (Geist), consistent weights
+var serif = { fontFamily: "'Geist', 'Inter', sans-serif", fontWeight: 700, letterSpacing: "-0.024em" };
+var monoKicker = { fontFamily: "'Geist', 'Inter', sans-serif", fontSize: 13, letterSpacing: 0, textTransform: "none", fontWeight: 600 };
 
 var PARTNERS = ["Fiber Internet", "Home Security", "Solar", "Water Filtration", "Roofing", "Home Services"];
 
@@ -1598,7 +1598,7 @@ function ActivityTicker() {
     return function() { window.clearInterval(id); };
   }, []);
   return (
-    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", maxWidth: "100%" }}>
+    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-[10px]" style={{ background: "rgba(255,255,255,0.72)", border: "1px solid " + RULE, backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", maxWidth: "100%" }}>
       <span aria-hidden="true" className="relative inline-flex items-center justify-center" style={{ width: 8, height: 8 }}>
         <span style={{ position: "absolute", inset: 0, borderRadius: "50%", background: SIGNAL }} />
         <span style={{ position: "absolute", inset: -4, borderRadius: "50%", background: SIGNAL, opacity: 0.3, animation: "tickerPulse 1.8s ease-in-out infinite" }} />
@@ -1844,7 +1844,7 @@ function getRouteFromPath(pathname) {
 }
 
 function Eyebrow(props) {
-  return <p className="text-xs uppercase mb-5" style={{ color: MUTED, letterSpacing: "0.18em", fontWeight: 600 }}>{props.children}</p>;
+  return <p className="mb-5" style={{ color: "var(--signal)", fontSize: 13.5, letterSpacing: 0, fontWeight: 600 }}>{props.children}</p>;
 }
 
 function LogoMark(props) {
@@ -2048,7 +2048,7 @@ function Header(props) {
             onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
             target={BOOKING_URL ? "_blank" : undefined}
             rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-            className="btn-blue inline-flex items-center gap-2 px-5 rounded-full"
+            className="btn-blue inline-flex items-center gap-2 px-5 rounded-[10px]"
             style={{ cursor: "pointer", minHeight: 42, fontSize: 13.5, letterSpacing: "-0.005em" }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -2087,7 +2087,7 @@ function Header(props) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
               Rep Portal
             </a>
-            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="btn-gold mt-6 text-center py-3.5 rounded-full block">
+            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} onClick={BOOKING_URL ? undefined : function(e) { if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) { e.preventDefault(); setOpen(false); props.go("contact"); } }} className="btn-gold mt-6 text-center py-3.5 rounded-[10px] block">
               Book a Call →
             </a>
           </div>
@@ -2967,13 +2967,13 @@ function HomePage(props) {
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-10 md:pt-14 pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             <div className="lg:col-span-6">
-              <div className="mono-kicker word-reveal" style={{ color: "var(--signal)", letterSpacing: "0.08em", marginBottom: 18 }}>
+              <div className="mono-kicker word-reveal" style={{ marginBottom: 18 }}>
                 Door-to-door growth partner · founded in the Carolinas
               </div>
               <h1 className="display" style={{ fontSize: "clamp(2.7rem, 5.6vw, 4.4rem)", lineHeight: 0.98, letterSpacing: "-0.035em", color: INK, maxWidth: "15ch" }}>
                 <span className="word-reveal word-reveal--inline">Face-to-face sales</span>{" "}
                 <span className="word-reveal word-reveal--inline" style={{ animationDelay: "120ms" }}>that grow</span>{" "}
-                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "240ms", fontStyle: "italic", color: "var(--signal)" }}>home service brands.</span>
+                <span className="word-reveal word-reveal--inline" style={{ animationDelay: "240ms", color: "var(--signal)" }}>home service brands.</span>
               </h1>
               <p className="home-hero__lead word-reveal" style={{ animationDelay: "400ms" }}>
                 Home service operators hire our field teams to launch new markets, scale installs, and keep the customers they win — one real conversation at a time.
@@ -2983,7 +2983,7 @@ function HomePage(props) {
                   <a
                     href="/careers"
                     onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                    className="btn-blue inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    className="btn-blue inline-flex items-center justify-center gap-2 px-7 rounded-[10px] font-medium"
                     style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
                     aria-label="Join the Home Front Solutions team"
                   >
@@ -2996,7 +2996,7 @@ function HomePage(props) {
                     onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                     target={BOOKING_URL ? "_blank" : undefined}
                     rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                    className="btn-outline inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium"
+                    className="btn-outline inline-flex items-center justify-center gap-2 px-7 rounded-[10px] font-medium"
                     style={{ cursor: "pointer", minHeight: 52, fontSize: 15 }}
                     aria-label="Partner with Home Front Solutions"
                   >
@@ -3157,13 +3157,13 @@ function HomePage(props) {
             <a
               href="/careers"
               onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-              className="btn-blue inline-flex items-center gap-2 px-7 rounded-full font-medium"
+              className="btn-blue inline-flex items-center gap-2 px-7 rounded-[10px] font-medium"
               style={{ minHeight: 52, fontSize: 15 }}
             >
               Apply in 5 minutes
               <span aria-hidden="true">→</span>
             </a>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(245,247,250,0.75)" }}>
+            <span style={{ fontSize: 13.5, fontWeight: 500, color: "rgba(245,247,250,0.78)" }}>
               Weekly commission · paid certification · live + AI coaching
             </span>
           </div>
@@ -3200,7 +3200,7 @@ function HomePage(props) {
               <a
                 href="/rep-login"
                 onClick={function(e) { handleNavClick(e, props.go, "rep-login"); }}
-                className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
                 style={{ minHeight: 46, fontSize: 14 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11 V7 A4 4 0 0 1 16 7 V11"/></svg>
@@ -3209,7 +3209,7 @@ function HomePage(props) {
               <a
                 href="/careers"
                 onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                className="btn-outline inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
                 style={{ minHeight: 46, fontSize: 14 }}
               >
                 Join the waitlist
@@ -3306,7 +3306,7 @@ function HomePage(props) {
             <a
               href="/careers"
               onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-              className="btn-outline-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-outline-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 46, fontSize: 14 }}
             >
               View Open Positions
@@ -3370,7 +3370,7 @@ function HomePage(props) {
               <a
                 href="/careers"
                 onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                className="btn-white mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                className="btn-white mt-6 inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
                 style={{ minHeight: 46, fontSize: 14 }}
               >
                 Apply in 5 minutes
@@ -3386,7 +3386,7 @@ function HomePage(props) {
                 onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                 target={BOOKING_URL ? "_blank" : undefined}
                 rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                className="btn-blue mt-6 inline-flex items-center gap-2 px-6 rounded-full font-medium"
+                className="btn-blue mt-6 inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
                 style={{ minHeight: 46, fontSize: 14 }}
               >
                 Book a discovery call
@@ -3618,7 +3618,7 @@ function CareersIndexPage(props) {
             <a
               href="#open-positions"
               onClick={function(e) { e.preventDefault(); var el = document.getElementById("open-positions"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-              className="btn-blue inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
               See open roles
@@ -3629,7 +3629,7 @@ function CareersIndexPage(props) {
               onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
               target={BOOKING_URL ? "_blank" : undefined}
               rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-              className="btn-outline inline-flex items-center gap-2 px-6 rounded-full font-medium"
+              className="btn-outline inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
               Talk to us
@@ -3710,7 +3710,7 @@ function CareersIndexPage(props) {
                       <a
                         href={getPathForRoute("job", job.slug)}
                         onClick={function(e) { handleNavClick(e, props.go, "job", job.slug); }}
-                        className="inline-flex items-center justify-center px-5 rounded-full text-sm font-medium transition-colors"
+                        className="inline-flex items-center justify-center px-5 rounded-[10px] text-sm font-medium transition-colors"
                         style={{ background: "transparent", color: INK, border: "1px solid " + RULE, minHeight: 44, whiteSpace: "nowrap" }}
                       >
                         View role
@@ -3718,7 +3718,7 @@ function CareersIndexPage(props) {
                       <a
                         href={getPathForRoute("apply", job.slug)}
                         onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }}
-                        className="inline-flex items-center justify-center gap-1.5 px-5 rounded-full text-sm font-medium transition-all"
+                        className="inline-flex items-center justify-center gap-1.5 px-5 rounded-[10px] text-sm font-medium transition-all"
                         style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 44, whiteSpace: "nowrap", boxShadow: "0 6px 18px rgba(46,109,92,0.3)" }}
                         onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_DEEP; }}
                         onMouseLeave={function(e) { e.currentTarget.style.background = SIGNAL; }}
@@ -3798,7 +3798,7 @@ function CareersIndexPage(props) {
                     key={market.slug}
                     href={getPathForRoute("market", market.slug)}
                     onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
-                    className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold"
+                    className="inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-semibold"
                     style={{ background: "#fff", border: "1px solid " + RULE, color: INK, cursor: "pointer" }}
                   >
                     {market.region}
@@ -3968,7 +3968,7 @@ function JobDetailPage(props) {
                 <blockquote style={{ ...serif, fontSize: 22, lineHeight: 1.25, letterSpacing: "-0.018em", color: "#F5F1E7", fontWeight: 420, margin: 0 }}>
                   Real product. Straight commission. Leadership that actually shows up in the field with you.
                 </blockquote>
-                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="btn-blue mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 52, fontSize: 15 }}>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="btn-blue mt-8 w-full inline-flex items-center justify-center gap-2 px-7 rounded-[10px] font-medium" style={{ minHeight: 52, fontSize: 15 }}>
                   Apply for this role
                   <span aria-hidden="true">→</span>
                 </a>
@@ -4039,7 +4039,7 @@ function JobDetailPage(props) {
             </div>
 
             <div className="mt-12">
-              <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
+              <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="inline-flex items-center gap-2 px-7 rounded-[10px] font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(46,109,92,0.32)" }}>
                 Apply for this position
                 <span aria-hidden="true">→</span>
               </a>
@@ -4055,7 +4055,7 @@ function JobDetailPage(props) {
                       key={market.slug}
                       href={getPathForRoute("market", market.slug)}
                       onClick={function(e) { handleNavClick(e, props.go, "market", market.slug); }}
-                      className="inline-flex items-center px-4 rounded-full text-sm font-medium transition-colors"
+                      className="inline-flex items-center px-4 rounded-[10px] text-sm font-medium transition-colors"
                       style={{ background: "transparent", border: "1px solid rgba(14,14,12,0.16)", color: INK, cursor: "pointer", minHeight: 40 }}
                       onMouseEnter={function(e) { e.currentTarget.style.background = "rgba(14,14,12,0.04)"; }}
                       onMouseLeave={function(e) { e.currentTarget.style.background = "transparent"; }}
@@ -4097,7 +4097,7 @@ function JobDetailPage(props) {
                 <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 14 }}>Apply</div>
                 <h3 className="mb-4" style={{ ...serif, fontSize: 24, lineHeight: 1.15, letterSpacing: "-0.02em", color: INK, fontWeight: 440 }}>Ready to join the team?</h3>
                 <p style={{ fontSize: 14.5, color: MUTED, lineHeight: 1.68, marginBottom: 24 }}>Application takes about 5 minutes. We respond within 48 hours with direct next steps if there's a fit.</p>
-                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-full font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
+                <a href={getPathForRoute("apply", job.slug)} onClick={function(e) { handleNavClick(e, props.go, "apply", job.slug); }} className="w-full inline-flex items-center justify-center gap-2 px-5 rounded-[10px] font-medium transition-all" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 6px 16px rgba(46,109,92,0.28)" }}>
                   Begin application
                   <span aria-hidden="true">→</span>
                 </a>
@@ -4325,7 +4325,7 @@ function ApplyPage(props) {
               {job.location} · {job.type}
             </div>
           </div>
-          <div className="inline-flex items-center px-3 py-1.5 rounded-full self-start" style={{ background: FOREST_SOFT }}>
+          <div className="inline-flex items-center px-3 py-1.5 rounded-[10px] self-start" style={{ background: FOREST_SOFT }}>
             <span className="text-xs font-bold" style={{ color: FOREST }}>{job.earningRange}/yr</span>
           </div>
         </div>
@@ -4592,7 +4592,7 @@ function ThankYouPage(props) {
         <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-md font-semibold" style={{ background: "transparent", color: INK, border: "1px solid " + INK, cursor: "pointer" }}>
           View Other Positions
         </a>
-        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-full font-semibold" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", boxShadow: "0 8px 18px rgba(46,109,92,0.28)" }}>
+        <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="inline-flex items-center justify-center px-6 py-3 rounded-[10px] font-semibold" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", boxShadow: "0 8px 18px rgba(46,109,92,0.28)" }}>
           Back to Home
         </a>
       </div>
@@ -4643,7 +4643,7 @@ function MarketPage(props) {
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 px-6 py-8 md:px-10 md:py-12">
             <div className="lg:col-span-8">
-              <div className="inline-flex items-center px-3 py-1.5 rounded-full mb-5" style={{ background: SIGNAL_SOFT }}>
+              <div className="inline-flex items-center px-3 py-1.5 rounded-[10px] mb-5" style={{ background: SIGNAL_SOFT }}>
                 <span className="text-[10px] uppercase" style={{ color: SIGNAL, letterSpacing: "0.16em", fontWeight: 800 }}>{market.region} Recruiting</span>
               </div>
               <h1 className="mb-5" style={{ ...serif, fontSize: "clamp(2.35rem, 5vw, 4.25rem)", lineHeight: 0.96 }}>{market.headline}</h1>
@@ -4893,7 +4893,7 @@ function InsightsIndexPage(props) {
             var count = grouped[t.id].length;
             if (count === 0) return null;
             return (
-              <a key={t.id} href={"#topic-" + t.id} className="inline-flex items-center gap-2 px-4 py-2 rounded-full transition-all" style={{ border: "1px solid " + RULE, background: SURF, color: INK, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", transition: "background 220ms ease, border-color 220ms ease, color 220ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_SOFTER; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SURF; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
+              <a key={t.id} href={"#topic-" + t.id} className="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] transition-all" style={{ border: "1px solid " + RULE, background: SURF, color: INK, fontSize: 13.5, fontWeight: 500, letterSpacing: "-0.005em", transition: "background 220ms ease, border-color 220ms ease, color 220ms ease" }} onMouseEnter={function(e) { e.currentTarget.style.background = SIGNAL_SOFTER; e.currentTarget.style.borderColor = SIGNAL; e.currentTarget.style.color = SIGNAL_DEEP; }} onMouseLeave={function(e) { e.currentTarget.style.background = SURF; e.currentTarget.style.borderColor = RULE; e.currentTarget.style.color = INK; }}>
                 {t.name}
                 <span style={{ ...monoKicker, color: MUTED, fontSize: 10 }}>{count}</span>
               </a>
@@ -4956,10 +4956,10 @@ function InsightsIndexPage(props) {
             <div style={{ ...serif, fontSize: "clamp(1.4rem, 2.2vw, 1.75rem)", letterSpacing: "-0.022em", color: INK, fontWeight: 440 }}>See the open roles or book a call.</div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-full font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 48, fontSize: 14.5 }}>
+            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="inline-flex items-center gap-2 px-6 rounded-[10px] font-medium" style={{ background: "transparent", color: INK, border: "1px solid " + RULE, cursor: "pointer", minHeight: 48, fontSize: 14.5 }}>
               See open roles
             </a>
-            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-6 rounded-full font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 8px 20px rgba(46,109,92,0.28)" }}>
+            <a href={BOOKING_URL || "/contact"} onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="inline-flex items-center gap-2 px-6 rounded-[10px] font-medium" style={{ background: SIGNAL, color: "#FFFFFF", border: "none", cursor: "pointer", minHeight: 48, fontSize: 14.5, boxShadow: "0 8px 20px rgba(46,109,92,0.28)" }}>
               Book a call
               <span aria-hidden="true">→</span>
             </a>
@@ -5234,7 +5234,7 @@ function ContactPage(props) {
                 Pick a time that works. We'll jump on a 30-minute call to learn about your markets, current field performance, and what you'd need us to run. No decks, no pitch. Straight conversation.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
-                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-white inline-flex items-center gap-2 px-7 rounded-full font-medium" style={{ minHeight: 54, fontSize: 15 }}>
+                <a href={BOOKING_URL || "#apply-form-top"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="btn-white inline-flex items-center gap-2 px-7 rounded-[10px] font-medium" style={{ minHeight: 54, fontSize: 15 }}>
                   {BOOKING_URL ? "Pick a time" : "Send a message"}
                   <span aria-hidden="true">→</span>
                 </a>
@@ -5335,7 +5335,7 @@ function ContactPage(props) {
                   </div>
                 )}
 
-                <button type="submit" disabled={pending} className="mt-10 inline-flex items-center gap-2 px-7 rounded-full font-medium transition-all" style={{ background: pending ? SIGNAL_DEEP : SIGNAL, color: "#FFFFFF", border: "none", cursor: pending ? "wait" : "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(30,109,107,0.32)", opacity: pending ? 0.85 : 1 }}>
+                <button type="submit" disabled={pending} className="mt-10 inline-flex items-center gap-2 px-7 rounded-[10px] font-medium transition-all" style={{ background: pending ? SIGNAL_DEEP : SIGNAL, color: "#FFFFFF", border: "none", cursor: pending ? "wait" : "pointer", minHeight: 54, fontSize: 15, boxShadow: "0 12px 28px rgba(30,109,107,0.32)", opacity: pending ? 0.85 : 1 }}>
                   {pending ? (
                     <>
                       <span aria-hidden="true" style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "#FFFFFF", borderRadius: "50%", display: "inline-block", animation: "spin 720ms linear infinite" }} />
