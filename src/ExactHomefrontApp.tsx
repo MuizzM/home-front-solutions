@@ -4083,9 +4083,23 @@ function JobDetailPage(props) {
   );
 }
 
+function onboardingApiOrigin() {
+  var configured = import.meta.env.VITE_ONBOARDING_API_URL && import.meta.env.VITE_ONBOARDING_API_URL.trim();
+  if (configured) return configured.replace(/\/$/, "");
+  if (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")) {
+    return "http://localhost:5001";
+  }
+  return "https://portal.homefrontsolutionsllc.com";
+}
+
+function parseCityState(value) {
+  var match = String(value || "").trim().match(/^(.+?)(?:,|\s)\s*([A-Za-z]{2})$/);
+  return match ? { city: match[1].trim(), state: match[2].toUpperCase() } : null;
+}
+
 function ApplyPage(props) {
   var job = JOBS.find(function(j) { return j.slug === props.slug; });
-  var _f = useState({ fullName: "", phone: "", email: "", cityState: "", age18: "", transport: "", experience: "", why: "", source: "", consent: false });
+  var _f = useState({ fullName: "", phone: "", email: "", cityState: "", zip: "", age18: "", transport: "", experience: "", why: "", source: "", consent: false });
   var form = _f[0]; var setForm = _f[1];
   var _e = useState({}); var errors = _e[0]; var setErrors = _e[1];
   var _p = useState(false); var pending = _p[0]; var setPending = _p[1];
@@ -4115,11 +4129,8 @@ function ApplyPage(props) {
     else if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(emailTrim)) errs.email = "Please enter a valid email (e.g. you@example.com)";
     else if (emailTrim.length > 254) errs.email = "That email address looks too long";
 
-    // City & State — require format "City, ST" (2+ letter state abbreviation or full name)
-    var cityTrim = (form.cityState || "").trim();
-    if (!cityTrim) errs.cityState = "Please enter your city and state";
-    else if (!/^[A-Za-z][A-Za-z\s.'-]{1,}\s*,\s*[A-Za-z]{2,}\.?$/.test(cityTrim)) errs.cityState = 'Use format "City, ST" (e.g. Greensboro, NC)';
-
+    if (!parseCityState(form.cityState)) errs.cityState = "Enter a city and two-letter state, such as Greensboro, NC";
+    if (!/^\d{5}(?:-\d{4})?$/.test((form.zip || "").trim())) errs.zip = "Please enter a valid ZIP code";
     if (!form.age18) errs.age18 = "Please select an option";
     if (!form.transport) errs.transport = "Please select an option";
     if (!form.experience) errs.experience = "Please select your experience level";
@@ -4141,7 +4152,7 @@ function ApplyPage(props) {
       // Scroll to the first error field, not just the top
       setTimeout(function() {
         var firstErrorKey = Object.keys(errs)[0];
-        var fieldMap = { fullName: "apply-name", phone: "apply-phone", email: "apply-email", cityState: "apply-city", age18: "apply-age", transport: "apply-transport", experience: "apply-experience", why: "apply-why", source: "apply-source" };
+        var fieldMap = { fullName: "apply-name", phone: "apply-phone", email: "apply-email", cityState: "apply-city", zip: "apply-zip", age18: "apply-age", transport: "apply-transport", experience: "apply-experience", why: "apply-why", source: "apply-source" };
         var elId = fieldMap[firstErrorKey];
         var el = elId ? document.getElementById(elId) : null;
         if (el) {
@@ -4154,8 +4165,9 @@ function ApplyPage(props) {
       }, 50);
       return;
     }
-    console.log("Validation passed. Submitting to Web3Forms...");
+    console.log("Validation passed. Submitting to the recruiting portal...");
     setPending(true);
+    var location = parseCityState(form.cityState);
 
     // Store for thank-you page display
     var summary = {
@@ -4166,6 +4178,7 @@ function ApplyPage(props) {
       phone: form.phone,
       email: form.email,
       cityState: form.cityState,
+      zip: form.zip,
       age18: form.age18,
       transport: form.transport,
       experience: form.experience,
@@ -4175,44 +4188,31 @@ function ApplyPage(props) {
     };
     try { window.__lastApplication = summary; } catch (err) {}
 
-    // Build a single readable message body for the email
-    var messageBody =
+    var experienceDetails =
       "POSITION: " + job.title + " (" + job.location + ")\n" +
       "TYPE: " + job.type + "\n\n" +
-      "APPLICANT INFORMATION\n" +
-      "Name: " + form.fullName + "\n" +
-      "Phone: " + form.phone + "\n" +
-      "Email: " + form.email + "\n" +
-      "Location: " + form.cityState + "\n\n" +
       "QUALIFICATIONS\n" +
       "Age 18+: " + form.age18 + "\n" +
       "Reliable Transportation: " + form.transport + "\n" +
       "Sales Experience: " + form.experience + "\n\n" +
-      "WHY THIS ROLE\n" + form.why + "\n\n" +
-      "SOURCE: " + form.source + "\n" +
-      "SUBMITTED: " + new Date().toLocaleString();
+      "WHY THIS ROLE\n" + form.why;
 
-    // Web3Forms expects FormData, not JSON. This is the official pattern.
     var formData = new FormData();
-    formData.append("access_key", "126bc0d6-f069-4df8-bea0-b34ac332cc63");
-    formData.append("subject", "New Application: " + job.title + " - " + form.fullName);
-    formData.append("from_name", form.fullName);
+    formData.append("fullName", form.fullName.trim());
+    formData.append("phone", form.phone.trim());
     formData.append("email", form.email);
-    formData.append("message", messageBody);
-    formData.append("position", job.title);
-    formData.append("location", job.location);
-    formData.append("job_type", job.type);
-    formData.append("applicant_name", form.fullName);
-    formData.append("phone", form.phone);
-    formData.append("city_state", form.cityState);
-    formData.append("age_18_plus", form.age18);
-    formData.append("reliable_transportation", form.transport);
-    formData.append("sales_experience", form.experience);
-    formData.append("why_this_role", form.why);
-    formData.append("heard_from", form.source);
-    formData.append("botcheck", "");
+    formData.append("city", location.city);
+    formData.append("state", location.state);
+    formData.append("zip", form.zip.trim());
+    formData.append("hasSalesExperience", String(form.experience !== "none"));
+    formData.append("salesExperienceDetails", experienceDetails);
+    formData.append("preferredCarriers", "Kinetic Fiber");
+    formData.append("referralSource", form.source);
+    formData.append("applicationSource", "careers");
+    formData.append("desiredRole", job.title);
+    formData.append("consent", "true");
 
-    fetch("https://api.web3forms.com/submit", {
+    fetch(onboardingApiOrigin() + "/api/onboarding/apply", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -4229,8 +4229,8 @@ function ApplyPage(props) {
         if (data.ok && data.data && data.data.success) {
           props.go("thank-you", props.slug);
         } else {
-          console.error("Web3Forms error:", data.data);
-          setSubmitError((data.data && data.data.message) || "Web3Forms rejected the submission. Please try again.");
+          console.error("Recruiting portal error:", data.data);
+          setSubmitError((data.data && data.data.error) || "The recruiting portal rejected the submission. Please try again.");
         }
       })
       .catch(function(err) {
@@ -4361,6 +4361,11 @@ function ApplyPage(props) {
               <label htmlFor="apply-city" className="block text-sm font-semibold mb-2" style={{ color: INK }}>City and state</label>
               <input id="apply-city" type="text" value={form.cityState} onChange={update("cityState")} placeholder="e.g. Greensboro, NC" style={inputStyleFor("cityState")} />
               <FieldError error={errors.cityState} />
+            </div>
+            <div>
+              <label htmlFor="apply-zip" className="block text-sm font-semibold mb-2" style={{ color: INK }}>ZIP code</label>
+              <input id="apply-zip" type="text" inputMode="numeric" autoComplete="postal-code" value={form.zip} onChange={update("zip")} placeholder="27401" style={inputStyleFor("zip")} />
+              <FieldError error={errors.zip} />
             </div>
           </div>
         </div>
@@ -4506,7 +4511,7 @@ function ThankYouPage(props) {
         <Eyebrow>Application Received</Eyebrow>
         <h1 className="mb-6" style={{ ...serif, fontSize: "clamp(2rem, 5vw, 3rem)", lineHeight: 1.05 }}>Thank you, {submission ? submission.fullName.split(" ")[0] : "we"}.</h1>
         <p className="text-lg leading-relaxed max-w-md mx-auto" style={{ color: MUTED }}>
-          We have received your application{job ? " for the " + job.title + " position" : ""}. A confirmation has been sent to your email.
+          We have received your application{job ? " for the " + job.title + " position" : ""}. Our recruiting team will contact you if there is a fit.
         </p>
       </div>
 
