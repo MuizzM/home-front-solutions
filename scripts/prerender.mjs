@@ -106,7 +106,7 @@ function getLastmodForPath(routePath) {
 
 function getPriorityForPath(routePath) {
   if (routePath === "/") return "1.0";
-  if (/^\/(careers|insights|contact|what-we-do|service-areas|why-us|partners)$/.test(routePath)) return "0.9";
+  if (/^\/(careers|insights|contact|what-we-do|service-areas|why-us|partners|check-availability|platform)$/.test(routePath)) return "0.9";
   if (/^\/service-areas\/(north-carolina|south-carolina|georgia|virginia)$/.test(routePath)) return "0.9";
   if (/^\/service-areas\//.test(routePath)) return "0.8";
   if (/^\/markets\//.test(routePath)) return "0.8";

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
 import { SERVICE_AREAS, SERVICE_AREA_PAGES, getServiceAreaBySlug, getServiceAreaFaqs } from "./serviceAreas";
+import { US_STATE_PATHS } from "./usMap";
 
 // ── Design tokens (navy + gold system) ───────────────────────────
 var PAPER = "#FFFFFF";            // primary page background (white)
@@ -1478,6 +1479,8 @@ function getSalaryRange(range) {
 function getPathForRoute(name, slug) {
   if (name === "home") return "/";
   if (name === "what-we-do") return "/what-we-do";
+  if (name === "check-availability") return "/check-availability";
+  if (name === "platform") return "/platform";
   if (name === "service-areas") return "/service-areas";
   if (name === "service-area") return "/service-areas/" + slug;
   if (name === "why-us") return "/why-us";
@@ -1824,6 +1827,8 @@ function getRouteFromPath(pathname) {
 
   if (cleanPath === "/") return { name: "home", slug: null };
   if (cleanPath === "/what-we-do") return { name: "what-we-do", slug: null };
+  if (cleanPath === "/check-availability") return { name: "check-availability", slug: null };
+  if (cleanPath === "/platform") return { name: "platform", slug: null };
   if (cleanPath === "/service-areas") return { name: "service-areas", slug: null };
   if (cleanPath.startsWith("/service-areas/")) {
     var serviceSlug = cleanPath.split("/")[2] || "";
@@ -1949,13 +1954,26 @@ function Header(props) {
   var _s = useState(false); var scrolled = _s[0]; var setScrolled = _s[1];
   var onDark = !!(props && props.onDark);
   var currentRoute = props && props.route ? props.route.name : null;
-  // Prevent body scroll while mobile menu is open (better UX)
+  // Prevent body scroll while mobile menu is open (better UX) and flag the
+  // open state on <body> so floating UI (sticky CTA dock) can hide itself.
   useEffect(function() {
     if (typeof document === "undefined") return;
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-    return function() { document.body.style.overflow = ""; };
+    if (open) {
+      document.body.style.overflow = "hidden";
+      document.body.classList.add("nav-open");
+    } else {
+      document.body.style.overflow = "";
+      document.body.classList.remove("nav-open");
+    }
+    return function() { document.body.style.overflow = ""; document.body.classList.remove("nav-open"); };
   }, [open]);
+  // Close the mobile menu if the viewport grows past the mobile breakpoint
+  useEffect(function() {
+    if (typeof window === "undefined") return;
+    function onResize() { if (window.innerWidth >= 1024) setOpen(false); }
+    window.addEventListener("resize", onResize);
+    return function() { window.removeEventListener("resize", onResize); };
+  }, []);
   useEffect(function() {
     if (typeof window === "undefined") return;
     function onScroll() { setScrolled(window.scrollY > 8); }
@@ -1965,6 +1983,8 @@ function Header(props) {
   }, []);
   var nav = [
     { route: "what-we-do", label: "Services" },
+    { route: "platform", label: "Platform" },
+    { route: "check-availability", label: "Availability" },
     { route: "service-areas", label: "Areas" },
     { route: "why-us", label: "Why Us" },
     { route: "partners", label: "Partners" },
@@ -2002,7 +2022,7 @@ function Header(props) {
         <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }} className="flex items-center" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} aria-label="Home Front Solutions home">
           <BrandLockup onDark={onDark} />
         </a>
-        <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-7" aria-label="Primary">
           {nav.map(function(item) {
             var active = currentRoute === item.route;
             return (
@@ -2050,7 +2070,7 @@ function Header(props) {
         </nav>
         <button
           onClick={function() { setOpen(!open); }}
-          className={"burger md:hidden" + (open ? " is-open" : "")}
+          className={"burger lg:hidden" + (open ? " is-open" : "")}
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={open}
           style={{ color: linkColor }}
@@ -2062,7 +2082,7 @@ function Header(props) {
       </div>
 
       {open && (
-        <div className="md:hidden" style={{ background: onDark ? NAVY_DEEP : "#FFFFFF", borderTop: "1px solid " + (onDark ? "rgba(255,255,255,0.08)" : RULE) }}>
+        <div className="lg:hidden mobile-nav-panel" style={{ background: onDark ? NAVY_DEEP : "#FFFFFF", borderTop: "1px solid " + (onDark ? "rgba(255,255,255,0.08)" : RULE), maxHeight: "calc(100dvh - 80px)", overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
           <div className="px-6 py-6 flex flex-col">
             {nav.map(function(item) {
               return (
@@ -2137,6 +2157,7 @@ function Footer(props) {
             <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Quick Links</p>
             <ul className="space-y-0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Services</a></li>
+              <li><a href="/platform" onClick={function(e) { handleNavClick(e, props.go, "platform"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Field Sales CRM</a></li>
               <li><a href="/why-us" onClick={function(e) { handleNavClick(e, props.go, "why-us"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Why Us</a></li>
               <li><a href="/partners" onClick={function(e) { handleNavClick(e, props.go, "partners"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Partners</a></li>
               <li><a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Careers</a></li>
@@ -2277,6 +2298,36 @@ function StatIcon(props) {
 }
 
 // HFS Coach module mini-card icons
+// Small line icons for the dark stats strip
+function StatBarIcon(props) {
+  var paths = {
+    pin: <><path d="M12 21 C 8 16.5, 5 13.2, 5 9.8 A7 7 0 0 1 19 9.8 C 19 13.2, 16 16.5, 12 21 Z"/><circle cx="12" cy="9.8" r="2.6"/></>,
+    grid: <><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></>,
+    map: <><path d="M9 4 L15 6 L21 4 V16 L15 18 L9 16 L3 18 V6 Z"/><path d="M9 4 V16"/><path d="M15 6 V18"/></>,
+    home: <><path d="M4 11 L12 4 L20 11 V20 H14 V14 H10 V20 H4 Z"/></>,
+    star: <><path d="M12 3 L14.7 8.6 L21 9.5 L16.5 13.8 L17.6 20 L12 17 L6.4 20 L7.5 13.8 L3 9.5 L9.3 8.6 Z"/></>,
+    cal: <><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9 H21"/><path d="M8 3 V6"/><path d="M16 3 V6"/></>
+  };
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths[props.kind] || paths.pin}
+    </svg>
+  );
+}
+
+// US coverage map with active states highlighted
+function CoverageMap() {
+  var active = { NC: true, SC: true, GA: true, VA: true };
+  return (
+    <svg viewBox="0 0 960 600" className="hfsx-coverageMap" role="img" aria-label="Map of the United States highlighting active Home Front Solutions markets in North Carolina, South Carolina, Georgia, and Virginia">
+      {US_STATE_PATHS.map(function(st) {
+        var isActive = !!active[st.abbr];
+        return <path key={st.abbr} d={st.d} className={isActive ? "is-active" : ""}><title>{st.abbr}</title></path>;
+      })}
+    </svg>
+  );
+}
+
 function CoachModuleIcon(props) {
   var kind = props.kind;
   var common = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true };
@@ -3171,6 +3222,260 @@ var PROVIDER_MARKET_NAMES = ["Kinetic Fiber", "T-Fiber", "T-Mobile Fiber", "Brig
 var PROVIDER_DISPLAY_NAMES = ["Kinetic Fiber", "T-Mobile Fiber", "Brightspeed", "Ripple Fiber", "Frontier Fiber", "Spectrum"];
 
 // ── Homepage. clean, corporate, fiber-first positioning ─────────────
+var PLATFORM_FAQS = [
+  { q: "Is the platform white-label?", a: "Yes. Dealers and partners can run the portal under their own branding, so reps see your company name and colors while Home Front Solutions powers the system behind it." },
+  { q: "Who is the CRM built for?", a: "Door-to-door and field sales teams in fiber internet, home security, solar, roofing, water filtration, and home services. It is built by a working D2D agency that uses it in live markets every week." },
+  { q: "Can managers see field activity in real time?", a: "Yes. Knocks, conversations, appointments, and closes are logged at the door and visible to leadership immediately, by rep, team, and territory." },
+  { q: "Does it work with an existing sales process?", a: "Yes. Statuses, lead stages, and follow-up workflows are configured around how your team already sells, not the other way around." },
+  { q: "How do we get access?", a: "Book a demo and we will walk your leadership through the portal, map it to your markets, and set up a pilot team." }
+];
+
+function PlatformPage(props) {
+  var features = [
+    { icon: "chart", title: "Territory mapping", body: "Draw, assign, and balance territories by neighborhood so every address is covered once and reps stop overlapping." },
+    { icon: "chat", title: "Door-level knock logging", body: "Every visit is recorded at the address with a status, notes, and the next step, logged while the conversation is fresh." },
+    { icon: "mic", title: "Routes that save hours", body: "Reps follow planned walk and drive routes through assigned areas instead of guessing where to start." },
+    { icon: "trophy", title: "Lead pipeline and follow-ups", body: "Callbacks, warm leads, and appointments stay organized so no interested homeowner gets forgotten." },
+    { icon: "chart", title: "Leaderboards and activity", body: "Managers see knocks, conversations, and closes by rep in real time, without chasing end-of-day texts." },
+    { icon: "trophy", title: "Commission visibility", body: "Reps track production and weekly statements in the same system, which cuts disputes and spreadsheet chases." }
+  ];
+  var industries = [
+    { name: "Fiber and Telecom", body: "Launch-market blitzes, address-level service checks, and install tracking for internet providers and dealers." },
+    { name: "Home Security", body: "In-home consultations, appointment setting, and account documentation for security and smart-home teams." },
+    { name: "Solar", body: "Longer-cycle pipelines with follow-up workflows built for consultative residential solar sales." },
+    { name: "Roofing", body: "Storm-response canvassing with territory assignments and inspection scheduling." },
+    { name: "Water Filtration", body: "Education-first visits with clear disposition tracking for water-quality brands." },
+    { name: "Home Services", body: "Pest, HVAC, and adjacent homeowner offers supported by the same disciplined field workflow." }
+  ];
+  var faqs = PLATFORM_FAQS;
+  return (
+    <>
+      <section className="hfsx-hero">
+        <div className="hfsx-container">
+          <div className="hfsx-heroPanel">
+            <div className="hfsx-heroCopy">
+              <p className="hfsx-kicker hfsx-kicker--light">Field sales software</p>
+              <h1>Every rep. Every door. Every result. One CRM.</h1>
+              <p className="hfsx-lede">
+                The HFS platform is a white-label field sales CRM built by a working door-to-door agency. Territories, knocks, routes, follow-ups, and commissions, in one system your reps actually use.
+              </p>
+              <div className="hfsx-actions">
+                <a
+                  href={BOOKING_URL || "/contact"}
+                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                  target={BOOKING_URL ? "_blank" : undefined}
+                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                  className="hfsx-button hfsx-button--gold"
+                >
+                  Book a Demo
+                </a>
+                <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="hfsx-button hfsx-button--outline">See the Portal</a>
+              </div>
+              <div className="hfsx-trustRow" aria-label="Trust signals">
+                <span><i aria-hidden="true" />White-label ready</span>
+                <span><i aria-hidden="true" />Live in 28+ markets</span>
+                <span><i aria-hidden="true" />Built by a working D2D agency</span>
+              </div>
+            </div>
+            <div className="hfsx-heroMedia hfsx-heroMedia--mock">
+              <CoachMockV2 />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">The platform</p>
+              <h2>Built for the door, not adapted to it.</h2>
+            </div>
+            <p>Most CRMs track emails and calls. This one tracks knocks, conversations, and installs, because that is how field teams actually sell.</p>
+          </div>
+          <div className="hfsx-portalGrid hfsx-portalGrid--wide">
+            {features.map(function(feature, index) {
+              return (
+                <article key={feature.title + index}>
+                  <span><CoachModuleIcon kind={feature.icon} /></span>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.body}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--tint">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Industries</p>
+              <h2>One system across every field category we work.</h2>
+            </div>
+            <p>The same door-level discipline runs every campaign, configured per industry, offer, and market.</p>
+          </div>
+          <div className="pf-industryGrid">
+            {industries.map(function(item) {
+              return (
+                <article key={item.name}>
+                  <h3>{item.name}</h3>
+                  <p>{item.body}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container hfsx-split">
+          <div>
+            <p className="hfsx-kicker">White-label</p>
+            <h2>Your brand on the door and in the software.</h2>
+            <p className="hfsx-bodyLarge">
+              Dealers and partners run the portal under their own branding. Your reps see your company. Your managers see live production. Home Front Solutions powers the system and the field playbook behind it.
+            </p>
+            <div className="hfsx-actions">
+              <a
+                href={BOOKING_URL || "/contact"}
+                onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                target={BOOKING_URL ? "_blank" : undefined}
+                rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                className="hfsx-button hfsx-button--green"
+              >
+                Talk About White-Label
+              </a>
+            </div>
+          </div>
+          <div className="hfsx-careerCard hfsx-careerCard--light">
+            <div><span>Brand</span><strong>Your logo, your colors, your portal</strong></div>
+            <div><span>Data</span><strong>Your territories and leads stay yours</strong></div>
+            <div><span>Team</span><strong>Reps onboard in days, not weeks</strong></div>
+            <div><span>Support</span><strong>Run by an agency that knocks daily</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--tint">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Questions</p>
+              <h2>Platform FAQs</h2>
+            </div>
+            <p>Straight answers about the software, the white-label option, and how teams get started.</p>
+          </div>
+          <div className="pf-faqGrid">
+            {faqs.map(function(item) {
+              return (
+                <article key={item.q}>
+                  <h3>{item.q}</h3>
+                  <p>{item.a}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--career">
+        <div className="hfsx-container hfsx-split">
+          <div>
+            <p className="hfsx-kicker hfsx-kicker--light">Get started</p>
+            <h2>See your market inside the platform.</h2>
+            <p className="hfsx-bodyLarge">
+              Book a demo and we will walk your team through territories, knock logging, and reporting using a live market, not a slide deck.
+            </p>
+            <div className="hfsx-actions">
+              <a
+                href={BOOKING_URL || "/contact"}
+                onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+                target={BOOKING_URL ? "_blank" : undefined}
+                rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                className="hfsx-button hfsx-button--gold"
+              >
+                Book a Demo
+              </a>
+              <a href="tel:3364209379" className="hfsx-button hfsx-button--outline">Call (336) 420-9379</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function CheckAvailabilityPage(props) {
+  return (
+    <>
+      <section className="hfsx-hero">
+        <div className="hfsx-container">
+          <div className="hfsx-heroPanel hfsx-heroPanel--narrow">
+            <div className="hfsx-heroCopy">
+              <p className="hfsx-kicker hfsx-kicker--light">Address-level review</p>
+              <h1>Check fiber availability at your address.</h1>
+              <p className="hfsx-lede">
+                Send your address and our local team will review fiber options in your area across NC, SC, GA, and VA. We reply within one business day.
+              </p>
+              <AddressCheckForm id="check-availability-form" />
+              <div className="hfsx-trustRow" aria-label="Trust signals">
+                <span><i aria-hidden="true" />One business day reply</span>
+                <span><i aria-hidden="true" />No obligation</span>
+                <span><i aria-hidden="true" />Call (336) 420-9379</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="hfsx-providerBar" aria-label="Competitive fiber market familiarity">
+            <div className="hfsx-providerBar__label">
+              <span>Markets we review</span>
+              <small>Local familiarity across major fiber providers.</small>
+            </div>
+            <div className="hfsx-providerMask">
+              <div className="hfsx-providerTrack">
+                {PROVIDER_DISPLAY_NAMES.concat(PROVIDER_DISPLAY_NAMES).map(function(name, index) {
+                  return <strong key={name + "-" + index} aria-hidden={index >= PROVIDER_DISPLAY_NAMES.length ? "true" : undefined}>{name}</strong>;
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">How it works</p>
+              <h2>Three steps. One clear answer.</h2>
+            </div>
+            <p>Availability reviews are handled by people who work these neighborhoods every week, not by a generic coverage map.</p>
+          </div>
+          <div className="hfsx-engineLinkGrid">
+            <a href="/service-areas" onClick={function(e) { handleNavClick(e, props.go, "service-areas"); }}>
+              <span>01</span>
+              <h3>Send your address</h3>
+              <p>Share your street address, city, and state. A phone number helps us reach you with the result.</p>
+            </a>
+            <a href="/service-areas" onClick={function(e) { handleNavClick(e, props.go, "service-areas"); }}>
+              <span>02</span>
+              <h3>We review your market</h3>
+              <p>We check local fiber coverage and current provider options around your address.</p>
+            </a>
+            <a href="tel:3364209379">
+              <span>03</span>
+              <h3>You get a clear answer</h3>
+              <p>We follow up within one business day with what is available and what comes next.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 function HomePage(props) {
   var heroMediaRef = useRef(null);
   useParallax(heroMediaRef, -0.055);
@@ -3217,27 +3522,30 @@ function HomePage(props) {
           <div className="hfsx-heroPanel">
             <div className="hfsx-heroCopy">
               <p className="hfsx-kicker hfsx-kicker--light">Nationwide field sales agency</p>
-              <h1>Fiber availability checked at your address.</h1>
+              <h1>Door-to-door sales teams for fiber internet.</h1>
               <p className="hfsx-lede">
-                Send your address for a fast availability review. For providers and dealers, Home Front Solutions also builds local door-to-door fiber sales teams across NC, SC, GA, and VA.
+                Home Front Solutions builds local field teams that knock, present, and close in fiber launch markets across NC, SC, GA, and VA.
               </p>
-              <AddressCheckForm compact id="home-address-check" />
               <div className="hfsx-actions">
                 <a
-                  href={BOOKING_URL || "/contact"}
-                  onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
-                  target={BOOKING_URL ? "_blank" : undefined}
-                  rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+                  href="/contact"
+                  onClick={function(e) { handleNavClick(e, props.go, "contact"); }}
                   className="hfsx-button hfsx-button--gold"
                 >
-                  Book a Strategy Call
+                  Become a Dealer
                 </a>
-                <a href="tel:3364209379" className="hfsx-button hfsx-button--outline">Call (336) 420-9379</a>
+                <a
+                  href="/check-availability"
+                  onClick={function(e) { handleNavClick(e, props.go, "check-availability"); }}
+                  className="hfsx-button hfsx-button--outline"
+                >
+                  Check Availability
+                </a>
               </div>
               <div className="hfsx-trustRow" aria-label="Trust signals">
                 <span><i aria-hidden="true" />High Point, NC headquarters</span>
                 <span><i aria-hidden="true" />28+ markets supported</span>
-                <span><i aria-hidden="true" />Address-level review</span>
+                <span><i aria-hidden="true" />Call (336) 420-9379</span>
               </div>
             </div>
             <div className="hfsx-heroMedia" ref={heroMediaRef}>
@@ -3266,15 +3574,52 @@ function HomePage(props) {
             </div>
           </div>
 
-          <div className="hfsx-stats">
-            {stats.map(function(item) {
+          <div className="hfsx-statBar" aria-label="Company statistics">
+            {[
+              { icon: "pin", value: "28+", label: "Markets launched" },
+              { icon: "grid", value: "6", label: "Service categories" },
+              { icon: "map", value: "4", label: "Active states" },
+              { icon: "home", value: "D2D", label: "Door-to-door first" },
+              { icon: "star", value: "$150K+", label: "Top first-year rep" },
+              { icon: "cal", value: "5 days", label: "Paid certification" }
+            ].map(function(item) {
               return (
-                <div key={item.label}>
+                <div key={item.label} className="hfsx-statBar__item">
+                  <StatBarIcon kind={item.icon} />
                   <strong>{item.value}</strong>
                   <span>{item.label}</span>
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Distribution channels</p>
+              <h2>Three proven paths to scale.</h2>
+            </div>
+            <p>Direct customer acquisition through door-to-door field teams, a dealer program built for long-term partners, and the software that keeps every door on record.</p>
+          </div>
+          <div className="hfsx-engineLinkGrid">
+            <a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}>
+              <span>01</span>
+              <h3>Door-to-door sales</h3>
+              <p>Trained, badged reps acquire customers at the neighborhood level with real-time market feedback.</p>
+            </a>
+            <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }}>
+              <span>02</span>
+              <h3>Dealer program</h3>
+              <p>Launch or grow your sales organization with provider programs, routes, and infrastructure already in place.</p>
+            </a>
+            <a href="/platform" onClick={function(e) { handleNavClick(e, props.go, "platform"); }}>
+              <span>03</span>
+              <h3>Field sales CRM</h3>
+              <p>Territories, knock logging, follow-ups, and commissions in one white-label platform your reps actually use.</p>
+            </a>
           </div>
         </div>
       </section>
@@ -3393,6 +3738,34 @@ function HomePage(props) {
       </section>
 
       <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container hfsx-split hfsx-split--dealer">
+          <div className="hfsx-dealerMedia">
+            <img src="/rep-knock-1-800.webp" alt="Home Front Solutions field representative working an assigned neighborhood route" width="800" height="600" loading="lazy" decoding="async" />
+            <div className="hfsx-dealerStat">
+              <strong>28+</strong>
+              <span>Markets launched</span>
+            </div>
+          </div>
+          <div>
+            <p className="hfsx-kicker">For sales organizations</p>
+            <h2>Launch and scale under real provider programs.</h2>
+            <p className="hfsx-bodyLarge">
+              Start or grow your sales organization with access to infrastructure, markets, and systems built for high performance. We bring the programs and the playbook. You bring the execution.
+            </p>
+            <ul className="hfsx-checkList">
+              <li>Access to fiber and home-service provider programs</li>
+              <li>Market-ready routes, training, and field systems</li>
+              <li>Performance tracking and accountability through the HFS portal</li>
+              <li>Scalable territory deployment across NC, SC, GA, and VA</li>
+            </ul>
+            <div className="hfsx-actions">
+              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-button hfsx-button--green">Become a Dealer</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
         <div className="hfsx-container hfsx-split hfsx-split--portal">
           <div>
             <p className="hfsx-kicker">Field technology</p>
@@ -3400,7 +3773,10 @@ function HomePage(props) {
             <p className="hfsx-bodyLarge">
               Our reps use a dedicated portal for territories, knock logging, follow-ups, and commission visibility. It keeps daily execution consistent across markets.
             </p>
-            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="hfsx-button hfsx-button--green">Open the Rep Portal</a>
+            <div className="hfsx-actions">
+              <a href="/platform" onClick={function(e) { handleNavClick(e, props.go, "platform"); }} className="hfsx-button hfsx-button--green">Explore the Platform</a>
+              <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="hfsx-button hfsx-button--outlineDark">Rep Login</a>
+            </div>
           </div>
           <div className="hfsx-portalGrid">
             {portalFeatures.map(function(feature) {
@@ -3433,6 +3809,48 @@ function HomePage(props) {
             <div><span>Year 1</span><strong>Field Rep · $80K–$150K+</strong></div>
             <div><span>Year 2</span><strong>Team Lead · $150K–$250K</strong></div>
             <div><span>Year 3+</span><strong>Area Manager · $250K+</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Where we work</p>
+              <h2>Our footprint.</h2>
+            </div>
+            <p>Active field operations across the Southeast with nationwide recruiting for new market launches.</p>
+          </div>
+          <div className="hfsx-footprint">
+            <div className="hfsx-footprint__map">
+              <CoverageMap />
+              <div className="hfsx-footprint__legend">
+                <span><i className="dot dot--active" aria-hidden="true" />Active states</span>
+                <span><i className="dot dot--open" aria-hidden="true" />Nationwide recruiting</span>
+              </div>
+            </div>
+            <div className="hfsx-footprint__carriers">
+              <h3>Competitive market familiarity</h3>
+              <p>Field teams trained to sell against and alongside the major fiber and internet brands in every market we enter.</p>
+              <div className="hfsx-carrierGrid">
+                {[
+                  { name: "Kinetic Fiber", tone: "#7a9b1e" },
+                  { name: "T-Mobile Fiber", tone: "#e20074" },
+                  { name: "Brightspeed", tone: "#0057b8" },
+                  { name: "Ripple Fiber", tone: "#0e7c66" },
+                  { name: "Frontier Fiber", tone: "#d42b1e" },
+                  { name: "Spectrum", tone: "#0082d0" }
+                ].map(function(item) {
+                  return (
+                    <div key={item.name} className="hfsx-carrierTile" style={{ "--tile-tone": item.tone }}>
+                      <i aria-hidden="true" />
+                      <strong>{item.name}</strong>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -3484,19 +3902,19 @@ function HomePage(props) {
         <div className="hfsx-container">
           <div className="hfsx-finalPanel">
             <div>
-              <p className="hfsx-kicker hfsx-kicker--light">Next step</p>
-              <h2>Ready to build a stronger field channel?</h2>
-              <p>Talk with us about a pilot market, hiring plan, or upcoming fiber launch.</p>
+              <p className="hfsx-kicker hfsx-kicker--light">Ready to start?</p>
+              <h2>Launch faster. Scale bigger.</h2>
+              <p>Whether you are a provider looking for a distribution partner or a sales organization ready to launch, there is a path for you here.</p>
             </div>
             <div className="hfsx-actions">
+              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-button hfsx-button--gold">Become a Dealer</a>
               <a
                 href={BOOKING_URL || "/contact"}
                 onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
                 target={BOOKING_URL ? "_blank" : undefined}
                 rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-                className="hfsx-button hfsx-button--gold"
-              >Book a Discovery Call</a>
-              <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-button hfsx-button--outline">Contact Us</a>
+                className="hfsx-button hfsx-button--outline"
+              >Provider Inquiries</a>
             </div>
           </div>
         </div>
@@ -5746,7 +6164,9 @@ function buildJobPostingSchema(job, siteOrigin, options) {
 function buildSeoPayload(route) {
   var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
   var titles = {
-    home: "Fiber Availability Check at Your Address | NC, SC, GA, VA",
+    home: "Door-to-Door Fiber Sales Teams and Dealer Program | Home Front Solutions",
+    "check-availability": "Check Fiber Availability at Your Address | Home Front Solutions",
+    "platform": "Field Sales CRM for Door-to-Door Teams | HFS Platform",
     "what-we-do": "Nationwide D2D Customer Acquisition | Home Front Solutions",
     "service-areas": "Fiber Sales Service Areas in NC, SC, GA, and VA | HFS",
     "why-us": "Why Home Front Solutions | Nationwide Field Sales Agency",
@@ -5764,7 +6184,9 @@ function buildSeoPayload(route) {
   };
 
   var descriptions = {
-    home: "Check fiber availability at your address and explore door-to-door fiber sales support across North Carolina, South Carolina, Georgia, and Virginia. Provider-aware local teams for Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum markets.",
+    home: "Become a dealer with Home Front Solutions. Door-to-door fiber sales teams, dealer programs, and a white-label field sales CRM across North Carolina, South Carolina, Georgia, and Virginia. Provider-aware local teams for Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum markets.",
+    "platform": "A white-label field sales CRM built by a working door-to-door agency. Territory mapping, knock logging, routes, leaderboards, follow-ups, and commission visibility for fiber, security, solar, roofing, and home-service teams.",
+    "check-availability": "Check fiber availability at your address. Fast address-level review across NC, SC, GA, and VA markets, including Kinetic Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum service areas.",
     careers: "Door-to-door sales jobs nationwide. Home Front Solutions hires field reps across the United States for fiber, security, solar, and home services. Paid certification, weekly commission, and a clear path to team lead and area manager.",
     market: "Local sales jobs with a national D2D agency. Explore city-specific recruiting pages for Home Front Solutions in North Carolina and across our expanding U.S. markets.",
     insights: "Resources on door-to-door sales: pay structure, 1099 taxes, first 30 days, industry trends, fiber ISP coverage, and the path from new rep to area manager.",
@@ -6009,6 +6431,32 @@ function buildSeoPayload(route) {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       mainEntity: getServiceAreaFaqs(currentServiceArea).map(function(item) {
+        return {
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a }
+        };
+      })
+    });
+  }
+
+  if (route.name === "platform") {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: "HFS Field Sales Platform",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web, iOS, Android",
+      url: pageUrl,
+      description: descriptions.platform,
+      provider: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
+      featureList: "Territory mapping, door-level knock logging, route planning, lead pipeline, follow-up workflow, leaderboards, commission visibility, white-label branding",
+      areaServed: { "@type": "Country", name: "United States" }
+    });
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: PLATFORM_FAQS.map(function(item) {
         return {
           "@type": "Question",
           name: item.q,
@@ -6311,6 +6759,8 @@ export function getPrerenderPaths() {
     .concat([
       "/",
       "/what-we-do",
+      "/check-availability",
+      "/platform",
       "/service-areas",
       "/why-us",
       "/partners",
@@ -6571,6 +7021,8 @@ export default function App(props) {
       <main id="main" key={route.name + "-" + (route.slug || "_")} className="page-enter" style={{ flex: 1, background: PAPER, outline: "none" }}>
         {route.name === "home" && <HomePage go={go} />}
         {route.name === "what-we-do" && <WhatWeDoPage go={go} />}
+        {route.name === "check-availability" && <CheckAvailabilityPage go={go} />}
+        {route.name === "platform" && <PlatformPage go={go} />}
         {route.name === "why-us" && <WhyUsPage go={go} />}
         {route.name === "partners" && <PartnersPage go={go} />}
         {route.name === "careers" && <CareersIndexPage go={go} />}
