@@ -106,7 +106,9 @@ function getLastmodForPath(routePath) {
 
 function getPriorityForPath(routePath) {
   if (routePath === "/") return "1.0";
-  if (/^\/(careers|insights|contact|what-we-do|why-us|partners)$/.test(routePath)) return "0.9";
+  if (/^\/(careers|insights|contact|what-we-do|service-areas|why-us|partners)$/.test(routePath)) return "0.9";
+  if (/^\/service-areas\/(north-carolina|south-carolina|georgia|virginia)$/.test(routePath)) return "0.9";
+  if (/^\/service-areas\//.test(routePath)) return "0.8";
   if (/^\/markets\//.test(routePath)) return "0.8";
   if (/^\/careers\//.test(routePath) && !/\/apply/.test(routePath)) return "0.8";
   if (/^\/insights\//.test(routePath)) return "0.7";
@@ -117,7 +119,7 @@ function getChangefreqForPath(routePath) {
   if (routePath === "/") return "weekly";
   if (/^\/(careers|insights)$/.test(routePath)) return "weekly";
   if (/^\/careers\//.test(routePath)) return "weekly";
-  if (/^\/markets\//.test(routePath)) return "monthly";
+  if (/^\/markets\//.test(routePath) || /^\/service-areas\//.test(routePath)) return "monthly";
   if (/^\/insights\//.test(routePath)) return "monthly";
   return "monthly";
 }

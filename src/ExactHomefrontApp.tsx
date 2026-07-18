@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from "react";
+import { SERVICE_AREAS, SERVICE_AREA_PAGES, getServiceAreaBySlug, getServiceAreaFaqs } from "./serviceAreas";
 
 // ── Design tokens (navy + gold system) ───────────────────────────
 var PAPER = "#FFFFFF";            // primary page background (white)
@@ -32,7 +33,7 @@ var BLUE_LIGHT = "#F1FBF8";       // light panel bg (HFS Coach section)
 var CLAY = "#C25A3D";
 var FOREST = SIGNAL;
 var FOREST_SOFT = SIGNAL_SOFT;
-var LOGO = "/logo-transparent.png";
+var LOGO = "/logo-transparent-140.webp";
 
 // ── Rep-portal API helpers ─────────────────────────────────────────
 // Every protected call MUST go through apiFetch so the Bearer token
@@ -1477,6 +1478,8 @@ function getSalaryRange(range) {
 function getPathForRoute(name, slug) {
   if (name === "home") return "/";
   if (name === "what-we-do") return "/what-we-do";
+  if (name === "service-areas") return "/service-areas";
+  if (name === "service-area") return "/service-areas/" + slug;
   if (name === "why-us") return "/why-us";
   if (name === "partners") return "/partners";
   if (name === "careers") return "/careers";
@@ -1821,6 +1824,11 @@ function getRouteFromPath(pathname) {
 
   if (cleanPath === "/") return { name: "home", slug: null };
   if (cleanPath === "/what-we-do") return { name: "what-we-do", slug: null };
+  if (cleanPath === "/service-areas") return { name: "service-areas", slug: null };
+  if (cleanPath.startsWith("/service-areas/")) {
+    var serviceSlug = cleanPath.split("/")[2] || "";
+    if (getServiceAreaBySlug(serviceSlug)) return { name: "service-area", slug: serviceSlug };
+  }
   if (cleanPath === "/why-us") return { name: "why-us", slug: null };
   if (cleanPath === "/partners") return { name: "partners", slug: null };
   if (cleanPath === "/careers") return { name: "careers", slug: null };
@@ -1906,18 +1914,17 @@ function MobileStickyCTA(props) {
   return (
     <div className="sticky-cta" data-visible={shown ? "true" : "false"} aria-hidden={!shown}>
       <a
-        href={BOOKING_URL || "/contact"}
-        onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
-        target={BOOKING_URL ? "_blank" : undefined}
-        rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+        href="tel:3364209379"
         className="sticky-cta__btn sticky-cta__btn--ghost"
+        tabIndex={shown ? 0 : -1}
       >
-        Book a Call
+        Call Now
       </a>
       <a
         href="/careers"
         onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
         className="sticky-cta__btn sticky-cta__btn--gold"
+        tabIndex={shown ? 0 : -1}
       >
         Join the Team
         <span aria-hidden="true">→</span>
@@ -1926,34 +1933,13 @@ function MobileStickyCTA(props) {
   );
 }
 
-// Brand lockup. uses the real Home Front Solutions logo artwork.
-// On dark surfaces we use a dark-theme PNG (cream ink, transparent bg) that blends into navy.
-// On light surfaces we use the full-color PNG directly.
+// Brand lockup. Prefer the real brand mark unless a small inline lockup is supplied.
 function BrandLockup(props) {
   var onDark = !!(props && props.onDark);
-  var small = !!(props && props.small);
-  var size = small ? 56 : 70;
-  var src = onDark ? "/logo-dark-theme.png" : "/logo-transparent.png";
+  var src = onDark ? "/logo-dark-theme-140.webp" : "/logo-transparent-140.webp";
   return (
-    <span
-      className="inline-flex items-center"
-      style={{ padding: 0, lineHeight: 0, transition: "transform 300ms var(--ease-spring), filter 300ms var(--ease-out-smooth)" }}
-      onMouseEnter={function(e) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.filter = onDark ? "drop-shadow(0 0 18px rgba(245,185,66,0.25))" : "none"; }}
-      onMouseLeave={function(e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.filter = "none"; }}
-    >
-      <img
-        src={src}
-        alt="Home Front Solutions"
-        width={size}
-        height={size}
-        style={{
-          height: size,
-          width: "auto",
-          display: "block",
-          objectFit: "contain",
-          filter: onDark ? "drop-shadow(0 2px 8px rgba(0,0,0,0.4))" : "none"
-        }}
-      />
+    <span className="inline-flex items-center" style={{ padding: 0, lineHeight: 0, transition: "transform 300ms var(--ease-spring), filter 300ms var(--ease-out-smooth)" }}>
+      <img src={src} alt="Home Front Solutions" width="140" height="171" style={{ height: "58px", width: "auto", display: "block", objectFit: "contain" }} />
     </span>
   );
 }
@@ -1979,6 +1965,7 @@ function Header(props) {
   }, []);
   var nav = [
     { route: "what-we-do", label: "Services" },
+    { route: "service-areas", label: "Areas" },
     { route: "why-us", label: "Why Us" },
     { route: "partners", label: "Partners" },
     { route: "careers", label: "Careers" },
@@ -2162,6 +2149,7 @@ function Footer(props) {
           <div className="md:col-span-3">
             <p style={{ fontSize: 12, color: "#9BA7B2", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 14, fontWeight: 600 }}>Services</p>
             <ul className="space-y-0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li><a href="/service-areas" onClick={function(e) { handleNavClick(e, props.go, "service-areas"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Service Areas</a></li>
               <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Fiber Internet Sales</a></li>
               <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Home Security</a></li>
               <li><a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} style={linkStyle} onMouseEnter={linkHoverIn} onMouseLeave={linkHoverOut}>Solar</a></li>
@@ -2913,12 +2901,279 @@ function FaqRow(props) {
   );
 }
 
+// ── Address-level conversion and local service-area pages ────────────
+function AddressCheckForm(props) {
+  var _a = useState(""); var address = _a[0]; var setAddress = _a[1];
+  var _c = useState(props.city || ""); var city = _c[0]; var setCity = _c[1];
+  var _s = useState(props.stateAbbr || "NC"); var state = _s[0]; var setState = _s[1];
+  var _p = useState(""); var phone = _p[0]; var setPhone = _p[1];
+  var _b = useState(""); var botcheck = _b[0]; var setBotcheck = _b[1];
+  var _t = useState("idle"); var status = _t[0]; var setStatus = _t[1];
+  var _m = useState(""); var message = _m[0]; var setMessage = _m[1];
+  var compact = !!props.compact;
+  var formId = props.id || "address-check";
+  var place = props.city ? props.city + ", " + (props.stateAbbr || state) : (props.state || "your market");
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    if (status === "submitting") return;
+    setStatus("submitting");
+    setMessage("");
+    try {
+      var res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: "954081c9-31f2-41e5-aa15-b69baaf187eb",
+          subject: "Fiber availability request. " + place,
+          from_name: "HFS Address Check",
+          address: address,
+          city: city,
+          state: state,
+          phone: phone,
+          page: typeof window !== "undefined" ? window.location.href : "",
+          botcheck: botcheck
+        })
+      });
+      var data = await res.json();
+      if (!data.success) throw new Error(data.message || "Submission failed");
+      setStatus("success");
+      setMessage("Request received. Our team will review the address and follow up with next steps.");
+    } catch (err) {
+      setStatus("error");
+      setMessage("We could not send the request. Please call (336) 420-9379 or use the contact form.");
+    }
+  }
+
+  return (
+    <form id={formId} className={"hfsx-addressForm" + (compact ? " hfsx-addressForm--compact" : "")} onSubmit={onSubmit} aria-label="Request a fiber availability check">
+      <div className="hfsx-addressForm__grid">
+        <div className="hfsx-field hfsx-field--address">
+          <label htmlFor={formId + "-address"}>Street address</label>
+          <input id={formId + "-address"} name="address" type="text" autoComplete="street-address" placeholder="123 Main St" value={address} onChange={function(e) { setAddress(e.target.value); }} required />
+        </div>
+        <div className="hfsx-field">
+          <label htmlFor={formId + "-city"}>City</label>
+          <input id={formId + "-city"} name="city" type="text" autoComplete="address-level2" placeholder="City" value={city} onChange={function(e) { setCity(e.target.value); }} required />
+        </div>
+        <div className="hfsx-field hfsx-field--state">
+          <label htmlFor={formId + "-state"}>State</label>
+          <select id={formId + "-state"} name="state" value={state} onChange={function(e) { setState(e.target.value); }} required>
+            <option value="NC">NC</option>
+            <option value="SC">SC</option>
+            <option value="GA">GA</option>
+            <option value="VA">VA</option>
+          </select>
+        </div>
+        <div className="hfsx-field">
+          <label htmlFor={formId + "-phone"}>Phone</label>
+          <input id={formId + "-phone"} name="phone" type="tel" autoComplete="tel" placeholder="(555) 123-4567" value={phone} onChange={function(e) { setPhone(e.target.value); }} required />
+        </div>
+        <input className="hfsx-botcheck" type="text" name="botcheck" value={botcheck} onChange={function(e) { setBotcheck(e.target.value); }} tabIndex="-1" autoComplete="off" aria-label="Leave this field blank" />
+        <button className="hfsx-button hfsx-button--gold hfsx-addressForm__submit" type="submit" disabled={status === "submitting"}>
+          {status === "submitting" ? "Sending" : "Check availability"}
+        </button>
+      </div>
+      <p className="hfsx-addressForm__note">Availability varies by provider and exact address. We will confirm before making any recommendation.</p>
+      <div className="hfsx-formStatus" aria-live="polite">
+        {message && <p data-status={status}>{message}</p>}
+        {status === "success" && (
+          <div className="hfsx-formStatus__actions">
+            <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="hfsx-button hfsx-button--green">Book a strategy call</a>
+            <a href="tel:3364209379" className="hfsx-button hfsx-button--outlineDark">Call (336) 420-9379</a>
+          </div>
+        )}
+      </div>
+    </form>
+  );
+}
+
+function ServiceAreasIndexPage(props) {
+  return (
+    <>
+      <section className="sa-hero">
+        <div className="hfsx-container">
+          <nav className="sa-breadcrumb" aria-label="Breadcrumb"><a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }}>Home</a><span>Service areas</span></nav>
+          <p className="hfsx-kicker">NC · SC · GA · VA</p>
+          <h1>Fiber sales service areas across the Southeast.</h1>
+          <p>Explore state and city pages built for fiber availability checks, new-construction outreach, and door-to-door customer acquisition.</p>
+          <div className="hfsx-actions">
+            <a href="tel:3364209379" className="hfsx-button hfsx-button--gold">Call (336) 420-9379</a>
+            <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-button hfsx-button--outlineDark">Contact our team</a>
+          </div>
+        </div>
+      </section>
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container sa-stateGrid">
+          {SERVICE_AREAS.map(function(area) {
+            return (
+              <article key={area.slug} className="sa-stateCard">
+                <span>{area.stateAbbr}</span>
+                <h2>{area.state}</h2>
+                <p>{area.intro}</p>
+                <a href={getPathForRoute("service-area", area.slug)} onClick={function(e) { handleNavClick(e, props.go, "service-area", area.slug); }}>Explore {area.stateAbbr}</a>
+                <div>
+                  {area.cities.slice(0, 6).map(function(city) {
+                    return <a key={city.slug} href={getPathForRoute("service-area", city.slug)} onClick={function(e) { handleNavClick(e, props.go, "service-area", city.slug); }}>{city.city}</a>;
+                  })}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ServiceAreaPage(props) {
+  var area = getServiceAreaBySlug(props.slug) || SERVICE_AREA_PAGES[0];
+  var faqs = getServiceAreaFaqs(area);
+  var isState = area.type === "state";
+  var place = isState ? area.state : area.city + ", " + area.stateAbbr;
+  var parentState = isState ? area : SERVICE_AREAS.find(function(item) { return item.slug === area.stateSlug; });
+  var nearbyLinks = isState ? area.cities : (parentState ? parentState.cities.filter(function(city) { return city.slug !== area.slug; }).slice(0, 6) : []);
+  var mapQuery = encodeURIComponent(place);
+  return (
+    <>
+      <section className="sa-hero">
+        <div className="hfsx-container">
+          <nav className="sa-breadcrumb" aria-label="Breadcrumb">
+            <a href="/" onClick={function(e) { handleNavClick(e, props.go, "home"); }}>Home</a>
+            <a href="/service-areas" onClick={function(e) { handleNavClick(e, props.go, "service-areas"); }}>Service areas</a>
+            {!isState && parentState && <a href={getPathForRoute("service-area", parentState.slug)} onClick={function(e) { handleNavClick(e, props.go, "service-area", parentState.slug); }}>{parentState.state}</a>}
+            <span>{isState ? area.state : area.city}</span>
+          </nav>
+          <p className="hfsx-kicker">{isState ? "State service area" : place}</p>
+          <h1>{area.headline}</h1>
+          <p>{area.intro}</p>
+          <AddressCheckForm id={"address-check-" + area.slug} city={isState ? "" : area.city} stateAbbr={area.stateAbbr} state={area.state} />
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container sa-localGrid">
+          <div>
+            <p className="hfsx-kicker">Local market context</p>
+            <h2>{isState ? "Built for " + area.state + " growth corridors." : "Local fiber sales support for " + area.city + "."}</h2>
+            <p className="hfsx-bodyLarge">{area.localDetail}</p>
+            <p className="hfsx-body">{area.growthAngle}</p>
+          </div>
+          <aside className="sa-trustCard" aria-label="Service guarantees">
+            <h2>What you can expect</h2>
+            <ul>
+              <li>Address-level review before recommendations</li>
+              <li>Clear routing and daily field reporting</li>
+              <li>Provider-aware sales training</li>
+              <li>Direct phone support at (336) 420-9379</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--tint">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Coverage and use cases</p>
+              <h2>{isState ? "Where we focus in " + area.stateAbbr + "." : "Where we focus around " + area.city + "."}</h2>
+            </div>
+            <p>Availability depends on the provider and exact address. These areas guide outreach, routing, and market review.</p>
+          </div>
+          <div className="sa-coverageCloud">
+            {area.coverage.map(function(item) { return <span key={item}>{item}</span>; })}
+          </div>
+          <div className="sa-useCases">
+            <article><h3>Fiber availability checks</h3><p>Address-level review for homeowners, providers, dealers, and launch teams.</p></article>
+            <article><h3>New construction fiber</h3><p>Outreach and follow-up for homes where fiber service is becoming available.</p></article>
+            <article><h3>Competitive provider markets</h3><p>Sales support where customers compare fiber, cable, fixed wireless, and bundled services.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Related playbooks</p>
+              <h2>Build topical authority before the first door.</h2>
+            </div>
+            <p>Use these field guides to plan staffing, launch timing, and neighborhood outreach for the market.</p>
+          </div>
+          <div className="sa-useCases">
+            <article><h3>New Fiber Market 30-60-90</h3><p>A practical launch plan for the first ninety days of a fiber market.</p><a href="/insights/new-fiber-market-30-60-90" onClick={function(e) { handleNavClick(e, props.go, "article", "new-fiber-market-30-60-90"); }}>Read the playbook</a></article>
+            <article><h3>Fiber Launch Staffing Plan</h3><p>Estimate the rep count, ramp time, and field leadership needed for launch.</p><a href="/insights/fiber-launch-sales-staffing-plan" onClick={function(e) { handleNavClick(e, props.go, "article", "fiber-launch-sales-staffing-plan"); }}>Plan the team</a></article>
+            <article><h3>Knocking, Not Bugging</h3><p>A professional approach to door-to-door outreach that respects the homeowner.</p><a href="/insights/knocking-not-bugging-d2d-playbook" onClick={function(e) { handleNavClick(e, props.go, "article", "knocking-not-bugging-d2d-playbook"); }}>Read the guide</a></article>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container sa-mapGrid">
+          <div>
+            <p className="hfsx-kicker">Map and next steps</p>
+            <h2>{place}</h2>
+            <p className="hfsx-bodyLarge">Use the map for market context, then request an address-level availability review. We confirm serviceability before making a recommendation.</p>
+            <div className="hfsx-actions">
+              <a href="tel:3364209379" className="hfsx-button hfsx-button--gold">Call (336) 420-9379</a>
+              <a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }} className="hfsx-button hfsx-button--outlineDark">See our services</a>
+            </div>
+          </div>
+          <div className="sa-mapCard">
+            <iframe title={"Map of " + place} src={"https://www.google.com/maps?q=" + mapQuery + "&output=embed"} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--tint">
+        <div className="hfsx-container hfsx-container--narrow">
+          <div className="hfsx-sectionHead hfsx-sectionHead--center">
+            <div>
+              <p className="hfsx-kicker">Local FAQ</p>
+              <h2>{isState ? area.state + " fiber sales questions." : area.city + " fiber sales questions."}</h2>
+            </div>
+          </div>
+          <div className="hfsx-faqGrid hfsx-faqGrid--single">
+            {faqs.map(function(faq) { return <FaqRow2 key={faq.q} q={faq.q} a={faq.a} />; })}
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-final">
+        <div className="hfsx-container">
+          <div className="hfsx-finalPanel">
+            <div>
+              <p className="hfsx-kicker hfsx-kicker--light">Next step</p>
+              <h2>Check availability or plan a {isState ? area.stateAbbr : area.city} field campaign.</h2>
+              <p>Send the address, call our team, or book a strategy call for a new market.</p>
+            </div>
+            <div className="hfsx-actions">
+              <a href="tel:3364209379" className="hfsx-button hfsx-button--gold">Call now</a>
+              <a href={BOOKING_URL || "/contact"} target={BOOKING_URL ? "_blank" : undefined} rel={BOOKING_URL ? "noopener noreferrer" : undefined} className="hfsx-button hfsx-button--outline">Book a call</a>
+            </div>
+          </div>
+          {nearbyLinks.length > 0 && (
+            <div className="sa-relatedLinks" aria-label="Nearby service areas">
+              <span>Nearby service areas</span>
+              {nearbyLinks.map(function(city) {
+                return <a key={city.slug} href={getPathForRoute("service-area", city.slug)} onClick={function(e) { handleNavClick(e, props.go, "service-area", city.slug); }}>{city.city}</a>;
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}
+
 // ── Shared provider-market names for visible copy and schema ────────
 var PROVIDER_MARKET_NAMES = ["Kinetic Fiber", "T-Fiber", "T-Mobile Fiber", "Brightspeed", "Ripple Fiber", "Frontier Fiber", "Spectrum"];
 var PROVIDER_DISPLAY_NAMES = ["Kinetic Fiber", "T-Mobile Fiber", "Brightspeed", "Ripple Fiber", "Frontier Fiber", "Spectrum"];
 
 // ── Homepage. clean, corporate, fiber-first positioning ─────────────
 function HomePage(props) {
+  var heroMediaRef = useRef(null);
+  useParallax(heroMediaRef, -0.055);
   var providerExperience = PROVIDER_DISPLAY_NAMES;
   var services = [
     { kind: "fiber",    label: "Fiber Internet",   desc: "Door-to-door customer acquisition for fiber internet providers and launch markets." },
@@ -2962,10 +3217,11 @@ function HomePage(props) {
           <div className="hfsx-heroPanel">
             <div className="hfsx-heroCopy">
               <p className="hfsx-kicker hfsx-kicker--light">Nationwide field sales agency</p>
-              <h1>Door-to-door sales teams for fiber internet.</h1>
+              <h1>Fiber availability checked at your address.</h1>
               <p className="hfsx-lede">
-                We help internet and home service companies win customers in the neighborhoods they serve. Our local reps plan routes, knock doors, follow up, and report every result.
+                Send your address for a fast availability review. For providers and dealers, Home Front Solutions also builds local door-to-door fiber sales teams across NC, SC, GA, and VA.
               </p>
+              <AddressCheckForm compact id="home-address-check" />
               <div className="hfsx-actions">
                 <a
                   href={BOOKING_URL || "/contact"}
@@ -2976,17 +3232,19 @@ function HomePage(props) {
                 >
                   Book a Strategy Call
                 </a>
-                <a
-                  href="/careers"
-                  onClick={function(e) { handleNavClick(e, props.go, "careers"); }}
-                  className="hfsx-button hfsx-button--outline"
-                >
-                  View Sales Careers
-                </a>
+                <a href="tel:3364209379" className="hfsx-button hfsx-button--outline">Call (336) 420-9379</a>
+              </div>
+              <div className="hfsx-trustRow" aria-label="Trust signals">
+                <span><i aria-hidden="true" />High Point, NC headquarters</span>
+                <span><i aria-hidden="true" />28+ markets supported</span>
+                <span><i aria-hidden="true" />Address-level review</span>
               </div>
             </div>
-            <div className="hfsx-heroMedia">
-              <img src="/rep-knock-1.jpg" alt="Home Front Solutions field representative at a customer's door" loading="eager" decoding="async" />
+            <div className="hfsx-heroMedia" ref={heroMediaRef}>
+              <picture>
+                <source srcSet="/rep-knock-1-800.webp 800w, /rep-knock-1.webp 1448w" sizes="(max-width: 1020px) 100vw, 420px" type="image/webp" />
+                <img src="/rep-knock-1.jpg" alt="Home Front Solutions field representative checking fiber internet availability at a North Carolina home" width="1448" height="1086" loading="eager" fetchpriority="high" decoding="async" />
+              </picture>
               <div className="hfsx-heroCard">
                 <span>Field execution</span>
                 <strong>Route. Knock. Report. Install.</strong>
@@ -3183,21 +3441,25 @@ function HomePage(props) {
         <div className="hfsx-container">
           <div className="hfsx-sectionHead">
             <div>
-              <p className="hfsx-kicker">Where we hire</p>
-              <h2>Local teams. National standards.</h2>
+              <p className="hfsx-kicker">Service areas</p>
+              <h2>Fiber sales support across NC, SC, GA, and VA.</h2>
             </div>
-            <p>Explore active hiring markets and open field-sales roles across our growing footprint.</p>
+            <p>Explore local pages for address checks, new-construction fiber outreach, and door-to-door sales support in major Southeast markets.</p>
           </div>
-          <div className="hfsx-cityList">
-            {cities.map(function(city) {
+          <div className="sa-stateGrid">
+            {SERVICE_AREAS.map(function(area) {
               return (
-                <a
-                  key={city.slug}
-                  href={getPathForRoute("market", city.slug)}
-                  onClick={function(e) { handleNavClick(e, props.go, "market", city.slug); }}
-                >
-                  {city.region}
-                </a>
+                <article key={area.slug} className="sa-stateCard">
+                  <span>{area.stateAbbr}</span>
+                  <h2>{area.state}</h2>
+                  <p>{area.region}</p>
+                  <a href={getPathForRoute("service-area", area.slug)} onClick={function(e) { handleNavClick(e, props.go, "service-area", area.slug); }}>Explore {area.stateAbbr}</a>
+                  <div>
+                    {area.cities.slice(0, 4).map(function(city) {
+                      return <a key={city.slug} href={getPathForRoute("service-area", city.slug)} onClick={function(e) { handleNavClick(e, props.go, "service-area", city.slug); }}>{city.city}</a>;
+                    })}
+                  </div>
+                </article>
               );
             })}
           </div>
@@ -5484,8 +5746,9 @@ function buildJobPostingSchema(job, siteOrigin, options) {
 function buildSeoPayload(route) {
   var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
   var titles = {
-    home: "Door-to-Door Sales Teams for Fiber Internet | Home Front Solutions",
+    home: "Fiber Availability Check at Your Address | NC, SC, GA, VA",
     "what-we-do": "Nationwide D2D Customer Acquisition | Home Front Solutions",
+    "service-areas": "Fiber Sales Service Areas in NC, SC, GA, and VA | HFS",
     "why-us": "Why Home Front Solutions | Nationwide Field Sales Agency",
     partners: "Home Service Categories We Represent | Home Front Solutions",
     careers: "Door-to-Door Sales Jobs Nationwide | Home Front Solutions Careers",
@@ -5501,12 +5764,13 @@ function buildSeoPayload(route) {
   };
 
   var descriptions = {
-    home: "Home Front Solutions is an independent nationwide door-to-door sales agency for fiber internet and home services, with field-market experience across Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum. Professional customer acquisition teams and paid sales careers nationwide.",
+    home: "Check fiber availability at your address and explore door-to-door fiber sales support across North Carolina, South Carolina, Georgia, and Virginia. Provider-aware local teams for Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum markets.",
     careers: "Door-to-door sales jobs nationwide. Home Front Solutions hires field reps across the United States for fiber, security, solar, and home services. Paid certification, weekly commission, and a clear path to team lead and area manager.",
     market: "Local sales jobs with a national D2D agency. Explore city-specific recruiting pages for Home Front Solutions in North Carolina and across our expanding U.S. markets.",
     insights: "Resources on door-to-door sales: pay structure, 1099 taxes, first 30 days, industry trends, fiber ISP coverage, and the path from new rep to area manager.",
     article: "Home Front Solutions insights on door-to-door sales, field careers, industry shifts, and how the money, culture, and career path actually work.",
     "what-we-do": "Nationwide door-to-door customer acquisition for fiber internet, home security, solar, water filtration, roofing, and home-service brands. Field-market experience includes Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum.",
+    "service-areas": "Explore fiber sales service areas across North Carolina, South Carolina, Georgia, and Virginia, with address-level availability checks, new-construction outreach, and local field sales support.",
     "why-us": "An independent, nationwide field sales agency built for clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
     partners: "The home-service and telecom brand categories Home Front Solutions supports across our nationwide field network.",
     contact: "Book a call with Home Front Solutions. Nationwide D2D field teams for fiber, security, solar, and home-service brands. One business day response.",
@@ -5522,6 +5786,11 @@ function buildSeoPayload(route) {
   if (currentMarket) {
     titles.market = "D2D Sales Jobs in " + currentMarket.city + " | Home Front Solutions";
     descriptions.market = currentMarket.intro;
+  }
+  var currentServiceArea = route.name === "service-area" ? getServiceAreaBySlug(route.slug) : null;
+  if (currentServiceArea) {
+    titles["service-area"] = currentServiceArea.metaTitle;
+    descriptions["service-area"] = currentServiceArea.metaDescription;
   }
   if (currentArticle) {
     titles.article = currentArticle.title + " | Home Front Solutions";
@@ -5563,14 +5832,11 @@ function buildSeoPayload(route) {
       latitude: 35.9557,
       longitude: -80.0053,
     },
-    areaServed: [
-      { "@type": "Country", name: "United States" },
-      { "@type": "City", name: "High Point", containedInPlace: { "@type": "State", name: "North Carolina" } },
-      { "@type": "City", name: "Greensboro", containedInPlace: { "@type": "State", name: "North Carolina" } },
-      { "@type": "City", name: "Winston-Salem", containedInPlace: { "@type": "State", name: "North Carolina" } },
-      { "@type": "City", name: "Jamestown", containedInPlace: { "@type": "State", name: "North Carolina" } },
-      { "@type": "City", name: "Kernersville", containedInPlace: { "@type": "State", name: "North Carolina" } },
-    ],
+    areaServed: [{ "@type": "Country", name: "United States" }].concat(SERVICE_AREA_PAGES.map(function(area) {
+      return area.type === "state"
+        ? { "@type": "State", name: area.state }
+        : { "@type": "City", name: area.city, containedInPlace: { "@type": "State", name: area.state } };
+    })),
     openingHoursSpecification: [
       { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "20:00" },
       { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "10:00", closes: "18:00" },
@@ -5616,7 +5882,11 @@ function buildSeoPayload(route) {
     description: "Professional field sales teams for fiber internet and home-service campaigns, including competitive markets involving Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum.",
     knowsAbout: ["fiber internet sales", "Kinetic Fiber", "T-Fiber", "T-Mobile Fiber", "Brightspeed", "Ripple Fiber", "Frontier Fiber", "Spectrum"],
     provider: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
-    areaServed: "United States",
+    areaServed: [{ "@type": "Country", name: "United States" }].concat(SERVICE_AREA_PAGES.map(function(area) {
+      return area.type === "state"
+        ? { "@type": "State", name: area.state }
+        : { "@type": "City", name: area.city, containedInPlace: { "@type": "State", name: area.state } };
+    })),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Home Front Solutions service categories",
@@ -5631,6 +5901,26 @@ function buildSeoPayload(route) {
       })
     }
   };
+
+  var serviceAreaSchema = currentServiceArea ? {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": pageUrl + "#service",
+    name: currentServiceArea.headline,
+    serviceType: "Fiber internet sales and address-level availability support",
+    description: currentServiceArea.metaDescription,
+    provider: { "@id": siteOrigin + "/#business" },
+    areaServed: currentServiceArea.type === "state"
+      ? { "@type": "State", name: currentServiceArea.state }
+      : { "@type": "City", name: currentServiceArea.city, containedInPlace: { "@type": "State", name: currentServiceArea.state } },
+    hasMap: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(currentServiceArea.type === "state" ? currentServiceArea.state : currentServiceArea.city + ", " + currentServiceArea.stateAbbr),
+    offers: {
+      "@type": "Offer",
+      name: "Fiber availability review",
+      availability: "https://schema.org/InStock",
+      url: pageUrl + "#address-check-" + currentServiceArea.slug
+    }
+  } : null;
 
   var websiteSchema = {
     "@context": "https://schema.org",
@@ -5663,7 +5953,7 @@ function buildSeoPayload(route) {
     name: title,
     description: description,
     isPartOf: { "@id": siteOrigin + "/#website" },
-    about: { "@id": siteOrigin + "/#business" },
+    about: currentServiceArea ? { "@type": "Thing", name: currentServiceArea.primaryKeyword } : { "@id": siteOrigin + "/#business" },
     inLanguage: "en-US",
     mentions: route.name === "home" ? providerMentions : undefined,
     audience: route.name === "home" ? {
@@ -5680,15 +5970,20 @@ function buildSeoPayload(route) {
     ],
   };
   if (route.name !== "home") {
-    breadcrumbSchema.itemListElement.push({
-      "@type": "ListItem",
-      position: 2,
-      name: title,
-      item: pageUrl,
-    });
+    if (route.name === "service-area" && currentServiceArea) {
+      breadcrumbSchema.itemListElement.push({ "@type": "ListItem", position: 2, name: "Service areas", item: siteOrigin + "/service-areas" });
+      if (currentServiceArea.type === "city") {
+        breadcrumbSchema.itemListElement.push({ "@type": "ListItem", position: 3, name: currentServiceArea.state, item: siteOrigin + "/service-areas/" + currentServiceArea.stateSlug });
+        breadcrumbSchema.itemListElement.push({ "@type": "ListItem", position: 4, name: currentServiceArea.city, item: pageUrl });
+      } else {
+        breadcrumbSchema.itemListElement.push({ "@type": "ListItem", position: 3, name: currentServiceArea.state, item: pageUrl });
+      }
+    } else {
+      breadcrumbSchema.itemListElement.push({ "@type": "ListItem", position: 2, name: title, item: pageUrl });
+    }
   }
 
-  var schemas = [localBizSchema, organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema, serviceSchema, founderSchema];
+  var schemas = [localBizSchema, organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema, serviceSchema, founderSchema].concat(serviceAreaSchema ? [serviceAreaSchema] : []);
 
   if (route.name === "home" || route.name === "why-us") {
     // Each route's FAQPage schema maps over the array that is actually visible on that page.
@@ -5704,6 +5999,20 @@ function buildSeoPayload(route) {
             "@type": "Answer",
             text: item.a
           }
+        };
+      })
+    });
+  }
+
+  if (currentServiceArea) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: getServiceAreaFaqs(currentServiceArea).map(function(item) {
+        return {
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a }
         };
       })
     });
@@ -5949,7 +6258,7 @@ function buildSeoPayload(route) {
     { name: "geo.placename", content: "High Point" },
     { name: "geo.position", content: "35.9557;-80.0053" },
     { name: "ICBM", content: "35.9557, -80.0053" },
-    { name: "keywords", content: "fiber internet door to door sales agency, fiber sales agency, Kinetic Fiber sales, T-Fiber sales, T-Mobile Fiber sales, Brightspeed sales, Ripple Fiber sales, Frontier Fiber sales, Spectrum sales, internet provider field sales, fiber internet sales agency, fiber field sales teams, fiber sales recruiting, nationwide D2D agency, field sales outsourcing, home security D2D, solar D2D, home services customer acquisition, fiber sales rep jobs, door to door sales jobs, Home Front Solutions" },
+    { name: "keywords", content: "fiber internet door to door sales agency, fiber sales agency, Kinetic Fiber sales, T-Fiber sales, T-Mobile Fiber sales, Brightspeed sales, Ripple Fiber sales, Frontier Fiber sales, Spectrum sales, internet provider field sales, fiber internet sales agency, fiber field sales teams, fiber sales recruiting, fiber internet North Carolina, fiber internet South Carolina, fiber internet Georgia, fiber internet Virginia, new construction fiber, door-to-door fiber sales NC SC GA VA, nationwide D2D agency, field sales outsourcing, home security D2D, solar D2D, home services customer acquisition, fiber sales rep jobs, door to door sales jobs, Home Front Solutions" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: route.name === "job" || route.name === "article" ? "article" : "website" },
@@ -6002,6 +6311,7 @@ export function getPrerenderPaths() {
     .concat([
       "/",
       "/what-we-do",
+      "/service-areas",
       "/why-us",
       "/partners",
       "/careers",
@@ -6011,6 +6321,7 @@ export function getPrerenderPaths() {
       "/insights",
     ])
     .concat(MARKET_PAGES.map(function(item) { return getPathForRoute("market", item.slug); }))
+    .concat(SERVICE_AREA_PAGES.map(function(area) { return getPathForRoute("service-area", area.slug); }))
     .concat(ARTICLE_PAGES.map(function(item) { return getPathForRoute("article", item.slug); }))
     .concat(JOBS.map(function(job) { return getPathForRoute("job", job.slug); }))
     .concat(JOBS.map(function(job) { return getPathForRoute("apply", job.slug); }));
@@ -6264,6 +6575,8 @@ export default function App(props) {
         {route.name === "partners" && <PartnersPage go={go} />}
         {route.name === "careers" && <CareersIndexPage go={go} />}
         {route.name === "market" && <MarketPage go={go} slug={route.slug} />}
+        {route.name === "service-areas" && <ServiceAreasIndexPage go={go} />}
+        {route.name === "service-area" && <ServiceAreaPage go={go} slug={route.slug} />}
         {route.name === "insights" && <InsightsIndexPage go={go} />}
         {route.name === "article" && <ArticlePage go={go} slug={route.slug} />}
         {route.name === "job" && <JobDetailPage go={go} slug={route.slug} />}
