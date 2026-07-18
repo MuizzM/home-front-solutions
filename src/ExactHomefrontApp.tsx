@@ -3542,11 +3542,6 @@ function HomePage(props) {
                   Check Availability
                 </a>
               </div>
-              <div className="hfsx-trustRow" aria-label="Trust signals">
-                <span><i aria-hidden="true" />High Point, NC headquarters</span>
-                <span><i aria-hidden="true" />28+ markets supported</span>
-                <span><i aria-hidden="true" />Call (336) 420-9379</span>
-              </div>
             </div>
             <div className="hfsx-heroMedia" ref={heroMediaRef}>
               <picture>
