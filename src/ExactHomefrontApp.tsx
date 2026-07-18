@@ -1388,7 +1388,9 @@ var HOME_PAGE_FAQS = [
   { q: "What does the training look like?", a: "Six modules over five days. Training is paid. Reps practice with HFS Coach and ride with a team lead before taking a territory. Coaching continues in the field." },
   { q: "Where do you operate?", a: "We operate in more than 28 U.S. markets. HFS is headquartered in the Carolinas, with active teams across the Southeast, Midwest, Mountain West, and Sunbelt." },
   { q: "Which fiber markets do your teams understand?", a: "Our teams are trained for competitive internet markets involving providers such as Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum. Provider names describe market familiarity and campaign experience. Home Front Solutions operates as an independent field sales agency." },
-  { q: "How do I get started?", a: "Reps can apply online. Most qualified applicants hear back within one business day. Brands can book a 30 minute discovery call to scope a pilot market." }
+  { q: "How do I get started?", a: "Reps can apply online. Most qualified applicants hear back within one business day. Brands can book a 30 minute discovery call to scope a pilot market." },
+  { q: "What is door-to-door (D2D) sales?", a: "Door-to-door sales is direct, in-person selling at the homeowner's door. A D2D sales agency like Home Front Solutions recruits, trains, and manages local canvassing teams that present offers, answer questions, and close new customers face to face." },
+  { q: "Is door-to-door sales still effective?", a: "Yes, especially for fiber internet and home services. Door knocking reaches homeowners who ignore ads and cold calls, and it converts best in new-build and launch markets where coverage just changed. That is why providers keep funding D2D channels." }
 ];
 
 var HOME_FAQS = [
@@ -3928,6 +3930,38 @@ function HomePage(props) {
         </div>
       </section>
 
+      <section className="hfsx-section hfsx-section--tint">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Door-to-door sales, explained</p>
+              <h2>What a D2D sales agency actually does.</h2>
+            </div>
+            <p>The short version of how door-to-door customer acquisition works and why providers keep investing in it.</p>
+          </div>
+          <div className="hfsx-d2dGrid">
+            <article>
+              <h3>Door-to-door sales reaches who ads miss</h3>
+              <p>
+                Door-to-door sales is direct, face-to-face selling at the home. In fiber internet, coverage changes street by street, and the homeowners most likely to switch are the ones who never clicked an ad. A trained canvassing team meets them at the door with a local offer, a real answer on availability, and a clear next step.
+              </p>
+            </article>
+            <article>
+              <h3>D2D is not cold calling</h3>
+              <p>
+                Cold calling interrupts. Door knocking introduces. Reps work assigned territories, log every conversation at the address, and follow up with homeowners who asked for a callback. That address-level record is what separates a professional D2D sales agency from a crew with clipboards.
+              </p>
+            </article>
+            <article>
+              <h3>Why providers fund D2D channels</h3>
+              <p>
+                Internet, security, solar, and home-service brands keep door-to-door budgets because the channel produces measurable installs in launch and expansion markets. HFS runs that channel with trained reps, live activity tracking, and weekly reporting brands can audit.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="hfsx-section hfsx-section--white hfsx-section--faq">
         <div className="hfsx-container hfsx-container--narrow">
           <div className="hfsx-sectionHead hfsx-sectionHead--center">
@@ -6208,7 +6242,7 @@ function buildJobPostingSchema(job, siteOrigin, options) {
 function buildSeoPayload(route) {
   var currentJob = route.slug ? JOBS.find(function(j) { return j.slug === route.slug; }) : null;
   var titles = {
-    home: "Door-to-Door (D2D) Sales Teams and Dealer Program | Home Front Solutions",
+    home: "Door-to-Door (D2D) Sales Teams & Dealers | Home Front Solutions",
     "check-availability": "Check Fiber Availability at Your Address | Home Front Solutions",
     "platform": "Field Sales CRM for Door-to-Door Teams | HFS Platform",
     "what-we-do": "Nationwide D2D Customer Acquisition | Home Front Solutions",
@@ -6217,7 +6251,7 @@ function buildSeoPayload(route) {
     partners: "Home Service Categories We Represent | Home Front Solutions",
     careers: "Door-to-Door Sales Jobs Nationwide | Home Front Solutions Careers",
     market: currentJob ? currentJob.title : "Local Field Sales Markets | Home Front Solutions Careers",
-    insights: "D2D Sales Resources, Pay Guides, Industry Insights, and Career Articles | Home Front Solutions",
+    insights: "D2D Sales Insights and Career Resources | Home Front Solutions",
     article: "D2D Sales Insights | Home Front Solutions",
     contact: "Contact Home Front Solutions | Book a Call Nationwide",
     privacy: "Privacy Policy | Home Front Solutions",
@@ -6228,15 +6262,15 @@ function buildSeoPayload(route) {
   };
 
   var descriptions = {
-    home: "Become a dealer with Home Front Solutions. Door-to-door (D2D) sales teams, dealer programs, canvassing, and cold door knocking for fiber internet across North Carolina, South Carolina, Georgia, and Virginia. Provider-aware local teams for Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum markets.",
-    "platform": "A white-label field sales CRM built by a working door-to-door agency. Territory mapping, knock logging, routes, leaderboards, follow-ups, and commission visibility for fiber, security, solar, roofing, and home-service teams.",
-    "check-availability": "Check fiber availability at your address. Fast address-level review across NC, SC, GA, and VA markets, including Kinetic Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum service areas.",
-    careers: "Door-to-door sales jobs nationwide. Home Front Solutions hires field reps across the United States for fiber, security, solar, and home services. Paid certification, weekly commission, and a clear path to team lead and area manager.",
+    home: "Door-to-door (D2D) sales teams and dealer programs for fiber internet across NC, SC, GA, and VA. Become a dealer or book a strategy call today.",
+    "platform": "White-label field sales CRM for door-to-door teams: territories, knock logging, routes, leaderboards, and commissions. Book a demo today.",
+    "check-availability": "Check fiber availability at your address. Address-level review across NC, SC, GA, and VA with a reply in one business day. No obligation.",
+    careers: "Door-to-door sales jobs nationwide with paid certification and uncapped weekly commission. Top first-year reps earn $150K+. Apply in five minutes.",
     market: "Local sales jobs with a national D2D agency. Explore city-specific recruiting pages for Home Front Solutions in North Carolina and across our expanding U.S. markets.",
     insights: "Resources on door-to-door sales: pay structure, 1099 taxes, first 30 days, industry trends, fiber ISP coverage, and the path from new rep to area manager.",
     article: "Home Front Solutions insights on door-to-door sales, field careers, industry shifts, and how the money, culture, and career path actually work.",
-    "what-we-do": "Nationwide door-to-door customer acquisition for fiber internet, home security, solar, water filtration, roofing, and home-service brands. Field-market experience includes Kinetic Fiber, T-Fiber, T-Mobile Fiber, Brightspeed, Ripple Fiber, Frontier Fiber, and Spectrum.",
-    "service-areas": "Explore fiber sales service areas across North Carolina, South Carolina, Georgia, and Virginia, with address-level availability checks, new-construction outreach, and local field sales support.",
+    "what-we-do": "Nationwide D2D customer acquisition: door-to-door sales, dealer programs, and field recruiting for fiber, security, solar, and home-service brands.",
+    "service-areas": "Door-to-door fiber sales and address-level availability checks across NC, SC, GA, and VA. Find your city and local field team.",
     "why-us": "An independent, nationwide field sales agency built for clean execution, trusted provider partnerships, and measurable customer acquisition performance.",
     partners: "The home-service and telecom brand categories Home Front Solutions supports across our nationwide field network.",
     contact: "Book a call with Home Front Solutions. Nationwide D2D field teams for fiber, security, solar, and home-service brands. One business day response.",
