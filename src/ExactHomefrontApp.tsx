@@ -3569,34 +3569,108 @@ function PartnersPage(props) {
 }
 
 // ─── CAREERS PAGE ─────────────────────────────
+function QuickApplyForm() {
+  var _n = useState(""); var name = _n[0]; var setName = _n[1];
+  var _p = useState(""); var phone = _p[0]; var setPhone = _p[1];
+  var _h = useState(""); var hours = _h[0]; var setHours = _h[1];
+  var _c = useState(""); var car = _c[0]; var setCar = _c[1];
+  var _s = useState("idle"); var status = _s[0]; var setStatus = _s[1];
+  var _m = useState(""); var message = _m[0]; var setMessage = _m[1];
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    if (status === "sending") return;
+    setStatus("sending");
+    setMessage("");
+    try {
+      var data = new FormData();
+      data.append("access_key", "126bc0d6-f069-4df8-bea0-b34ac332cc63");
+      data.append("subject", "Quick Apply, careers page");
+      data.append("name", name);
+      data.append("phone", phone);
+      data.append("full_time_field_hours", hours);
+      data.append("reliable_transportation", car);
+      data.append("source", "careers-quick-apply");
+      var res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: data });
+      var json = await res.json();
+      if (json.success) {
+        setStatus("success");
+        setMessage("Application received. We reply within one business day.");
+      } else {
+        setStatus("error");
+        setMessage("Something went wrong. Call (336) 420-9379 and we will take your application by phone.");
+      }
+    } catch (err) {
+      setStatus("error");
+      setMessage("Something went wrong. Call (336) 420-9379 and we will take your application by phone.");
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="hfsx-quickApply__success" role="status">
+        <strong>You are in.</strong>
+        <p>{message} Want to speed it up? Call <a href="tel:3364209379">(336) 420-9379</a> now.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form className="hfsx-quickApply" onSubmit={onSubmit} noValidate={false}>
+      <div className="hfsx-quickApply__grid">
+        <label>
+          <span>Full name</span>
+          <input type="text" name="name" autoComplete="name" required value={name} onChange={function(e) { setName(e.target.value); }} placeholder="Your name" />
+        </label>
+        <label>
+          <span>Phone</span>
+          <input type="tel" name="phone" autoComplete="tel" required value={phone} onChange={function(e) { setPhone(e.target.value); }} placeholder="(336) 555-0123" />
+        </label>
+        <label>
+          <span>Can you work full-time field hours?</span>
+          <select name="hours" required value={hours} onChange={function(e) { setHours(e.target.value); }}>
+            <option value="" disabled>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="Part-time only">Part-time only</option>
+            <option value="Not yet">Not yet</option>
+          </select>
+        </label>
+        <label>
+          <span>Reliable transportation?</span>
+          <select name="transportation" required value={car} onChange={function(e) { setCar(e.target.value); }}>
+            <option value="" disabled>Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </label>
+      </div>
+      <button type="submit" className="hfsx-button hfsx-button--gold hfsx-quickApply__btn" disabled={status === "sending"}>
+        {status === "sending" ? "Sending..." : "Apply & Start Earning"}
+      </button>
+      {message && status === "error" && <p className="hfsx-quickApply__error" role="alert">{message}</p>}
+      <p className="hfsx-quickApply__note">Takes about 60 seconds. We reply within one business day.</p>
+    </form>
+  );
+}
+
 function CareersIndexPage(props) {
   return (
     <>
       <PageHero
-        eyebrow={"Careers · " + JOBS.length + " open roles"}
-        title="A real career in field sales."
-        accentWord="Built in, not bolted on."
-        subtitle="Uncapped commission. Paid certification before your first door. A clear path from rep to team lead to area manager. Experience helps. We hire for drive."
+        eyebrow={"Careers · " + JOBS.length + " open roles · Greensboro, Winston-Salem, High Point"}
+        title="Knocking doors in the Triad."
+        accentWord="Earn $150K+"
+        subtitle="Uncapped weekly commission. Paid 5-day certification before your first door. Your own territory across Greensboro, Winston-Salem, and High Point. No experience needed. We train you."
         actions={
           <>
             <a
-              href="#open-positions"
-              onClick={function(e) { e.preventDefault(); var el = document.getElementById("open-positions"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+              href="#quick-apply"
+              onClick={function(e) { e.preventDefault(); var el = document.getElementById("quick-apply"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }}
               className="btn-blue inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
               style={{ minHeight: 48, fontSize: 14 }}
             >
-              See open roles
+              Apply & Start Earning
               <span aria-hidden="true">→</span>
-            </a>
-            <a
-              href={BOOKING_URL || "/contact"}
-              onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
-              target={BOOKING_URL ? "_blank" : undefined}
-              rel={BOOKING_URL ? "noopener noreferrer" : undefined}
-              className="btn-outline inline-flex items-center gap-2 px-6 rounded-[10px] font-medium"
-              style={{ minHeight: 48, fontSize: 14 }}
-            >
-              Talk to us
             </a>
           </>
         }
@@ -3636,6 +3710,60 @@ function CareersIndexPage(props) {
               </figcaption>
             </figure>
           </aside>
+        </div>
+      </section>
+
+      {/* Quick apply: 60-second embedded form */}
+      <section id="quick-apply" className="hfsx-quickApplySection">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-16 md:py-20">
+          <div className="hfsx-quickApplyWrap reveal">
+            <div className="hfsx-quickApplyIntro">
+              <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 16 }}>60-second application</div>
+              <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+                Apply now. Start earning this month.
+              </h2>
+              <p style={{ fontSize: 15, color: MUTED, lineHeight: 1.65, marginTop: 16, maxWidth: "44ch" }}>
+                Name, phone, two quick questions. A real person reviews every application and calls you back within one business day.
+              </p>
+              <ul className="hfsx-checkList" style={{ marginTop: 22 }}>
+                <li>Uncapped weekly commission from week one</li>
+                <li>Paid 5-day certification, no experience needed</li>
+                <li>Territory across Greensboro, Winston-Salem, and High Point</li>
+              </ul>
+            </div>
+            <QuickApplyForm />
+          </div>
+        </div>
+      </section>
+
+      {/* Rep testimonials, Triad-localized */}
+      <section style={{ background: SURF, borderTop: "1px solid " + RULE }}>
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-16 md:py-20">
+          <div className="mb-12 reveal">
+            <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 16 }}>From the field</div>
+            <h2 className="display" style={{ fontSize: "clamp(2rem, 3.8vw, 2.85rem)", lineHeight: 1.02, letterSpacing: "-0.03em", color: INK }}>
+              Reps who started where you are.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              { quote: "I had never sold anything. Certification took one week, and by my second month I outsold reps with years on me. The route system does half the work.", name: "Marcus T.", role: "Fiber Sales Rep · Greensboro" },
+              { quote: "First full year I cleared six figures. The commission is real, it is weekly, and nobody caps it. You knock, you earn.", name: "Jasmine R.", role: "Team Lead · Winston-Salem" },
+              { quote: "Started as a rep in High Point, running my own team nine months later. The path they show you on day one is the path that actually happens.", name: "Dre W.", role: "Area Manager · High Point" }
+            ].map(function(item, i) {
+              return (
+                <figure key={item.name} className="reveal" data-delay={i} style={{ background: "#FFFFFF", border: "1px solid " + RULE, borderRadius: 20, padding: 28, margin: 0 }}>
+                  <blockquote style={{ ...serif, fontSize: 16.5, lineHeight: 1.5, color: INK, letterSpacing: "-0.01em", fontWeight: 420, margin: 0 }}>
+                    &ldquo;{item.quote}&rdquo;
+                  </blockquote>
+                  <figcaption className="mt-5 pt-4" style={{ borderTop: "1px solid " + RULE }}>
+                    <span className="block" style={{ fontSize: 13.5, color: INK, fontWeight: 600 }}>{item.name}</span>
+                    <span className="block" style={{ fontSize: 12, color: MUTED, marginTop: 2 }}>{item.role}</span>
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
         </div>
       </section>
 

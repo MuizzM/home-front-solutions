@@ -5967,3 +5967,99 @@ html { scroll-behavior: smooth; }
   object-fit: cover;
   border-radius: 18px;
 }
+
+/* Careers quick-apply */
+.hfsx-quickApplySection {
+  background: #0e2a42;
+}
+.hfsx-quickApplyWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 44px;
+  align-items: start;
+}
+.hfsx-quickApplyIntro h2 { color: #ffffff !important; }
+.hfsx-quickApplyIntro p { color: rgba(231, 236, 242, 0.7) !important; }
+.hfsx-quickApplyIntro .hfsx-checkList li { color: rgba(255, 255, 255, 0.92); }
+.hfsx-quickApply {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 28px;
+}
+.hfsx-quickApply__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.hfsx-quickApply label span {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(231, 236, 242, 0.75);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+.hfsx-quickApply input,
+.hfsx-quickApply select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: 15px;
+  font-family: inherit;
+}
+.hfsx-quickApply input::placeholder { color: rgba(255, 255, 255, 0.35); }
+.hfsx-quickApply input:focus,
+.hfsx-quickApply select:focus {
+  outline: 2px solid #2bb2a2;
+  outline-offset: 1px;
+  border-color: transparent;
+}
+.hfsx-quickApply select option { color: #10243a; }
+.hfsx-quickApply__btn {
+  width: 100%;
+  margin-top: 18px;
+  min-height: 52px;
+  font-size: 16px;
+}
+.hfsx-quickApply__note {
+  margin: 12px 0 0;
+  color: rgba(231, 236, 242, 0.5);
+  font-size: 12.5px;
+  text-align: center;
+}
+.hfsx-quickApply__error {
+  margin: 12px 0 0;
+  color: #ffb4a8;
+  font-size: 13.5px;
+}
+.hfsx-quickApply__success {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(43, 178, 162, 0.4);
+  border-radius: 22px;
+  padding: 34px 28px;
+}
+.hfsx-quickApply__success strong {
+  display: block;
+  color: #ffffff;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.hfsx-quickApply__success p {
+  margin: 0;
+  color: rgba(231, 236, 242, 0.75);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.hfsx-quickApply__success a { color: #5fd8c8; }
+@media (max-width: 900px) {
+  .hfsx-quickApplyWrap { grid-template-columns: 1fr; gap: 30px; }
+}
+@media (max-width: 560px) {
+  .hfsx-quickApply__grid { grid-template-columns: 1fr; }
+}
