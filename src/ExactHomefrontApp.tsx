@@ -3257,7 +3257,7 @@ function PlatformPage(props) {
           <div className="hfsx-heroPanel">
             <div className="hfsx-heroCopy">
               <p className="hfsx-kicker hfsx-kicker--light">Field sales software</p>
-              <h1>Every rep. Every door. Every result. One CRM.</h1>
+              <h1>Every rep. Every door. Every result. <span className="hfsx-accent">One CRM.</span></h1>
               <p className="hfsx-lede">
                 The HFS platform is a white-label field sales CRM built by a working door-to-door agency. Territories, knocks, routes, follow-ups, and commissions, in one system your reps actually use.
               </p>
@@ -3269,24 +3269,76 @@ function PlatformPage(props) {
                   rel={BOOKING_URL ? "noopener noreferrer" : undefined}
                   className="hfsx-button hfsx-button--gold"
                 >
-                  Book a Demo
+                  Get a Demo
                 </a>
-                <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="hfsx-button hfsx-button--outline">See the Portal</a>
+                <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="hfsx-button hfsx-button--outline">Rep Login</a>
               </div>
               <div className="hfsx-trustRow" aria-label="Trust signals">
                 <span><i aria-hidden="true" />White-label ready</span>
-                <span><i aria-hidden="true" />Live in 28+ markets</span>
+                <span><i aria-hidden="true" />Included with every dealership</span>
                 <span><i aria-hidden="true" />Built by a working D2D agency</span>
               </div>
             </div>
-            <div className="hfsx-heroMedia hfsx-heroMedia--mock">
-              <CoachMockV2 />
+            <div className="hfsx-heroMedia hfsx-heroMedia--shot">
+              <div className="hfsx-shotFrame">
+                <div className="hfsx-shotFrame__bar"><i /><i /><i /><span>portal.homefrontsolutionsllc.com</span></div>
+                <img src="/portal-login.webp" alt="Home Front Solutions rep portal login, Field Sales Intelligence" width="820" height="840" loading="eager" decoding="async" />
+              </div>
+              <div className="hfsx-shotChip hfsx-shotChip--a"><strong>Live</strong><span>Knock logging at the door</span></div>
+              <div className="hfsx-shotChip hfsx-shotChip--b"><strong>28+</strong><span>Markets on one system</span></div>
+              <i className="hfsx-shotDot hfsx-shotDot--a" aria-hidden="true" />
+              <i className="hfsx-shotDot hfsx-shotDot--b" aria-hidden="true" />
             </div>
           </div>
         </div>
       </section>
 
       <section className="hfsx-section hfsx-section--white">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead">
+            <div>
+              <p className="hfsx-kicker">Get started</p>
+              <h2>Choose your path.</h2>
+            </div>
+            <p>However you want to grow in field sales, there is a way in. Every dealership runs on the HFS platform from day one, software included.</p>
+          </div>
+          <div className="hfsx-pathGrid">
+            <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="hfsx-pathCard">
+              <span>01</span>
+              <h3>Become a rep</h3>
+              <p>Paid certification, assigned territory, uncapped weekly commission. Top first-year reps earn $150K+.</p>
+              <em>See open roles</em>
+            </a>
+            <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-pathCard">
+              <span>02</span>
+              <h3>Become a dealer</h3>
+              <p>Run your market with provider programs, routes, and training already in place. You bring the execution.</p>
+              <em>Start the conversation</em>
+            </a>
+            <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-pathCard hfsx-pathCard--feature">
+              <span>03</span>
+              <h3>Launch a dealership</h3>
+              <p>Your brand, your team, your territory. The HFS platform comes included with every dealership from day one.</p>
+              <b>CRM included</b>
+              <em>Talk about launching</em>
+            </a>
+            <a
+              href={BOOKING_URL || "/contact"}
+              onClick={BOOKING_URL ? undefined : function(e) { handleNavClick(e, props.go, "contact"); }}
+              target={BOOKING_URL ? "_blank" : undefined}
+              rel={BOOKING_URL ? "noopener noreferrer" : undefined}
+              className="hfsx-pathCard"
+            >
+              <span>04</span>
+              <h3>Buy the CRM</h3>
+              <p>White-label the platform for your existing team. Your branding, your data, our field-proven system.</p>
+              <em>Get a demo</em>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-section hfsx-section--tint">
         <div className="hfsx-container">
           <div className="hfsx-sectionHead">
             <div>
@@ -3610,7 +3662,7 @@ function HomePage(props) {
             <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }}>
               <span>02</span>
               <h3>Dealer program</h3>
-              <p>Launch or grow your sales organization with provider programs, routes, and infrastructure already in place.</p>
+              <p>Launch or grow your sales organization with provider programs, routes, and the HFS platform included from day one.</p>
             </a>
             <a href="/platform" onClick={function(e) { handleNavClick(e, props.go, "platform"); }}>
               <span>03</span>
