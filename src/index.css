@@ -5864,3 +5864,83 @@ html { scroll-behavior: smooth; }
 @media (max-width: 560px) {
   .hfsx-pathGrid { grid-template-columns: 1fr; }
 }
+
+/* Aurora hero — animated gradient orbs + texture */
+.hfsx-heroPanel--aurora {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 60% 50% at 78% 12%, rgba(43, 178, 162, 0.22), transparent 62%),
+    radial-gradient(ellipse 45% 40% at 12% 88%, rgba(43, 178, 162, 0.14), transparent 60%),
+    linear-gradient(135deg, #0b2540 0%, #0a2f45 55%, #0c3a4a 100%);
+}
+.hfsx-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+.hfsx-orb--a {
+  width: 420px;
+  height: 420px;
+  top: -130px;
+  right: 2%;
+  background: radial-gradient(circle, rgba(43, 178, 162, 0.30) 0%, rgba(43, 178, 162, 0.12) 42%, transparent 68%);
+  animation: hfsxOrbFloat 11s ease-in-out infinite;
+}
+.hfsx-orb--b {
+  width: 320px;
+  height: 320px;
+  bottom: -110px;
+  left: 30%;
+  background: radial-gradient(circle, rgba(240, 180, 41, 0.16) 0%, rgba(240, 180, 41, 0.06) 45%, transparent 70%);
+  animation: hfsxOrbFloat 13s ease-in-out -4s infinite reverse;
+}
+@keyframes hfsxOrbFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(24px, 18px, 0) scale(1.08); }
+}
+.hfsx-heroTexture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: linear-gradient(115deg, rgba(0,0,0,0.7), transparent 65%);
+  -webkit-mask-image: linear-gradient(115deg, rgba(0,0,0,0.7), transparent 65%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hfsx-orb { animation: none; }
+}
+
+/* Headline accent + gold button glow */
+.hfsx-accent {
+  background: linear-gradient(115deg, #43c6b5 0%, #2bb2a2 55%, #1f8d80 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hfsx-heroPanel--aurora .hfsx-accent {
+  background: linear-gradient(115deg, #5fd8c8 0%, #2bb2a2 60%, #43c6b5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.hfsx-button--gold {
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms ease, background-color 220ms ease;
+}
+.hfsx-button--gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(240, 180, 41, 0.38);
+}
+.hfsx-button--outline,
+.hfsx-button--green,
+.hfsx-button--outlineDark {
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 300ms ease, background-color 220ms ease, border-color 220ms ease;
+}
+.hfsx-button--outline:hover,
+.hfsx-button--green:hover,
+.hfsx-button--outlineDark:hover {
+  transform: translateY(-2px);
+}

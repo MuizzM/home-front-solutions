@@ -3302,7 +3302,7 @@ function PlatformPage(props) {
             </div>
             <p>However you want to grow in field sales, there is a way in. Every dealership runs on the HFS platform from day one, software included.</p>
           </div>
-          <div className="hfsx-pathGrid">
+          <div className="hfsx-pathGrid reveal">
             <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="hfsx-pathCard">
               <span>01</span>
               <h3>Become a rep</h3>
@@ -3507,7 +3507,7 @@ function CheckAvailabilityPage(props) {
             </div>
             <p>Availability reviews are handled by people who work these neighborhoods every week, not by a generic coverage map.</p>
           </div>
-          <div className="hfsx-engineLinkGrid">
+          <div className="hfsx-engineLinkGrid reveal">
             <a href="/service-areas" onClick={function(e) { handleNavClick(e, props.go, "service-areas"); }}>
               <span>01</span>
               <h3>Send your address</h3>
@@ -3573,10 +3573,13 @@ function HomePage(props) {
     <>
       <section id="home-hero" className="hfsx-hero">
         <div className="hfsx-container">
-          <div className="hfsx-heroPanel">
+          <div className="hfsx-heroPanel hfsx-heroPanel--aurora">
+            <i className="hfsx-orb hfsx-orb--a" aria-hidden="true" />
+            <i className="hfsx-orb hfsx-orb--b" aria-hidden="true" />
+            <i className="hfsx-heroTexture" aria-hidden="true" />
             <div className="hfsx-heroCopy">
               <p className="hfsx-kicker hfsx-kicker--light">Nationwide field sales agency</p>
-              <h1>Door-to-door sales teams for fiber internet.</h1>
+              <h1>Door-to-door sales teams for <span className="hfsx-accent">fiber internet.</span></h1>
               <p className="hfsx-lede">
                 Home Front Solutions builds local field teams that knock, present, and close in fiber launch markets across NC, SC, GA, and VA.
               </p>
@@ -3646,14 +3649,14 @@ function HomePage(props) {
 
       <section className="hfsx-section hfsx-section--white">
         <div className="hfsx-container">
-          <div className="hfsx-sectionHead">
+          <div className="hfsx-sectionHead reveal">
             <div>
               <p className="hfsx-kicker">Distribution channels</p>
               <h2>Three proven paths to scale.</h2>
             </div>
             <p>Direct customer acquisition through door-to-door field teams, a dealer program built for long-term partners, and the software that keeps every door on record.</p>
           </div>
-          <div className="hfsx-engineLinkGrid">
+          <div className="hfsx-engineLinkGrid reveal">
             <a href="/what-we-do" onClick={function(e) { handleNavClick(e, props.go, "what-we-do"); }}>
               <span>01</span>
               <h3>Door-to-door sales</h3>
@@ -3675,14 +3678,14 @@ function HomePage(props) {
 
       <section className="hfsx-section hfsx-section--tint">
         <div className="hfsx-container">
-          <div className="hfsx-sectionHead">
+          <div className="hfsx-sectionHead reveal">
             <div>
               <p className="hfsx-kicker">The field engine</p>
               <h2>Clear steps. Daily accountability. Better local coverage.</h2>
             </div>
             <p>These are the working parts behind every HFS campaign. Each step is simple enough to execute and specific enough to measure.</p>
           </div>
-          <div className="hfsx-engineLinkGrid">
+          <div className="hfsx-engineLinkGrid reveal">
             <a href="#provider-markets" onClick={function(e) { e.preventDefault(); var target = document.getElementById("provider-markets"); if (target) target.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
               <span>01</span>
               <h3>Target the market</h3>
@@ -3709,7 +3712,7 @@ function HomePage(props) {
 
       <section className="hfsx-section hfsx-section--white">
         <div className="hfsx-container">
-          <div className="hfsx-sectionHead">
+          <div className="hfsx-sectionHead reveal">
             <div>
               <p className="hfsx-kicker">What we do</p>
               <h2>Professional customer acquisition, built for the field.</h2>
@@ -3864,14 +3867,14 @@ function HomePage(props) {
 
       <section className="hfsx-section hfsx-section--tint">
         <div className="hfsx-container">
-          <div className="hfsx-sectionHead">
+          <div className="hfsx-sectionHead reveal">
             <div>
               <p className="hfsx-kicker">Our team</p>
               <h2>The people behind the doors.</h2>
             </div>
             <p>Home Front Solutions is led by operators who built their careers in door-to-door sales, not behind a desk.</p>
           </div>
-          <div className="hfsx-teamGrid">
+          <div className="hfsx-teamGrid reveal">
             <article className="hfsx-teamCard hfsx-teamCard--founder">
               <div className="hfsx-teamAvatar" aria-hidden="true"><span>MM</span></div>
               <div className="hfsx-teamBody">
@@ -3913,14 +3916,14 @@ function HomePage(props) {
 
       <section className="hfsx-section hfsx-section--white">
         <div className="hfsx-container">
-          <div className="hfsx-sectionHead">
+          <div className="hfsx-sectionHead reveal">
             <div>
               <p className="hfsx-kicker">Where we work</p>
               <h2>Our footprint.</h2>
             </div>
             <p>Active field operations across the Southeast with nationwide recruiting for new market launches.</p>
           </div>
-          <div className="hfsx-footprint">
+          <div className="hfsx-footprint reveal">
             <div className="hfsx-footprint__map">
               <CoverageMap />
               <div className="hfsx-footprint__legend">
@@ -3931,7 +3934,7 @@ function HomePage(props) {
             <div className="hfsx-footprint__carriers">
               <h3>Competitive market familiarity</h3>
               <p>Field teams trained to sell against and alongside the major fiber and internet brands in every market we enter.</p>
-              <div className="hfsx-carrierGrid">
+              <div className="hfsx-carrierGrid reveal">
                 {[
                   { name: "Kinetic Fiber", tone: "#7a9b1e" },
                   { name: "T-Mobile Fiber", tone: "#e20074" },
@@ -3984,14 +3987,14 @@ function HomePage(props) {
 
       <section className="hfsx-section hfsx-section--tint">
         <div className="hfsx-container">
-          <div className="hfsx-sectionHead">
+          <div className="hfsx-sectionHead reveal">
             <div>
               <p className="hfsx-kicker">Door-to-door sales, explained</p>
               <h2>What a D2D sales agency actually does.</h2>
             </div>
             <p>The short version of how door-to-door customer acquisition works and why providers keep investing in it.</p>
           </div>
-          <div className="hfsx-d2dGrid">
+          <div className="hfsx-d2dGrid reveal">
             <article>
               <h3>Door-to-door sales reaches who ads miss</h3>
               <p>
