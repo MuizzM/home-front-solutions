@@ -481,6 +481,12 @@ function useArticlePages() {
     if (ARTICLE_PAGES.length > 0) { setLoaded(true); return; }
     import("./articles").then(function(m) { __setArticlePages(m.ARTICLE_PAGES); setLoaded(true); });
   }, []);
+  // Once the chunk is in and the new DOM is committed, re-scan reveal targets.
+  useEffect(function() {
+    if (loaded && typeof window !== "undefined") {
+      window.dispatchEvent(new Event("hfsx:reveal"));
+    }
+  }, [loaded]);
   return loaded;
 }
 
@@ -902,8 +908,6 @@ function Magnetic(props) {
 function useRevealOnScroll(deps) {
   useEffect(function() {
     if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
-    var nodes = document.querySelectorAll(".reveal, .reveal-blur");
-    if (!nodes.length) return;
     var io = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -912,8 +916,14 @@ function useRevealOnScroll(deps) {
         }
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.1 });
-    nodes.forEach(function(n) { io.observe(n); });
-    return function() { io.disconnect(); };
+    // Re-scannable so lazily-mounted content (code-split chunks) gets observed too.
+    function scan() {
+      var nodes = document.querySelectorAll(".reveal:not(.is-in), .reveal-blur:not(.is-in)");
+      nodes.forEach(function(n) { io.observe(n); });
+    }
+    scan();
+    window.addEventListener("hfsx:reveal", scan);
+    return function() { window.removeEventListener("hfsx:reveal", scan); io.disconnect(); };
   }, deps || []);
 }
 
@@ -5133,10 +5143,45 @@ function ArticlePage(props) {
               return (
                 <div key={section.heading} className="mt-14 reveal" data-delay={(i % 2) + 1}>
                   <h2 className="display mb-5" style={{ fontSize: "clamp(1.6rem, 2.8vw, 2rem)", lineHeight: 1.08, letterSpacing: "-0.025em", color: INK }}>{section.heading}</h2>
-                  <p style={{ fontSize: 17, lineHeight: 1.75, color: INK, fontWeight: 400 }}>{section.body}</p>
+                  {String(section.body).split("\n\n").map(function(para, pi) {
+                    return <p key={pi} style={{ fontSize: 17, lineHeight: 1.75, color: INK, fontWeight: 400, marginTop: pi > 0 ? 16 : 0 }}>{para}</p>;
+                  })}
+                  {section.list && (
+                    <ul className="hfsx-articleList">
+                      {section.list.map(function(item, j) { return <li key={j}>{item}</li>; })}
+                    </ul>
+                  )}
+                  {section.table && (
+                    <div className="hfsx-articleTableWrap">
+                      <table className="hfsx-articleTable">
+                        <thead>
+                          <tr>{section.table.head.map(function(cell, j) { return <th key={j}>{cell}</th>; })}</tr>
+                        </thead>
+                        <tbody>
+                          {section.table.rows.map(function(row, j) {
+                            return <tr key={j}>{row.map(function(cell, k) { return <td key={k}>{cell}</td>; })}</tr>;
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               );
             })}
+
+            {article.faqs && article.faqs.length > 0 && (
+              <div className="mt-16 reveal" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
+                <div style={{ ...monoKicker, color: BLUE_PRIMARY, marginBottom: 22 }}>FAQ</div>
+                {article.faqs.map(function(item, j) {
+                  return (
+                    <div key={j} style={{ marginBottom: 26 }}>
+                      <h3 style={{ ...serif, fontSize: 19, lineHeight: 1.25, letterSpacing: "-0.015em", color: INK, fontWeight: 500, margin: "0 0 8px" }}>{item.q}</h3>
+                      <p style={{ fontSize: 15.5, lineHeight: 1.7, color: MUTED, margin: 0 }}>{item.a}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             <div className="mt-20 reveal" style={{ borderTop: "1px solid " + RULE, paddingTop: 36 }}>
               <div style={{ ...monoKicker, color: MUTED, marginBottom: 22 }}>Keep reading</div>
@@ -5790,7 +5835,7 @@ function buildSeoPayload(route) {
     descriptions["service-area"] = currentServiceArea.metaDescription;
   }
   if (currentArticle) {
-    titles.article = currentArticle.title + " | Home Front Solutions";
+    titles.article = currentArticle.seoTitle || (currentArticle.title + " | Home Front Solutions");
     descriptions.article = currentArticle.description;
   }
 
@@ -6214,6 +6259,19 @@ function buildSeoPayload(route) {
         cssSelector: ["h1", "h1 + p", ".drop-cap"]
       }
     });
+    if (currentArticle.faqs && currentArticle.faqs.length) {
+      schemas.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: currentArticle.faqs.map(function(item) {
+          return {
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a }
+          };
+        })
+      });
+    }
   }
 
   if (route.name === "why-us") {

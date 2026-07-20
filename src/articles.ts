@@ -1,6 +1,162 @@
 // Insight article content. Loaded on demand (lazy chunk) on insights routes.
 export const ARTICLE_PAGES = [
   {
+    "slug": "door-to-door-fiber-sales",
+    "title": "Door to Door Fiber Sales: Pay, $100K Summers, 1099 vs W2",
+    "seoTitle": "Door to Door Fiber Sales: Pay, $100K Summers, 1099 vs W2",
+    "eyebrow": "Fiber Internet",
+    "description": "Door to door fiber sales, explained: real commissions ($150-$350 per deal), the $100K summer math, and 1099 vs W2 compared. See what reps actually earn.",
+    "intro": "Door to door fiber sales is one of the fastest ways to earn a six-figure income without a degree. Reps knock 80 to 100+ doors a day in new fiber neighborhoods and earn $150 to $350+ per signed install. Top reps clear $1,500 to $5,000 a week in season. Here is the honest math, the trade-offs, and who this career actually fits.",
+    "publishedDate": "2026-07-21",
+    "authorName": "Muizz Muhammad",
+    "sections": [
+      {
+        "heading": "What is door-to-door fiber sales, and why is it booming?",
+        "body": "Door-to-door fiber sales is direct, face-to-face selling of fiber internet service at the homeowner's door. A rep works an assigned territory, checks which homes are serviceable, presents the offer, and signs new customers on the spot or books the install.\n\nThe industry is booming because of the build itself. Fiber providers are spending billions laying new cable across the Southeast and beyond. Every street that gets lit needs customers fast, and online ads cannot tell a homeowner that fiber just became available at their exact address. A knock can. That is why providers fund dealer programs and sales agencies to put boots on the ground in every launch market.\n\nDemand follows the build. Households want faster uploads for remote work, streaming, and smart home gear, and fiber beats cable on speed and reliability. When a rep shows up with a local offer and a clear answer, the sale is often half-made before the pitch starts.\n\nThe money behind it is real. Federal broadband funding and private capital are pushing fiber past millions of new homes a year, and every provider fighting for share in those neighborhoods needs a local sales force. Industry estimates put tens of thousands of new field reps on doors each selling season, and turnover keeps demand for new hires steady even in mature markets."
+      },
+      {
+        "heading": "Who is the fiber boom hiring?",
+        "body": "Mostly people with no sales background. Dealer programs and D2D agencies hire for drive, reliability, and coachability, then train the rest in a paid certification week. College students on summer break, career changers, athletes, and veterans all do well.\n\nManagers and dealership owners come from the same pool. The standard path is rep, then team lead, then area manager, then running your own dealership with the provider's backing."
+      },
+      {
+        "heading": "What does a day in door-to-door fiber sales look like?",
+        "body": "Expect a structured, physical day. Reps typically start with a morning team huddle, review their assigned territory, then work doors from late morning through early evening when homeowners are home. A full day is 80 to 100+ door knocks, which produces roughly 15 to 25 real conversations, 5 to 10 qualified prospects, and 1 to 4 signed deals for a solid rep.\n\nEvery visit gets logged at the address: not home, callback requested, not interested, or signed. That record drives follow-ups, which is where a large share of sales actually close.",
+        "list": [
+          "9:00 AM: Team huddle, numbers from yesterday, territory assignments",
+          "10:00 AM to 1:00 PM: First knock block in the assigned neighborhood",
+          "1:00 to 2:00 PM: Break and route review",
+          "2:00 to 6:00 PM: Second knock block plus callback follow-ups",
+          "Evening: Log every door, confirm installs, plan tomorrow"
+        ]
+      },
+      {
+        "heading": "How much do fiber sales reps make?",
+        "body": "The fiber sales commission structure is simple: you earn a set amount per signed, installed customer. Typical commissions run $150 to $350+ per deal depending on the provider, the plan sold, and any bundle add-ons. Some programs add residuals or bonuses for hitting weekly targets.\n\nRun the math at average skill. A rep closing 1 to 2 deals a day at $250 per deal earns roughly $1,500 to $2,500 a week. Strong reps in good territory close 3 to 4 deals a day and land in the $3,000 to $5,000 a week range. Monthly, that is $6,000 to $20,000 for active reps, with the wide gap explained almost entirely by door volume and territory quality.\n\nAnnualized, steady full-time reps commonly earn $70,000 to $120,000, and top performers in peak season markets pass that. The keyword there is steady: the paycheck follows the knocks, not the hours logged online."
+      },
+      {
+        "heading": "Is the $100K summer real, or recruiter hype?",
+        "body": "Both. A $100K summer is possible, and it is also the most abused number in D2D recruiting. The honest version: a small percentage of reps, usually experienced closers in brand-new fiber territory, earn $100,000 or more across a 4 to 5 month peak season. Most first-summer reps earn $25,000 to $60,000 in the same window.\n\nThe hype version promises the number without the inputs. When a recruiter says $100K summer, ask three questions: what is the per-deal commission, what does the average rep close per day, and is the territory new-build or worked-over? The answers tell you whether the number is marketing or math."
+      },
+      {
+        "heading": "What actually produces a $100K summer?",
+        "body": "Three inputs, and you can verify all of them before you sign:",
+        "list": [
+          "New-build territory: fresh fiber addresses with no incumbent fiber provider, where nearly every homeowner is a prospect",
+          "Door volume: 80 to 100+ knocks a day, every day, because even great closers convert a small share of doors",
+          "Comp plan: $250 to $350+ per deal with weekly payout, so peak-season weeks stack to $3,000 to $5,000",
+          "Follow-up discipline: most $100K reps close a third of their deals from logged callbacks, not first knocks",
+          "Coaching: daily huddles and ride-alongs that fix pitch problems in days instead of months"
+        ]
+      },
+      {
+        "heading": "1099 vs W2 in door to door sales: what's the difference?",
+        "body": "Most D2D fiber programs hire reps as 1099 independent contractors, while some agencies offer W2 employment. The difference changes your taxes, your safety net, and your ceiling. Neither is automatically better; they fit different people.\n\nThe tax side of 1099 scares people more than it should. You pay self-employment tax on top of income tax, and the IRS expects quarterly estimated payments instead of one April surprise. The trade is that your work costs become deductions: mileage or gas between neighborhoods, your phone bill, even part of your home office if you run your pipeline from a kitchen table. Reps who track expenses from week one often keep more of a bigger check than they would on W2. Reps who ignore it until spring get hurt. A basic spreadsheet and a separate bank account for taxes solve ninety percent of it.",
+        "table": {
+          "head": [
+            "Factor",
+            "1099 Contractor",
+            "W2 Employee"
+          ],
+          "rows": [
+            [
+              "Pay model",
+              "Pure commission, usually higher per deal",
+              "Base pay plus smaller commission or bonus"
+            ],
+            [
+              "Earning ceiling",
+              "Uncapped",
+              "Capped or banded by role"
+            ],
+            [
+              "Taxes",
+              "You pay self-employment tax and quarterly estimates",
+              "Employer withholds automatically"
+            ],
+            [
+              "Benefits",
+              "None provided",
+              "Often health, PTO, and retirement options"
+            ],
+            [
+              "Expenses",
+              "You cover gas, phone, gear (deductible)",
+              "Employer usually covers work costs"
+            ],
+            [
+              "Schedule control",
+              "High, you set your blocks",
+              "Set shifts and required meetings"
+            ],
+            [
+              "Income stability",
+              "Variable week to week",
+              "Predictable paycheck"
+            ],
+            [
+              "Best for",
+              "Self-starters who want max upside",
+              "People who want stability and benefits"
+            ]
+          ]
+        }
+      },
+      {
+        "heading": "How do you get hired in door-to-door fiber sales?",
+        "body": "The hiring bar is lower than the earning bar, which is the whole opportunity. Most dealer programs ask for three things: you are 18 or older, you can pass a background check, and you can work the full schedule, including Saturdays in most markets. No degree, no resume full of logos, no sales experience required.\n\nThe process usually moves in days, not months. You apply, do a short phone or video screen, then a field day where you shadow a working rep and watch real knocks. If both sides like what they see, you start paid training and certification, which covers the product, the offer, the pitch, and the rules at the door. Most reps are knocking their own doors within one to two weeks of applying.\n\nLegit programs never charge you to start. Training is paid, gear is provided, and your first check arrives on a normal payroll or contractor cycle. If a company asks you to buy your position, walk away.",
+        "list": [
+          "Apply online with your name, phone, and availability",
+          "Short screen: schedule fit, transportation, and attitude",
+          "Field day: shadow a top rep on real doors",
+          "Paid training and certification week",
+          "Assigned territory and your first solo route"
+        ]
+      },
+      {
+        "heading": "What should you ask before joining a fiber sales team?",
+        "body": "The offer matters less than the operation behind it. Two teams can pay the same per deal and produce wildly different paychecks because of territory quality, install speed, and how chargebacks are handled. Ask direct questions and expect direct answers.\n\nFirst, ask about the math: the exact commission per deal, when it pays, what triggers a clawback, and what the average rep, not the top rep, earned last month. Second, ask about the territory: is it fresh fiber or a worked-over area, how many serviceable doors per route, and how routes are assigned. Third, ask about support: who trains you, who answers on a Saturday when an install goes sideways, and whether the back office books installs for you or leaves it on your plate.\n\nA good team answers all of this in writing. Vague answers about averages and territory are the loudest red flag in this industry."
+      },
+      {
+        "heading": "Which pay model fits you?",
+        "body": "Choose 1099 if you manage money well, want the highest per-deal pay, and treat the job like running a small business. Set aside 25 to 30 percent of every check for taxes from day one.\n\nChoose W2 if you are new to sales, need a predictable check while you learn, or value benefits over ceiling. Many reps start W2, prove themselves, then move to 1099 or a dealership once they know the math works."
+      },
+      {
+        "heading": "Is door-to-door fiber sales worth it?",
+        "body": "For the right person, yes, and the fiber build makes this the best window in years. The career pays for effort in a way few others do: no degree, no waiting for annual reviews, and a direct line between doors knocked and money earned. It also builds real skills, negotiation, resilience, and territory management, that transfer into sales leadership and business ownership.\n\nThe honest costs: it is physical, weather happens, rejection is constant, and the first two weeks humble almost everyone. The reps who stay past that point are the ones whose paychecks you see in the recruiting posts.\n\nIf you want the short version: treat it like a business, work a real route, track every door, and the math takes care of itself."
+      },
+      {
+        "heading": "The bottom line",
+        "body": "Door to door fiber sales pays $150 to $350+ per signed install, rewards volume and follow-up, and offers one of the clearest rep-to-owner ladders in sales. A $100K summer is real for a small group with the right territory, comp plan, and work ethic. Know the inputs before you sign, pick the pay model that fits your life, and the industry can change your income in one season."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "How much do fiber sales reps make per sale?",
+        "a": "Typical commissions run $150 to $350+ per signed and installed customer, depending on the provider, plan, and add-ons. Some programs add weekly bonuses or residuals on top of the per-deal pay."
+      },
+      {
+        "q": "Is a $100K summer in D2D sales realistic?",
+        "a": "For a small percentage of experienced reps in new-build territory, yes. Most first-summer reps earn $25,000 to $60,000. The number depends on per-deal commission, daily door volume, and territory quality."
+      },
+      {
+        "q": "Do I need sales experience for door-to-door fiber sales?",
+        "a": "No. Most programs hire for drive and coachability, then train reps through a paid certification period that lasts about a week. Field managers continue coaching with daily huddles and ride-alongs."
+      },
+      {
+        "q": "How many doors do fiber reps knock per day?",
+        "a": "A full day is typically 80 to 100+ door knocks, producing 15 to 25 conversations and 1 to 4 signed deals for a solid rep. Follow-ups from logged callbacks add more."
+      },
+      {
+        "q": "Is 1099 or W2 better for D2D sales?",
+        "a": "1099 pays more per deal with no cap but no benefits, and you handle your own taxes. W2 offers a base, benefits, and stability with a lower ceiling. New reps often start W2; experienced closers usually prefer 1099."
+      },
+      {
+        "q": "Is door-to-door fiber sales worth it in 2026?",
+        "a": "Yes for self-motivated people. The ongoing fiber build keeps opening fresh territories, commissions are uncapped, and the rep-to-manager-to-owner path is short compared to most careers."
+      }
+    ]
+  },
+  {
     slug: "d2d-success-stories",
     title: "D2D Success Stories: How Reps Build Real Income Fast",
     eyebrow: "Career Stories",
