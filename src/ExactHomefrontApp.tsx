@@ -2639,7 +2639,7 @@ function PlatformPage(props) {
             </div>
             <p>However you want to grow in field sales, there is a way in. Every dealership runs on the HFS platform from day one, software included.</p>
           </div>
-          <div className="hfsx-pathGrid reveal">
+          <div className="hfsx-pathGrid reveal hfsx-stagger">
             <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }} className="hfsx-pathCard">
               <span>01</span>
               <h3>Become a rep</h3>
@@ -2936,17 +2936,17 @@ function HomePage(props) {
 
           <div className="hfsx-statBar" aria-label="Company statistics">
             {[
-              { icon: "pin", value: "28+", label: "Markets launched" },
-              { icon: "grid", value: "6", label: "Service categories" },
-              { icon: "map", value: "4", label: "Active states" },
-              { icon: "home", value: "D2D", label: "Door-to-door first" },
-              { icon: "star", value: "$150K+", label: "Top first-year rep" },
-              { icon: "cal", value: "5 days", label: "Paid certification" }
+              { icon: "pin", to: 28, suffix: "+", label: "Markets launched" },
+              { icon: "grid", to: 6, label: "Service categories" },
+              { icon: "map", to: 4, label: "Active states" },
+              { icon: "home", text: "D2D", label: "Door-to-door first" },
+              { icon: "star", to: 150, prefix: "$", suffix: "K+", label: "Top first-year rep" },
+              { icon: "cal", to: 5, suffix: " days", label: "Paid certification" }
             ].map(function(item) {
               return (
                 <div key={item.label} className="hfsx-statBar__item">
                   <StatBarIcon kind={item.icon} />
-                  <strong>{item.value}</strong>
+                  <strong>{item.text ? item.text : <CountUp to={item.to} prefix={item.prefix} suffix={item.suffix} />}</strong>
                   <span>{item.label}</span>
                 </div>
               );
@@ -2964,7 +2964,7 @@ function HomePage(props) {
             </div>
             <p>Start as a rep, launch your own dealership, or put your team on our platform. Every path runs on the same field-proven system.</p>
           </div>
-          <div className="hfsx-engineLinkGrid reveal">
+          <div className="hfsx-engineLinkGrid reveal hfsx-stagger">
             <a href="/careers" onClick={function(e) { handleNavClick(e, props.go, "careers"); }}>
               <span>01</span>
               <h3>Become a rep</h3>
@@ -2993,7 +2993,7 @@ function HomePage(props) {
             </div>
             <p>These are the working parts behind every HFS campaign. Each step is simple enough to execute and specific enough to measure.</p>
           </div>
-          <div className="hfsx-engineLinkGrid reveal">
+          <div className="hfsx-engineLinkGrid reveal hfsx-stagger">
             <a href="#provider-markets" onClick={function(e) { e.preventDefault(); var target = document.getElementById("provider-markets"); if (target) target.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
               <span>01</span>
               <h3>Target the market</h3>
@@ -3097,7 +3097,7 @@ function HomePage(props) {
         </div>
       </section>
 
-      <section className="hfsx-section hfsx-section--white">
+      <section className="hfsx-section hfsx-section--tint">
         <div className="hfsx-container hfsx-split hfsx-split--dealer">
           <div className="hfsx-dealerMedia">
             <img src="/rep-knock-1-800.webp" alt="Home Front Solutions field representative working an assigned neighborhood route" width="800" height="600" loading="lazy" decoding="async" />
@@ -3182,7 +3182,7 @@ function HomePage(props) {
             </div>
             <p>Home Front Solutions is led by operators who built their careers in door-to-door sales, not behind a desk.</p>
           </div>
-          <div className="hfsx-teamGrid reveal">
+          <div className="hfsx-teamGrid reveal hfsx-stagger">
             <article className="hfsx-teamCard hfsx-teamCard--founder">
               <img className="hfsx-teamAvatar hfsx-teamAvatar--photo" src="/founder.webp" alt="Muizz Muhammad, founder of Home Front Solutions" width="96" height="96" loading="lazy" decoding="async" />
               <div className="hfsx-teamBody">
@@ -3302,7 +3302,7 @@ function HomePage(props) {
             </div>
             <p>The short version of how door-to-door customer acquisition works and why providers keep investing in it.</p>
           </div>
-          <div className="hfsx-d2dGrid reveal">
+          <div className="hfsx-d2dGrid reveal hfsx-stagger">
             <article>
               <h3>Door-to-door sales reaches who ads miss</h3>
               <p>
