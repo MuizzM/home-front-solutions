@@ -3189,7 +3189,7 @@ function HomePage(props) {
                 <h3>Muizz Muhammad</h3>
                 <span className="hfsx-teamRole">Founder</span>
                 <p>
-                  Started knocking doors before he could rent a car and went on to build door-to-door (D2D) sales teams across the Southeast. Muizz leads HFS with one standard: every rep is trained, badged, and accountable at the door, from the first cold knock to the signed install.
+                  Muizz has spent his career in the field, building and scaling D2D sales teams across the Southeast. At HFS, he holds the organization to one uncompromising standard: every representative is professionally trained, credentialed, and accountable throughout the entire customer journey from initial outreach to signed installation.
                 </p>
                 <div className="hfsx-teamTags">
                   <span>Door-to-door sales</span>
