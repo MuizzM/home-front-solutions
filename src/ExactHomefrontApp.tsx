@@ -2603,10 +2603,14 @@ function PlatformPage(props) {
         <div className="hfsx-container">
           <div className="hfsx-heroPanel">
             <div className="hfsx-heroCopy">
-              <p className="hfsx-kicker hfsx-kicker--light">Field sales software</p>
-              <h1>Every rep. Every door. Every result. <span className="hfsx-accent">One CRM.</span></h1>
+              <p className="hfsx-kicker hfsx-kicker--light">Fable 5 · Field sales intelligence</p>
+              <h1 className="hfsx-appHeroTitle">
+                <span>More leads.</span>
+                <span>More reps selling.</span>
+                <span className="hfsx-accent">More fiber sold.</span>
+              </h1>
               <p className="hfsx-lede">
-                The HFS platform is a white-label field sales CRM built by a working door-to-door agency. Territories, knocks, routes, follow-ups, and commissions, in one system your reps actually use.
+                True visibility for reps and managers, from the first knock to the signed install. Fable 5 scans copper neighborhoods for fresh fiber, pins every address on the field map, and logs every disposition live.
               </p>
               <div className="hfsx-actions">
                 <a
@@ -2616,26 +2620,84 @@ function PlatformPage(props) {
                   rel={BOOKING_URL ? "noopener noreferrer" : undefined}
                   className="hfsx-button hfsx-button--gold"
                 >
-                  Get a Demo
+                  Request a Demo
                 </a>
-                <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="hfsx-button hfsx-button--outline">Rep Login</a>
+                <a href="/contact" onClick={function(e) { handleNavClick(e, props.go, "contact"); }} className="hfsx-button hfsx-button--outline">Get Started</a>
               </div>
               <div className="hfsx-trustRow" aria-label="Trust signals">
-                <span><i aria-hidden="true" />White-label ready</span>
+                <span><i aria-hidden="true" />17,700+ fiber addresses mapped</span>
                 <span><i aria-hidden="true" />Included with every dealership</span>
-                <span><i aria-hidden="true" />Built by a working D2D agency</span>
+                <span><i aria-hidden="true" />White-label ready</span>
               </div>
             </div>
-            <div className="hfsx-heroMedia hfsx-heroMedia--shot">
-              <div className="hfsx-shotFrame">
-                <div className="hfsx-shotFrame__bar"><i /><i /><i /><span>portal.homefrontsolutionsllc.com</span></div>
-                <img src="/portal-login.webp" alt="Home Front Solutions rep portal login, Field Sales Intelligence" width="820" height="840" loading="eager" decoding="async" />
+            <div className="hfsx-heroMedia hfsx-heroMedia--app">
+              <div className="hfsx-appStage">
+                <div className="hfsx-phone hfsx-phone--back" aria-hidden="true">
+                  <div className="hfsx-phone__screen">
+                    <img src="/showcase/f5-dashboard.webp" alt="" width="390" height="844" loading="eager" decoding="async" />
+                  </div>
+                </div>
+                <div className="hfsx-phone hfsx-phone--front">
+                  <div className="hfsx-phone__screen">
+                    <img src="/showcase/f5-field-map.webp" alt="Fable 5 field map with green prospect pins over satellite rooftops in a North Carolina neighborhood" width="390" height="697" loading="eager" decoding="async" fetchpriority="high" />
+                  </div>
+                </div>
+                <div className="hfsx-appChip hfsx-appChip--a"><strong>Fresh Leads</strong><span>Scanned from copper daily</span></div>
+                <div className="hfsx-appChip hfsx-appChip--b"><strong>17,718</strong><span>Addresses on the live map</span></div>
               </div>
-              <div className="hfsx-shotChip hfsx-shotChip--a"><strong>Live</strong><span>Knock logging at the door</span></div>
-              <div className="hfsx-shotChip hfsx-shotChip--b"><strong>28+</strong><span>Markets on one system</span></div>
-              <i className="hfsx-shotDot hfsx-shotDot--a" aria-hidden="true" />
-              <i className="hfsx-shotDot hfsx-shotDot--b" aria-hidden="true" />
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="hfsx-appShow">
+        <div className="hfsx-container">
+          <div className="hfsx-sectionHead hfsx-sectionHead--light">
+            <div>
+              <p className="hfsx-kicker hfsx-kicker--light">Inside the app</p>
+              <h2>Every door, on the record.</h2>
+            </div>
+            <p>Screens captured live from the Fable 5 rep app, July 2026. No mockups, no demo data.</p>
+          </div>
+          <div className="hfsx-appStats reveal hfsx-stagger">
+            <div><strong>17,718</strong><span>fiber-serviceable addresses scanned and pinned</span></div>
+            <div><strong>200</strong><span>copper-to-fiber changes flagged in the last 24h</span></div>
+            <div><strong>87</strong><span>doors dispositioned by the team so far</span></div>
+          </div>
+          <div className="hfsx-phoneRow reveal">
+            <figure className="hfsx-phoneCard">
+              <div className="hfsx-phone">
+                <div className="hfsx-phone__screen">
+                  <img src="/showcase/f5-field-map.webp" alt="Fable 5 field map with green prospect pins over satellite rooftops in a North Carolina neighborhood" width="390" height="697" loading="lazy" decoding="async" />
+                </div>
+              </div>
+              <figcaption>
+                <h3>Field Map</h3>
+                <p>Every fresh-fiber address pinned green. Reps knock the doors that can actually buy.</p>
+              </figcaption>
+            </figure>
+            <figure className="hfsx-phoneCard">
+              <div className="hfsx-phone">
+                <div className="hfsx-phone__screen">
+                  <img src="/showcase/f5-fresh-leads.webp" alt="Fable 5 leads command center showing 17,718 fiber leads with priority scores and filters" width="390" height="844" loading="lazy" decoding="async" />
+                </div>
+              </div>
+              <figcaption>
+                <h3>Fresh Leads</h3>
+                <p>A pipeline that refills itself, scored by priority so the best doors get knocked first.</p>
+              </figcaption>
+            </figure>
+            <figure className="hfsx-phoneCard">
+              <div className="hfsx-phone">
+                <div className="hfsx-phone__screen">
+                  <img src="/showcase/f5-lead-detail.webp" alt="Fable 5 lead detail for an address in Denton, NC with a confirmed fresh fiber badge and one-tap dispositions" width="390" height="844" loading="lazy" decoding="async" />
+                </div>
+              </div>
+              <figcaption>
+                <h3>Lead Detail</h3>
+                <p>Confirmed-fiber badges, notes, and one-tap dispositions: Not Home to Sold, logged at the door.</p>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -5786,7 +5848,7 @@ function buildSeoPayload(route) {
   var titles = {
     home: "Door-to-Door (D2D) Sales Teams & Dealers | Home Front Solutions",
     "check-availability": "Is Fiber Available at Your Address? Free Check | HFS",
-    "platform": "Door-to-Door Sales CRM, White-Label, Free Demo | HFS Platform",
+    "platform": "Fable 5: Door-to-Door Fiber Sales CRM | Free Demo",
     "what-we-do": "Nationwide D2D Customer Acquisition | Home Front Solutions",
     "service-areas": "Fiber Sales Coverage in NC, SC, GA, VA | Find Your City",
     "why-us": "Why Home Front Solutions | Nationwide Field Sales Agency",
@@ -5805,7 +5867,7 @@ function buildSeoPayload(route) {
 
   var descriptions = {
     home: "Door-to-door (D2D) sales teams and dealer programs for fiber internet across NC, SC, GA, and VA. Become a dealer or book a strategy call today.",
-    "platform": "White-label field sales CRM for door-to-door teams: territories, knock logging, routes, leaderboards, and commissions. Book a demo today.",
+    "platform": "Fable 5 is the field sales app built for fiber: fresh leads scanned from copper, green-pinned field maps, knock logging, and commissions. Request a demo.",
     "check-availability": "Free fiber availability check at your address. Local review across NC, SC, GA, and VA, reply in one business day. No obligation.",
     careers: "Hiring door-to-door sales reps now. Paid 5-day certification, uncapped weekly commission, top first-year reps earn $150K+. Apply in 5 minutes.",
     market: "Local sales jobs with a national D2D agency. Explore city-specific recruiting pages for Home Front Solutions in North Carolina and across our expanding U.S. markets.",
@@ -6065,13 +6127,13 @@ function buildSeoPayload(route) {
     schemas.push({
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      name: "HFS Field Sales Platform",
+      name: "Fable 5 Field Sales Intelligence",
       applicationCategory: "BusinessApplication",
       operatingSystem: "Web, iOS, Android",
       url: pageUrl,
       description: descriptions.platform,
       provider: { "@id": "https://www.homefrontsolutionsllc.com/#business" },
-      featureList: "Territory mapping, door-level knock logging, route planning, lead pipeline, follow-up workflow, leaderboards, commission visibility, white-label branding",
+      featureList: "Fresh lead scanning from copper networks, field map with lead pins, door-level knock logging, one-tap dispositions, lead pipeline, leaderboards, commission visibility, white-label branding",
       areaServed: { "@type": "Country", name: "United States" }
     });
     schemas.push({
